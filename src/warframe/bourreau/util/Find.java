@@ -53,7 +53,7 @@ public class Find {
 
     public static double FindRivenJsonInfluenceDouble(String cherche) {
         try {
-            String riven = new String(Files.readAllBytes(Paths.get("output" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("riven" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
             for (Object name : rivenJson.names()) {
@@ -74,7 +74,7 @@ public class Find {
 
     public static String FindRivenJsonInfluenceTransforme(String cherche) {
         try {
-            String riven = new String(Files.readAllBytes(Paths.get("output" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("riven" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
             for (Object name : rivenJson.names()) {
@@ -95,7 +95,7 @@ public class Find {
 
     public static String FindRivenJsonInfluenceCatgorie(String cherche) {
         try {
-            String riven = new String(Files.readAllBytes(Paths.get("output" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("riven" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
             for (Object name : rivenJson.names()) {
@@ -225,6 +225,15 @@ public class Find {
     public static boolean FindJsonKey(JSONObject json, String key) {
         for (int i=0; i<json.names().length(); i++) {
             if (json.names().get(i).equals(key))
+                return true;
+        }
+
+        return false;
+    }
+
+    public static boolean FindNamesJSONObkect(JSONArray array, String name) {
+        for (int i=0; i<array.length(); i++) {
+            if (array.getString(i).equals(name))
                 return true;
         }
 

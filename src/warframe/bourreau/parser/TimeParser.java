@@ -1,6 +1,6 @@
 package warframe.bourreau.parser;
 
-public class TimeParse {
+public class TimeParser {
 
     public static long ParseTimeToSec(String time) {
         long sec;

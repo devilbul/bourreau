@@ -91,8 +91,14 @@ public class handleCommand {
                         break;
 
                     // commande info
+                    case "alerts":
+                        InfoCommand.Alerts(cmd.event);
+                        break;
                     case "alliance":
                         InfoCommand.Alliance(cmd.event);
+                        break;
+                    case "baro":
+                        InfoCommand.VoidTraders(cmd.event);
                         break;
                     case "clan":
                         InfoCommand.ListClan(cmd.event);
@@ -107,6 +113,9 @@ public class handleCommand {
                     case "info":
                         InfoCommand.Info(cmd.event);
                         break;
+                    case "invasions":
+                        InfoCommand.Invasions(cmd.event);
+                        break;
                     case "invite":
                         InfoCommand.InvitationServeur(cmd.event);
                         break;
@@ -116,14 +125,23 @@ public class handleCommand {
                     case "progres":
                         InfoCommand.Progression(cmd.event);
                         break;
+                    case "pvp":
+                        InfoCommand.PvpChallenge(cmd.event);
+                        break;
                     case "raid":
                         InfoCommand.Raid(cmd.event);
                         break;
                     case "site":
                         InfoCommand.Site(cmd.event);
                         break;
+                    case "sortie":
+                        InfoCommand.Sorties(cmd.event);
+                        break;
                     case "steam":
                         InfoCommand.Steam(cmd.event);
+                        break;
+                    case "syndicat":
+                        InfoCommand.Syndicats(cmd.event);
                         break;
                     case "ts3":
                         InfoCommand.Ts(cmd.event);
@@ -133,6 +151,9 @@ public class handleCommand {
                         break;
                     case "updates":
                         InfoCommand.UpdateHotfix(cmd.event);
+                        break;
+                    case "void":
+                        InfoCommand.Void(cmd.event);
                         break;
 
                     // commande riven
@@ -186,9 +207,6 @@ public class handleCommand {
                         break;
                     case "tenno":
                         AdminCommand.AddUserToTenno(cmd.event);
-                        break;
-                    case "traiteriven":
-                        AdminCommand.TraitementRiven(cmd.event);
                         break;
                     case "undeafen":
                         AdminCommand.UnDeafen(cmd.event);

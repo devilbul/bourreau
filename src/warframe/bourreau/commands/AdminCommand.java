@@ -3,10 +3,15 @@ package warframe.bourreau.commands;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 import static warframe.bourreau.InitID.*;
@@ -187,15 +192,6 @@ public class AdminCommand extends Command {
         catch(Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void TraitementRiven(MessageReceivedEvent event) {
-        if (FindAdmin(event, event.getMember())) {
-            if (Traitement())
-                event.getTextChannel().sendMessage("Traitement effectué.").queue();
-        }
-        else
-            event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
     }
 
     public static void UnBan(MessageReceivedEvent event) {

@@ -66,8 +66,10 @@ public class BotListener extends ListenerAdapter {
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         if (event.getAuthor() != event.getJDA().getSelfUser()) {
-            handleCommandPrivate(Main.parserPrivate.parsePrivate(event.getMessage().getContent().toLowerCase(), event));
-            event.getAuthor().getPrivateChannel().close();
+            if (!(event.getJDA().getGuilds().get(0).getMember(event.getAuthor()).getRoles().size() == 0)) {
+                handleCommandPrivate(Main.parserPrivate.parsePrivate(event.getMessage().getContent().toLowerCase(), event));
+                event.getAuthor().getPrivateChannel().close();
+            }
         }
     }
 

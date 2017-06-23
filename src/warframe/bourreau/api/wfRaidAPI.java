@@ -15,8 +15,8 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
-import static warframe.bourreau.parser.TimeParse.ParseSecToTime;
-import static warframe.bourreau.parser.TimeParse.ParseTimeToSec;
+import static warframe.bourreau.parser.TimeParser.ParseSecToTime;
+import static warframe.bourreau.parser.TimeParser.ParseTimeToSec;
 import static warframe.bourreau.util.Recup.recupPseudo;
 import static warframe.bourreau.util.Recup.recupString;
 import static warframe.bourreau.util.urlReadJson.readAll;
@@ -59,7 +59,7 @@ public class wfRaidAPI {
         else {
             user = event.getAuthor().getName();
             urlApi += user + "/completed";
-            urlSite = user;
+            urlSite += user;
 
             TraiteRaidStatDetail(event, user, urlApi, urlSite);
         }

@@ -2,7 +2,6 @@ package warframe.bourreau.commands;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.IMentionable;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -13,7 +12,12 @@ import java.time.Instant;
 import java.util.Date;
 
 import static warframe.bourreau.InitID.*;
+import static warframe.bourreau.api.warframeAPI.*;
+import static warframe.bourreau.help.EmbedMessageHelp.MessageListeCommande;
+import static warframe.bourreau.util.Find.FindAdmin;
+import static warframe.bourreau.util.Find.FindModo;
 import static warframe.bourreau.util.MessageOnEvent.MessageNoThing;
+import static warframe.bourreau.util.Recup.recupString;
 
 public class Command {
 
@@ -22,14 +26,35 @@ public class Command {
     public static void AfficheUpdateBot(MessageReceivedEvent event) {
         if (event.getMember().equals(event.getGuild().getOwner())) {
             EmbedBuilder news = new EmbedBuilder();
+            EmbedBuilder news2 = new EmbedBuilder();
             String botnews;
+            String botnews2;
 
-            botnews = "- modification de la commande pour avoir l'influence de riven" +
-                    "\n     nouvelle syntaxe : !riven influence <nom de l'objet>" +
-                    "\n\n- ajout de la commande !riven nom <nom de riven>" +
-                    "\n     qui permet de donne les statistiques lié au nom donné" +
-                    "\n     exmeple de la commande :" +
-                    "\n         !riven nom crita-hexacan" +
+            botnews = "- ajout de la commande !sortie" +
+                    "\n     qui affiche la sortie en cours" +
+                    "\n\n- ajout de la commande !baro" +
+                    "\n     qui affiche le temps restant, pour l'arrivé de Baro Ki'Teer" +
+                    "\n     et le relais où il sera" +
+                    "\n\n- ajout de la commande !pvp" +
+                    "\n     qui affiche les défis quotidien du conclave" +
+                    "\n\n- ajout de la commande !pvp hebdo" +
+                    "\n     qui affiche le temps restant pour les défis hebdomadaire" +
+                    "\n\n- ajout de la commande !syndicat" +
+                    "\n     qui affiche les missions syndicales du jour";
+            botnews2 ="- ajout de la commande !void" +
+                    "\n     qui affiche toutes les missions fissures" +
+                    "\n\n- ajout de la commande !void <tiers>" +
+                    "\n     parmi : axi/neo/meso/lith" +
+                    "\n     qui affiche que les fissures du tiers saisi" +
+                    "\n\n- ajoute de la commande !invasions" +
+                    "\n     qui affiche toutes les invasiosn en cours" +
+                    "\n\n- ajoute de la commande !invasions interest" +
+                    "\n     qui affiche toutes les invasiosn en cours, ayant une récompense intéressante" +
+                    "\n\n- ajoute de la commande !alerts" +
+                    "\n     qui affiche toutes les alertes en cours" +
+                   "\n\n- ajoute de la commande !alerts interest" +
+                    "\n     qui affiche toutes les alertes en cours, ayant une récompense intéressante" +
+
                     "\n\n- mise à jour de la commande help";
 
             news.setTitle("Nouveauté du bot :", null);
@@ -39,7 +64,15 @@ public class Command {
             news.setColor(new Color(17, 204, 17));
             news.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
-            event.getJDA().getTextChannelById(botSpamID).sendMessage(news.build()).queue();
+            news2.setTitle("Nouveauté du bot :", null);
+            news2.setDescription("ajout avec la dernière mise à jour");
+            news2.setThumbnail("http://i.imgur.com/gXZfo5H.png");
+            news2.addField("news :", botnews2, true);
+            news2.setColor(new Color(17, 204, 17));
+            news2.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+
+            event.getJDA().getTextChannelById(botSpamID).sendMessage(news.build()).complete().pin().complete();
+            event.getJDA().getTextChannelById(botSpamID).sendMessage(news2.build()).complete().pin().complete();
         }
         else
             MessageNoThing(event);
@@ -74,8 +107,9 @@ public class Command {
         if (event.getMessage().getContent().contains("présentation") || event.getMessage().getContent().contains("presentation")
                 || event.getMessage().getContent().contains("présente") || event.getMessage().getContent().contains("presente")) {
 
-            if (event.getMessage().getContent().toLowerCase().equals("présente") && event.getMessage().getContent().toLowerCase().equals("présentation")
-                    && event.getMessage().getContent().toLowerCase().equals("présentation") && event.getMessage().getContent().toLowerCase().equals("presentation")) {
+            if (event.getMessage().getContent().toLowerCase().equals("présente") || event.getMessage().getContent().toLowerCase().equals("présentation")
+                    || event.getMessage().getContent().toLowerCase().equals("présentation") || event.getMessage().getContent().toLowerCase().equals("presentation")
+                    || event.getMessage().getContent().length() < 30) {
                 User destinataire = null;
                 MessageBuilder messageMP = new MessageBuilder();
 
@@ -84,7 +118,7 @@ public class Command {
 
                 if (destinataire != null) {
                     messageMP.append(destinataire);
-                    messageMP.append(", ta présentation n'est pas correctement.");
+                    messageMP.append(", votre présentation n'est pas correctement.");
                     messageMP.append("\nVeuillez refaire votre présentation dans le salon textuel ");
                     messageMP.append(event.getJDA().getTextChannelById(accueilID));
                     messageMP.append("\nA bientôt, peut-être.\n");
@@ -111,7 +145,7 @@ public class Command {
 
     public static void Test(MessageReceivedEvent event) {
 
-
+        //Events(event);
 
     }
 }

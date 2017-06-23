@@ -12,12 +12,19 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
-import static warframe.bourreau.api.warframeAPI.Updates;
-import static warframe.bourreau.api.wfRaidAPI.RaidStat;
-import static warframe.bourreau.api.wfRaidAPI.RaidStatDetails;
+import static warframe.bourreau.api.warframeAPI.*;
+import static warframe.bourreau.api.warframeAPI.Invasion;
+import static warframe.bourreau.api.wfRaidAPI.*;
 import static warframe.bourreau.util.Recup.recupString;
 
 public class InfoCommand extends Command {
+
+    public static void Alerts(MessageReceivedEvent event) {
+        String commande = event.getMessage().getContent().toLowerCase();
+
+        if (commande.contains(" ") && recupString(commande).equals("interest"))AlertWithInterest(event);
+        else Alert(event);
+    }
 
     public static void Alliance(MessageReceivedEvent event) {
         try {
@@ -40,7 +47,6 @@ public class InfoCommand extends Command {
         }
         catch(Exception e) {
             e.printStackTrace();
-            System.out.println("Erreur de Json.");
         }
     }
 
@@ -49,6 +55,13 @@ public class InfoCommand extends Command {
     public static void Idee(MessageReceivedEvent event) { event.getTextChannel().sendMessage("https://docs.google.com/document/d/1kb-sIRzCQlau5JL2q2WZRFlUy94JKWLF8p4xvfRXJFU/edit?usp=sharing").queue(); }
 
     public static void Info(MessageReceivedEvent event) { event.getTextChannel().sendMessage("https://deathsnacks.com/wf").queue(); }
+
+    public static void Invasions(MessageReceivedEvent event) {
+        String commande = event.getMessage().getContent().toLowerCase();
+
+        if (commande.contains(" ") && recupString(commande).equals("interest")) InvasionWithInterest(event);
+        else Invasion(event);
+    }
 
     public static void InvitationServeur(MessageReceivedEvent event) { event.getTextChannel().sendMessage("https://discord.gg/8VUUres").queue(); }
 
@@ -75,7 +88,6 @@ public class InfoCommand extends Command {
         }
         catch(Exception e) {
             e.printStackTrace();
-            System.out.println("Erreur de Json.");
         }
     }
 
@@ -130,11 +142,12 @@ public class InfoCommand extends Command {
         }
         catch(Exception e) {
             e.printStackTrace();
-            System.out.println("Erreur de Json.");
         }
     }
 
     public static void Progression(MessageReceivedEvent event) { event.getTextChannel().sendMessage("Voici ma progression : \nhttps://trello.com/b/JEEkreCv").queue(); }
+
+    public static void PvpChallenge(MessageReceivedEvent event) { PVPChallenge(event); }
 
     public static void Raid(MessageReceivedEvent event) {
         if (event.getMessage().getContent().contains("detail")) RaidStatDetails(event);
@@ -143,11 +156,19 @@ public class InfoCommand extends Command {
 
     public static void Site(MessageReceivedEvent event) { event.getTextChannel().sendMessage("http://wfraid.teamfr.net/").queue(); }
 
+    public static void Sorties(MessageReceivedEvent event) { Sortie(event); }
+
     public static void Steam(MessageReceivedEvent event) { event.getTextChannel().sendMessage("http://steamcommunity.com/groups/wfraid").queue(); }
+
+    public static void Syndicats(MessageReceivedEvent event) { Syndicat(event); }
 
     public static void Ts (MessageReceivedEvent event) { event.getTextChannel().sendMessage("mine.ts-devil.eu:8334").queue(); }
 
     public static void Upcoming(MessageReceivedEvent event) { event.getTextChannel().sendMessage("https://warframe.wikia.com/wiki/Upcoming_Features").queue(); }
 
     public static void UpdateHotfix(MessageReceivedEvent event) { Updates(event); }
+
+    public static void VoidTraders(MessageReceivedEvent event) { Baro(event); }
+
+    public static void Void(MessageReceivedEvent event) { VoidFissure(event); }
 }

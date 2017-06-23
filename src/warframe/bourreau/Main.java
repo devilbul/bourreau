@@ -73,21 +73,28 @@ public class Main {
         commands.put("tg" , new Command());
 
         // commande info
+        commands.put("alerts", new Command());
         commands.put("alliance", new Command());
+        commands.put("baro", new Command());
         commands.put("clan" , new Command());
         commands.put("discordwf", new Command());
         commands.put("idée" , new Command());
         commands.put("idee" , new Command());
         commands.put("info", new Command());
+        commands.put("invasions", new Command());
         commands.put("invite" , new Command());
         commands.put("lead" , new Command());
         commands.put("progres" , new Command());
+        commands.put("pvp" , new Command());
         commands.put("raid" , new Command());
         commands.put("site" , new Command());
+        commands.put("sortie" , new Command());
         commands.put("steam" , new Command());
+        commands.put("syndicat" , new Command());
         commands.put("ts3", new Command());
         commands.put("up", new Command());
         commands.put("updates" , new Command());
+        commands.put("void" , new Command());
 
         // commande riven
         commands.put("riven" , new Command());
@@ -111,7 +118,6 @@ public class Main {
         commands.put("removeclan", new Command());
         commands.put("setgame", new Command());
         commands.put("tenno", new Command());
-        commands.put("traiteriven", new Command());
         commands.put("unban", new Command());
         commands.put("undeafen", new Command());
         commands.put("unmute", new Command());

@@ -15,7 +15,7 @@ public class TxtToJson {
     private static String origine = "RivenMods.txt";
     public static String sortie = "RivenMods.json";
     private static String adresse = System.getProperty("user.dir") + File.separator + "input" + File.separator + origine;
-    public static String adresseSortie = System.getProperty("user.dir") + File.separator + "output" + File.separator + sortie;
+    private static String adresseSortie = System.getProperty("user.dir") + File.separator + "riven" + File.separator + sortie;
 
     public static boolean Traitement() {
         if (TransformeTxtToJson())
@@ -25,7 +25,7 @@ public class TxtToJson {
         return false;
     }
 
-    public static boolean TransformeTxtToJson() {
+    private static boolean TransformeTxtToJson() {
         try {
             Scanner scanner = new Scanner(new File(adresse));
             FileWriter rivenJsonFile = new FileWriter(adresseSortie);
@@ -181,9 +181,9 @@ public class TxtToJson {
         }
     }
 
-    public static boolean DeleteBlankObjet()  {
+    private static boolean DeleteBlankObjet()  {
         try {
-            String riven = new String(Files.readAllBytes(Paths.get("output" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("riven" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
             FileWriter rivenJsonFile = new FileWriter(adresseSortie);
 
