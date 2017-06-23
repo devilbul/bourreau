@@ -261,7 +261,6 @@ public class warframeAPI {
 
             baro.setTitle("Baro Ki'Teer", "https://www.warframe.wikia.com/wiki/Sortie");
             baro.setThumbnail("http://vignette4.wikia.nocookie.net/warframe/images/d/d8/MarchandDuN%C3%A9ant.png/revision/latest?cb=20150630171447&path-prefix=fr");
-            //baro.setImage("https://vignette4.wikia.nocookie.net/warframe/images/1/12/BaroBanner.png");
             baro.setColor(new Color(36, 153, 153));
             baro.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
@@ -587,19 +586,6 @@ public class warframeAPI {
             for (int i=0; i<sortieJson.getJSONArray("Variants").length(); i++) {
                 node = starCharJson.getJSONObject(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("node")).getString("name").replace("[","$").split("[$]");
 
-                /*String[] node = starCharJson.getJSONObject(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("node")).getString("name").split(" ");
-
-                if (node[1].equals("[PH]")) sortie.addField(node[0] + " (Earth) - " + TypeMission(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("missionType")), Conditions(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("modifierType")), false);
-                else if (starCharJson.getJSONObject(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("node")).getString("name").toLowerCase().contains("e prime"))
-                    sortie.addField("E Prime (Earth) - " + TypeMission(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("missionType")), Conditions(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("modifierType")), false);
-                else if (starCharJson.getJSONObject(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("node")).getString("name").toLowerCase().contains("m prime"))
-                    sortie.addField("M Prime (Mercury) - " + TypeMission(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("missionType")), Conditions(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("modifierType")), false);
-                else if (starCharJson.getJSONObject(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("node")).getString("name").toLowerCase().contains("outer terminus"))
-                    sortie.addField("Outer Terminus (Pluto) - " + TypeMission(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("missionType")), Conditions(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("modifierType")), false);
-                else if (node[1].contains("Kuv"))
-                    sortie.addField(node[0] + " (Kuva Fortress) - " + TypeMission(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("missionType")), Conditions(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("modifierType")), false);
-                else sortie.addField(node[0] + " (" + node[1].substring(1, node[1].length()-1) + ") - " + TypeMission(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("missionType")), Conditions(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("modifierType")), false);
-                */
                 if (node[1].contains("PH")) node[1] = "Earth]";
                 sortie.addField(node[0] + " (" + node[1].substring(0, node[1].length()-1) + ") - " + TypeMission(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("missionType")), Conditions(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("modifierType")), false);
             }
@@ -671,9 +657,6 @@ public class warframeAPI {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
                             missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
-
-                            //String[] node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").split(" ");
-                            //missions += node[0] + " (" + node[1].substring(1, node[1].length()-1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(55, 64, 69)); //#374045
@@ -690,9 +673,6 @@ public class warframeAPI {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
                             missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
-
-                            //String[] node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").split(" ");
-                            //missions += node[0] + " (" + node[1].substring(1, node[1].length()-1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(42, 60, 46)); //#2A3C2E
@@ -709,9 +689,6 @@ public class warframeAPI {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
                             missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
-
-                            //String[] node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").split(" ");
-                            //missions += node[0] + " (" + node[1].substring(1, node[1].length()-1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(61, 55, 93)); //#3D375D
@@ -728,9 +705,6 @@ public class warframeAPI {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
                             missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
-
-                            //String[] node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").split(" ");
-                            //missions += node[0] + " (" + node[1].substring(1, node[1].length()-1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(61, 73, 99)); //#3D4963
@@ -747,9 +721,6 @@ public class warframeAPI {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
                             missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
-
-                            //String[] node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").split(" ");
-                            //missions += node[0] + " (" + node[1].substring(1, node[1].length()-1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(61, 24, 57)); //#3D1839
@@ -766,9 +737,6 @@ public class warframeAPI {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
                             missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
-
-                            //String[] node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").split(" ");
-                            //missions += node[0] + " (" + node[1].substring(1, node[1].length()-1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(44, 63, 70)); //#2C3F46
@@ -895,19 +863,6 @@ public class warframeAPI {
 
                         node = starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").split(" ");
 
-                        /*String[] node = starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").split(" ");
-
-                        if (node[1].equals("[PH]")) voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : " + node[0] + " (Earth) - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                        else if (starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").toLowerCase().contains("e prime"))
-                            voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : E Prime (Earth) - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                        else if (starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").toLowerCase().contains("m prime"))
-                            voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : M Prime (Mercury) - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                        else if (starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").toLowerCase().contains("e prime"))
-                            voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : Outer Terminus (Pluto) - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                        else if (node[1].contains("Kuv"))
-                            voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : " + node[0] + " (Kuva Fortress) - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                        else voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : " + node[0] + " (" + node[1].substring(1, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                        */
                         if (node[1].contains("PH")) node[1] = "Earth]";
                         voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : " + node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
                     }
@@ -934,19 +889,6 @@ public class warframeAPI {
 
                     node = starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").replace("[","$").split("[$]");
 
-                    /*String[] node = starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").split(" ");
-
-                    if (node[1].equals("[PH]")) voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : " + node[0] + " (Earth) - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                    else if (starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").toLowerCase().contains("e prime"))
-                        voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : E Prime (Earth) - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                    else if (starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").toLowerCase().contains("m prime"))
-                        voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : M Prime (Mercury) - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                    else if (starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").toLowerCase().contains("outer terminus"))
-                        voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : Outer Terminus (Pluto) - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                    else if (node[1].contains("Kuv"))
-                        voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : " + node[0] + " (Kuva Fortress) - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                    else voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : " + node[0] + " (" + node[1].substring(1, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
-                    */
                     if (node[1].contains("PH")) node[1] = "Earth]";
                     voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : " + node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
                 }
