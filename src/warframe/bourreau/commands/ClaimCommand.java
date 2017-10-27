@@ -2,7 +2,7 @@ package warframe.bourreau.commands;
 
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 
-import static warframe.bourreau.util.MessagePrive.MessageReclamationAdmin;
+import static warframe.bourreau.messsage.MessagePrive.MessageReclamationAdmin;
 
 public class ClaimCommand extends Command {
 

@@ -18,7 +18,6 @@ import static warframe.bourreau.api.warframeAPI.Invasion;
 import static warframe.bourreau.api.wfRaidAPI.*;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.Find.FindClanKey;
-import static warframe.bourreau.util.MessageOnEvent.MessageReglement;
 import static warframe.bourreau.util.Recup.recupString;
 
 public class InfoCommand extends Command {
@@ -116,7 +115,7 @@ public class InfoCommand extends Command {
 
     public static void InvitationServeur(MessageReceivedEvent event) {
         try {
-            event.getTextChannel().sendMessage("https://discord.gg/ZKMkTxJ").queue();
+            event.getTextChannel().sendMessage("https://discord.me/frenchco").queue();
         }
         catch (Exception e) {
             afficheErreur(event, e);

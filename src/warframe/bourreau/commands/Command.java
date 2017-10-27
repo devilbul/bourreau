@@ -5,34 +5,40 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.entities.Channel;
+import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
-import static net.dv8tion.jda.core.Permission.*;
 import static warframe.bourreau.InitID.*;
+import static warframe.bourreau.Main.botVersion;
 import static warframe.bourreau.erreur.erreurGestion.*;
+import static warframe.bourreau.messsage.Message.MessageAbout;
 import static warframe.bourreau.util.Find.FindAdmin;
-import static warframe.bourreau.util.MessageOnEvent.MessageNoThing;
+import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThing;
 
 public class Command {
 
     public static boolean called() { return true; }
+
+    public static void AboutBot(MessageReceivedEvent event) { event.getTextChannel().sendMessage(MessageAbout()).queue(); }
+
+    public static void AboutBotPrivate(PrivateMessageReceivedEvent event) { event.getAuthor().openPrivateChannel().complete().sendMessage(MessageAbout()).queue(); }
 
     public static void AfficheUpdateBot(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
                 EmbedBuilder news = new EmbedBuilder();
 
-                news.addField("- ajout commande reglement", " affiche le reglement du serveur", false);
-                news.addField("- suppression salon reclamation", " ce fait maintenant en message privé", false);
+                news.addField("=> modification des commandes de son", "   - refonte du système, fixant tous les bugs\n- maintenant, si un son est en cours de lecture et " +
+                        "qu'une nouvelle commande son est exécutée, la première commande est interrompu, laissant place à la nouvlle.", false);
+                news.addField("=> ajout commande about", "   affiche quelques informations du bot.", false);
 
-                news.addField("- mise à jour de la commande help", "", false);
+                news.addField("=> mise à jour de la commande help", "", false);
 
-                news.setTitle("Nouveauté du bot :", null);
+                news.setTitle("Patch Note " + botVersion + " :", null);
                 news.setDescription("ajout avec la dernière mise à jour");
                 news.setThumbnail("http://i.imgur.com/gXZfo5H.png");
                 news.setColor(new Color(17, 204, 17));
@@ -119,44 +125,6 @@ public class Command {
     }
 
     public static void Test(MessageReceivedEvent event) {
-        if (FindAdmin(event, event.getMember())) {
-            String clan = "xX Dragon Jedi Order Xx";
-            Channel newTC;
-            Channel newVC;
-            Role newRole;
-            Role every = event.getGuild().getPublicRole();
 
-            if (event.getGuild().getRolesByName(clan, true).size() == 0) {
-                System.out.println("entrer");
-                newRole = event.getGuild().getController().createRole().setName(clan).setPermissions(NICKNAME_CHANGE, VIEW_CHANNEL, MESSAGE_WRITE, MESSAGE_TTS,
-                        MESSAGE_ATTACH_FILES, MESSAGE_EMBED_LINKS, MESSAGE_HISTORY, MESSAGE_MENTION_EVERYONE, MESSAGE_EXT_EMOJI, MESSAGE_ADD_REACTION,
-                        VOICE_CONNECT, VOICE_SPEAK, VOICE_USE_VAD).complete();
-            } else
-                newRole = event.getGuild().getRolesByName(clan, true).get(0);
-
-            if (event.getGuild().getTextChannelsByName(clan.toLowerCase().replace(" ", "_"), true).size() == 0) {
-                newTC = event.getGuild().getController().createTextChannel(clan.toLowerCase().replace(" ", "_")).complete();
-                newTC.getManager().setParent(event.getGuild().getCategoryById(clanID)).queue();
-            } else
-                newTC = event.getGuild().getTextChannelsByName(clan.replace(" ", "_"), true).get(0);
-
-            if (event.getGuild().getVoiceChannelsByName(clan, true).size() == 0) {
-                newVC = event.getGuild().getController().createVoiceChannel(clan).complete();
-                newVC.getManager().setParent(event.getGuild().getCategoryById(clanID)).queue();
-            } else
-                newVC = event.getGuild().getVoiceChannelsByName(clan, true).get(0);
-
-            if (event.getGuild().getRolesByName(clan, true).size() >= 1) {
-                if (event.getGuild().getTextChannelsByName(clan.toLowerCase().replace(" ", "_"), true).size() >= 1) {
-                    newTC.createPermissionOverride(newRole).setAllow(MESSAGE_READ).complete();
-                    newTC.getPermissionOverride(every).getManager().deny(MESSAGE_READ).complete();
-                }
-
-                if (event.getGuild().getVoiceChannelsByName(clan, true).size() >= 1) {
-                    newVC.createPermissionOverride(newRole).setAllow(VOICE_CONNECT, VOICE_SPEAK).complete();
-                    newVC.getPermissionOverride(every).getManager().deny(VOICE_CONNECT, VOICE_SPEAK).complete();
-                }
-            }
-        }
     }
 }

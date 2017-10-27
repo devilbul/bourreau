@@ -1,7 +1,11 @@
 package warframe.bourreau;
 
 import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.managers.AudioManager;
+import warframe.bourreau.music.MusicPlayer;
+import warframe.bourreau.thread.ThreadSon;
 
+import static warframe.bourreau.Main.DEFAULT_VOLUME;
 import static warframe.bourreau.util.Find.FindBucher;
 import static warframe.bourreau.util.Find.FindEmote;
 
@@ -40,6 +44,12 @@ public class InitID {
     public static String heretiqueID;
     public static String membreAllianceID;
     public static String leaderClanID;
+
+    //manager audio
+    public static AudioManager audioManager;
+
+    //player music
+    public static MusicPlayer player;
 
     private static void InitTextChannel(JDA jda) {
         accueilID = jda.getTextChannelsByName("accueil",true).get(0).getId();
@@ -116,12 +126,28 @@ public class InitID {
         else jda.getTextChannelById(accueilID).sendMessage("il n'y a pas de rôle Leader Clan").queue();
     }
 
+    private static void InitAudioManager(JDA jda){
+        audioManager = jda.getGuilds().get(0).getAudioManager();
+    }
+
+    private static void InitPlayer() {
+        if (audioManager.getSendingHandler() == null) {
+            player = new MusicPlayer();
+            player.setVolume(DEFAULT_VOLUME);
+            audioManager.setSendingHandler(player);
+        }
+        else
+            player = (MusicPlayer) audioManager.getSendingHandler();
+    }
+
     static void InitIDMain(JDA jda) {
         InitTextChannel(jda);
         InitVoiceChannel(jda);
         InitCategory(jda);
         InitEmote(jda);
         InitRole(jda);
+        InitAudioManager(jda);
+        InitPlayer();
 
         //serveurID = jda.getGuildsByName("French Connection", true).get(0).getId();
         serveurID = jda.getGuildsByName("serveur test", true).get(0).getId();

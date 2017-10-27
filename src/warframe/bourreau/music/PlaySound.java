@@ -8,6 +8,8 @@ import net.dv8tion.jda.player.source.LocalSource;
 
 import java.io.File;
 
+import static warframe.bourreau.InitID.player;
+import static warframe.bourreau.InitID.audioManager;
 import static warframe.bourreau.util.Find.FindUserMention;
 import static warframe.bourreau.util.Find.FindUserVC;
 
@@ -16,28 +18,19 @@ public class PlaySound {
     public static void playSound(MessageReceivedEvent event, String file, float volume) {
         String adresse = System.getProperty("user.dir") + File.separator + "music" + File.separator + file;
         VoiceChannel channel = FindUserVC(event);
-        AudioManager manager = event.getGuild().getAudioManager();
-        MusicPlayer player;
 
-        if (manager.getSendingHandler() == null) {
-            player = new MusicPlayer();
-            player.setVolume(volume);
-            manager.setSendingHandler(player);
-        }
-        else
-            player = (MusicPlayer) manager.getSendingHandler();
+        player.setVolume(volume);
 
         if (channel == null)
             event.getTextChannel().sendMessage("Client non conneté à un salon vocal.").queue();
         else {
-            if (!manager.isConnected())
-                manager.openAudioConnection(channel);
+            if (!audioManager.isConnected())
+                audioManager.openAudioConnection(channel);
 
             AudioSource source = new LocalSource(new File(adresse));
             player.getAudioQueue().add(source);
-            final MusicPlayer fPlayer = player;
 
-            Thread thread = new Thread(() -> fPlayer.play());
+            Thread thread = new Thread(player::play);
             thread.start();
         }
     }
@@ -64,9 +57,8 @@ public class PlaySound {
 
             AudioSource source = new LocalSource(new File(adresse));
             player.getAudioQueue().add(source);
-            final MusicPlayer fPlayer = player;
 
-            Thread thread = new Thread(() -> fPlayer.play());
+            Thread thread = new Thread(player::play);
             thread.start();
         }
     }

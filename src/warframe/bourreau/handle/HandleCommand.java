@@ -2,35 +2,21 @@ package warframe.bourreau.handle;
 
 import warframe.bourreau.commands.*;
 import warframe.bourreau.parser.CommandParser;
-import warframe.bourreau.thread.ThreadSon;
+import warframe.bourreau.thread.ThreadAuBucher;
 
 import static warframe.bourreau.Main.commands;
-import static warframe.bourreau.erreur.erreurGestion.afficheErreur;
-import static warframe.bourreau.erreur.erreurGestion.saveErreur;
-import static warframe.bourreau.util.Find.FindAdmin;
+import static warframe.bourreau.handle.HandleSonCommand.handleSonCommand;
 import static warframe.bourreau.util.Levenshtein.CompareCommande;
-import static warframe.bourreau.util.Levenshtein.distance;
-import static warframe.bourreau.util.MessageOnEvent.MessageNoThing;
+import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThing;
 
 public class HandleCommand {
 
-public static void handleCommand(CommandParser.CommandContainer cmd) {
+    public static void handleCommand(CommandParser.CommandContainer cmd) {
         if (commands.containsKey(cmd.invoke)) {
             boolean safe = Command.called();
 
             if (safe) {
-                Thread ah = new ThreadSon.ThreadAh(cmd);
-                Thread aubucher = new ThreadSon.ThreadAuBucher(cmd);
-                Thread bucher = new ThreadSon.ThreadBucher(cmd);
-                Thread gg = new ThreadSon.ThreadGg(cmd);
-                Thread gogole = new ThreadSon.ThreadGogole(cmd);
-                Thread nah = new ThreadSon.ThreadNah(cmd);
-                Thread pigeon = new ThreadSon.ThreadPigeon(cmd);
-                Thread souffrir = new ThreadSon.ThreadSouffrir(cmd);
-                Thread trumpalea = new ThreadSon.ThreadTrumpAlea(cmd);
-                Thread trump = new ThreadSon.ThreadTrump(cmd);
-                Thread trump2 = new ThreadSon.ThreadTrump2(cmd);
-                Thread trump3 = new ThreadSon.ThreadTrump3(cmd);
+                Thread aubucher = new ThreadAuBucher(cmd);
 
                 switch (cmd.invoke) {
                     // liste des commandes
@@ -38,45 +24,20 @@ public static void handleCommand(CommandParser.CommandContainer cmd) {
                         HelpCommand.Help(cmd.event);
                         break;
 
-                    // commande son
                     case "ah":
-                        ah.start();
-                        break;
                     case "bucher":
-                        bucher.start();
-                        break;
                     case "gg":
-                        gg.start();
-                        break;
                     case "gogole":
-                        gogole.start();
-                        break;
                     case "nah":
-                        nah.start();
-                        break;
                     case "pigeon":
-                        pigeon.start();
-                        break;
+                    case "son":
                     case "souffrir":
-                        souffrir.start();
-                        break;
-                    case "stop":
-                        SonCommand.Stop(cmd.event);
-                        break;
+                    case "leave":
                     case "trump":
-                        trumpalea.start();
-                        break;
                     case "trumpcomp":
-                        if (FindAdmin(cmd.event, cmd.event.getMember())) trump.start();
-                        else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
-                        break;
                     case "trumpcomp2":
-                        if (FindAdmin(cmd.event, cmd.event.getMember())) trump2.start();
-                        else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
-                        break;
                     case "trumpcomp3":
-                        if (FindAdmin(cmd.event, cmd.event.getMember())) trump3.start();
-                        else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
+                        handleSonCommand(cmd);
                         break;
 
                     // commandes troll
@@ -200,8 +161,14 @@ public static void handleCommand(CommandParser.CommandContainer cmd) {
                     case "ban":
                         AdminCommand.Ban(cmd.event);
                         break;
+                    case "createsalonclan":
+                        SalonCommand.CreateSalonClan(cmd.event);
+                        break;
                     case "deafen":
                         AdminCommand.Deafen(cmd.event);
+                        break;
+                    case "deletesalonclan":
+                        SalonCommand.DeleteSalonClan(cmd.event);
                         break;
                     case "kick":
                         AdminCommand.Kick(cmd.event);
@@ -241,7 +208,10 @@ public static void handleCommand(CommandParser.CommandContainer cmd) {
                         Command.Test(cmd.event);
                         break;
 
-                    // commande affiche update bot
+                    // commande  bot
+                    case "about":
+                        Command.AboutBot(cmd.event);
+                        break;
                     case "botnews":
                         Command.AfficheUpdateBot(cmd.event);
                         break;

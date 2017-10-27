@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import static warframe.bourreau.InitID.raidsID;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.DateHeure.GiveDate;
-import static warframe.bourreau.util.MessageOnEvent.MessageNoThingRaid;
+import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThingRaid;
 
 public class RaidCommand extends Command {
 

@@ -15,7 +15,7 @@ import static warframe.bourreau.commands.Command.Presentation;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.handle.HandleCommand.handleCommand;
 import static warframe.bourreau.handle.HandleCommandPrivate.handleCommandPrivate;
-import static warframe.bourreau.util.MessageOnEvent.MessageDeBienvenue;
+import static warframe.bourreau.messsage.MessageOnEvent.MessageDeBienvenue;
 
 public class BotListener extends ListenerAdapter {
 

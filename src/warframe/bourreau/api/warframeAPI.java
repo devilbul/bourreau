@@ -19,7 +19,7 @@ import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.parser.StringParser.ParseInsertSpace;
 import static warframe.bourreau.util.Find.FindJsonKey;
 import static warframe.bourreau.util.Find.FindNamesJSONObkect;
-import static warframe.bourreau.util.MessageOnEvent.MessageNoThing;
+import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThing;
 import static warframe.bourreau.util.Recup.recupString;
 import static warframe.bourreau.util.urlReadJson.readAll;
 

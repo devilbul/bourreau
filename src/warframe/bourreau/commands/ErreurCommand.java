@@ -27,13 +27,16 @@ public class ErreurCommand extends Command {
 
                 switch (commande) {
                     case "liste":
-                        listErreur(event);
+                        ListErreur(event);
                         break;
                     case "detail":
-                        detailErreur(event);
+                        DetailErreur(event);
                         break;
                     case "delete":
-                        deleteErreur(event);
+                        DeleteErreur(event);
+                        break;
+                    case "purge":
+                        PurgeErreur(event);
                         break;
                     default:
                         MessageBuilder message = new MessageBuilder();
@@ -53,7 +56,7 @@ public class ErreurCommand extends Command {
                 event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
     }
 
-    private static void listErreur(MessageReceivedEvent event) {
+    private static void ListErreur(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
                 String erreur = new String(Files.readAllBytes(Paths.get("erreur" + File.separator + "Erreur.json")));
@@ -87,7 +90,7 @@ public class ErreurCommand extends Command {
         }
     }
 
-    private static void detailErreur(MessageReceivedEvent event) {
+    private static void DetailErreur(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
                 String commande = recupString(event.getMessage().getContent().toLowerCase());
@@ -113,7 +116,7 @@ public class ErreurCommand extends Command {
                         event.getTextChannel().sendMessage(message.build()).queue();
                     }
                     else
-                        event.getTextChannel().sendMessage("ID erreur incorrect").queue();
+                        event.getTextChannel().sendMessage("ID erreur incorrect.").queue();
                 }
                 else
                     event.getTextChannel().sendMessage("Aucune erreur saisie.").queue();
@@ -126,7 +129,7 @@ public class ErreurCommand extends Command {
         }
     }
 
-    private static void deleteErreur(MessageReceivedEvent event) {
+    private static void DeleteErreur(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
                 String commande = recupString(event.getMessage().getContent().toLowerCase());
@@ -146,13 +149,34 @@ public class ErreurCommand extends Command {
                         file.flush();
                         file.close();
 
-                        event.getTextChannel().sendMessage("Erreur " + recupString(commande) + " a été supprimé").queue();
+                        event.getTextChannel().sendMessage("Erreur " + recupString(commande) + " a été supprimé.").queue();
                     }
                     else
-                        event.getTextChannel().sendMessage("ID erreur incorrect").queue();
+                        event.getTextChannel().sendMessage("ID erreur incorrect.").queue();
                 }
                 else
                     event.getTextChannel().sendMessage("Aucune erreur saisie.").queue();
+            }
+            else
+                event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
+        }
+        catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    private static void PurgeErreur(MessageReceivedEvent event) {
+        try {
+            if (FindAdmin(event, event.getMember())) {
+                JSONObject erreurJson = new JSONObject();
+                String adresseErreur = System.getProperty("user.dir") + File.separator + "erreur" + File.separator + "Erreur.json";
+                FileWriter file = new FileWriter(adresseErreur);
+
+                file.write(erreurJson.toString());
+                file.flush();
+                file.close();
+
+                event.getTextChannel().sendMessage("Toutes les erreurs ont été supprimées.").queue();
             }
             else
                 event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();

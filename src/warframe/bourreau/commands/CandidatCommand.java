@@ -5,7 +5,7 @@ import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import static warframe.bourreau.InitID.*;
 import static warframe.bourreau.Main.getJda;
 import static warframe.bourreau.util.Find.FindRolePrive;
-import static warframe.bourreau.util.MessagePrive.MessageRecrutement;
+import static warframe.bourreau.messsage.MessagePrive.MessageRecrutement;
 
 public class CandidatCommand extends Command {
 

@@ -5,7 +5,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import static warframe.bourreau.InitID.accueilID;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.Find.FindAdmin;
-import static warframe.bourreau.util.MessageOnEvent.MessageDeDeconnection;
+import static warframe.bourreau.messsage.MessageOnEvent.MessageDeDeconnection;
 
 public class ShutdownCommand extends Command {
 
