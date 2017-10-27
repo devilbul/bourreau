@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static warframe.bourreau.InitID.*;
+import static warframe.bourreau.Main.getJda;
 import static warframe.bourreau.riven.TxtToJson.sortie;
 import static warframe.bourreau.util.Transforme.TransformeInfluence;
 
@@ -53,7 +54,7 @@ public class Find {
 
     public static double FindRivenJsonInfluenceDouble(String cherche) {
         try {
-            String riven = new String(Files.readAllBytes(Paths.get("riven" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
             for (Object name : rivenJson.names()) {
@@ -74,7 +75,7 @@ public class Find {
 
     public static String FindRivenJsonInfluenceTransforme(String cherche) {
         try {
-            String riven = new String(Files.readAllBytes(Paths.get("riven" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
             for (Object name : rivenJson.names()) {
@@ -95,7 +96,7 @@ public class Find {
 
     public static String FindRivenJsonInfluenceCatgorie(String cherche) {
         try {
-            String riven = new String(Files.readAllBytes(Paths.get("riven" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
             for (Object name : rivenJson.names()) {
@@ -191,6 +192,27 @@ public class Find {
 
         return trouve;
     }
+    public static String FindClanKey(JSONArray arrayJson, String clan) {
+        String trouve = "";
+
+        for (int i=0; i<arrayJson.length(); i++) {
+            if (arrayJson.getString(i).toLowerCase().equals(clan.toLowerCase()))
+                trouve = arrayJson.getString(i);
+        }
+
+        return trouve;
+    }
+
+    public static boolean FindClanLower(JSONArray arrayJson, String clan) {
+        boolean trouve = false;
+
+        for (int i=0; i<arrayJson.length(); i++) {
+            if (arrayJson.getString(i).toLowerCase().equals(clan.toLowerCase()))
+                trouve = true;
+        }
+
+        return trouve;
+    }
 
     public static Emote FindEmote(JDA jda, String emoteName) {
         for (int i=0; i<jda.getGuilds().get(0).getEmotes().size(); i++){
@@ -234,6 +256,15 @@ public class Find {
     public static boolean FindNamesJSONObkect(JSONArray array, String name) {
         for (int i=0; i<array.length(); i++) {
             if (array.getString(i).equals(name))
+                return true;
+        }
+
+        return false;
+    }
+
+    public static boolean FindRolePrive(PrivateMessageReceivedEvent event, Role role) {
+        for (int i=0; i<getJda().getGuildById(serveurID).getMemberById(event.getAuthor().getId()).getRoles().size(); i++) {
+            if (getJda().getGuildById(serveurID).getMemberById(event.getAuthor().getId()).getRoles().get(i).equals(role))
                 return true;
         }
 

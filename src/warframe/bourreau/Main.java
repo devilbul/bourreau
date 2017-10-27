@@ -16,10 +16,11 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 import static warframe.bourreau.InitID.InitIDMain;
+import static warframe.bourreau.timer.LanceTimer.LanceRaidTimer;
 
 public class Main {
 
-    public static final float DEFAULT_VOLUME = 0.35f;
+    public static final float DEFAULT_VOLUME = 0.05f;
     protected static JDA jda;
     public static final CommandParser parser = new CommandParser();
     public static  final CommandParserPrivate parserPrivate = new CommandParserPrivate();
@@ -77,6 +78,7 @@ public class Main {
         commands.put("baro", new Command());
         commands.put("clan" , new Command());
         commands.put("discordwf", new Command());
+        commands.put("goals", new Command());
         commands.put("idée" , new Command());
         commands.put("idee" , new Command());
         commands.put("info", new Command());
@@ -86,6 +88,7 @@ public class Main {
         commands.put("progres" , new Command());
         commands.put("pvp" , new Command());
         commands.put("raid" , new Command());
+        commands.put("regle" , new Command());
         commands.put("site" , new Command());
         commands.put("sortie" , new Command());
         commands.put("steam" , new Command());
@@ -108,18 +111,26 @@ public class Main {
 
         // commande admin / modo
         commands.put("addclan", new Command());
+        commands.put("addurl", new Command());
         commands.put("aubucher", new Command());
         commands.put("ban", new Command());
         commands.put("deafen", new Command());
-        commands.put("getbans", new Command());
         commands.put("kick", new Command());
         commands.put("mute", new Command());
+        commands.put("ping", new Command());
         commands.put("removeclan", new Command());
         commands.put("setgame", new Command());
         commands.put("tenno", new Command());
         commands.put("unban", new Command());
         commands.put("undeafen", new Command());
         commands.put("unmute", new Command());
+
+        // commande privé
+        commands.put("candidate", new Command());
+        commands.put("claim", new Command());
+
+        // commande erreur
+        commands.put("erreur", new Command());
 
         // commande test
         commands.put("test", new Command());
@@ -130,4 +141,6 @@ public class Main {
         // commande arrêt
         commands.put("shutdown", new Command());
     }
+
+    public static JDA getJda() { return jda; }
 }

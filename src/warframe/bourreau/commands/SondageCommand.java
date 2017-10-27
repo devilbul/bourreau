@@ -9,66 +9,74 @@ import org.json.JSONObject;
 import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
+import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.Find.*;
+import static warframe.bourreau.util.Levenshtein.CompareCommande;
 import static warframe.bourreau.util.Recup.recupString;
 
 public class SondageCommand extends  Command {
 
     public static void Sondage(MessageReceivedEvent event) {
-        if (event.getMessage().getContent().contains(" ")) {
-            String adresseSondage = System.getProperty("user.dir") + File.separator + "sondage" + File.separator + "sondage.json";
-            String adresseVote = System.getProperty("user.dir") + File.separator + "sondage" + File.separator + "vote.json";
-            String rawCommande = recupString(event.getMessage().getContent().toLowerCase());
-            String commande = rawCommande.replaceFirst(" ", "@").split("@")[0];
+        try {
+            if (event.getMessage().getContent().contains(" ")) {
+                String adresseSondage = System.getProperty("user.dir") + File.separator + "sondage" + File.separator + "sondage.json";
+                String adresseVote = System.getProperty("user.dir") + File.separator + "sondage" + File.separator + "vote.json";
+                String rawCommande = recupString(event.getMessage().getContent().toLowerCase());
+                String commande = rawCommande.replaceFirst(" ", "@").split("@")[0];
 
-            switch (commande) {
-                case "affiche":
-                    AfficheSondage(event, adresseSondage);
-                    break;
-                case "reponses":
-                    if (ReponsesSondage(event, adresseSondage, adresseVote))
+                switch (commande) {
+                    case "affiche":
                         AfficheSondage(event, adresseSondage);
-                    break;
-                case "clear":
-                    ClearSondage(event, adresseSondage, adresseVote);
-                    break;
-                case "create":
-                    CreateSondage(event, adresseSondage, adresseVote);
-                    break;
-                case "resultat":
-                    ResultatSondage(event, adresseSondage, adresseVote);
-                    break;
-                case "vote":
-                    VoteSondage(event, adresseSondage, adresseVote);
-                    break;
-                default:
-                    MessageBuilder message = new MessageBuilder();
+                        break;
+                    case "reponses":
+                        if (ReponsesSondage(event, adresseSondage, adresseVote))
+                            AfficheSondage(event, adresseSondage);
+                        break;
+                    case "clear":
+                        ClearSondage(event, adresseSondage, adresseVote);
+                        break;
+                    case "create":
+                        CreateSondage(event, adresseSondage, adresseVote);
+                        break;
+                    case "resultat":
+                        ResultatSondage(event, adresseSondage, adresseVote);
+                        break;
+                    case "vote":
+                        VoteSondage(event, adresseSondage, adresseVote);
+                        break;
+                    default:
+                        MessageBuilder message = new MessageBuilder();
+                        String[] commandeSondage = {"affiche", "clear", "create", "resultat", "vote"};
 
-                    event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.").queue();
+                        event.getTextChannel().sendMessage(CompareCommande(commande, commandeSondage)).queue();
+                        event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.").queue();
 
-                    message.append("You know nothing, ");
-                    message.append(event.getAuthor());
+                        message.append("You know nothing, ");
+                        message.append(event.getAuthor());
 
-                    event.getTextChannel().sendMessage(message.build()).queue();
-                    break;
+                        event.getTextChannel().sendMessage(message.build()).queue();
+                        break;
+                }
+            } else {
+                MessageBuilder message = new MessageBuilder();
+
+                event.getTextChannel().sendMessage("Aucune action de sondage saisie").queue();
+
+                message.append("You know nothing, ");
+                message.append(event.getAuthor());
+
+                event.getTextChannel().sendMessage(message.build()).queue();
             }
         }
-        else {
-            MessageBuilder message = new MessageBuilder();
-
-            event.getTextChannel().sendMessage("Aucune action de sondage saisie").queue();
-
-            message.append("You know nothing, ");
-            message.append(event.getAuthor());
-
-            event.getTextChannel().sendMessage(message.build()).queue();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -102,23 +110,29 @@ public class SondageCommand extends  Command {
             else
                 event.getTextChannel().sendMessage("aucun sondage en cours.").queue();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
     private static void ClearSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
-        if (new File(adresseSondage).exists() && new File(adresseVote).exists()) {
-            if (new File(adresseSondage).exists())
-                if (new File(adresseSondage).delete())
+        try {
+            if (new File(adresseSondage).exists() && new File(adresseVote).exists()) {
+                if (new File(adresseSondage).exists())
+                    if (new File(adresseSondage).delete())
 
-            if (new File(adresseVote).exists())
-                if (new File(adresseVote).delete())
+                        if (new File(adresseVote).exists())
+                            if (new File(adresseVote).delete())
 
-            event.getTextChannel().sendMessage("sondage supprimé.").queue();
+                                event.getTextChannel().sendMessage("sondage supprimé.").queue();
+            } else
+                event.getTextChannel().sendMessage("aucun sondage en cours.").queue();
         }
-        else
-            event.getTextChannel().sendMessage("aucun sondage en cours.").queue();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
+        }
     }
 
     private static void CreateSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
@@ -154,8 +168,9 @@ public class SondageCommand extends  Command {
             else
                 event.getTextChannel().sendMessage("il y a déjà un sondage en cours.").queue();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -219,8 +234,9 @@ public class SondageCommand extends  Command {
                 return false;
             }
         }
-        catch (IOException e){
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
             return false;
         }
     }
@@ -274,8 +290,9 @@ public class SondageCommand extends  Command {
             else
                 event.getTextChannel().sendMessage("aucun sondage en cours.").queue();
         }
-        catch (IOException e){
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -336,8 +353,9 @@ public class SondageCommand extends  Command {
             else
                 event.getTextChannel().sendMessage("aucun sondage en cours.").queue();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 }

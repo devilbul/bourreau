@@ -42,9 +42,9 @@ public class SonCommand extends Command {
         return choix;
     }
 
-    public static void TrumpComp(MessageReceivedEvent event) { playSound(event, "trump.mp3", 0.05f); }
+    public static void TrumpComp(MessageReceivedEvent event) { playSound(event, "trump.mp3", DEFAULT_VOLUME); }
 
-    public static void TrumpComp2(MessageReceivedEvent event) { playSound(event, "trump2.mp3", 0.05f); }
+    public static void TrumpComp2(MessageReceivedEvent event) { playSound(event, "trump2.mp3", DEFAULT_VOLUME); }
 
-    public static void TrumpComp3( MessageReceivedEvent event) { playSound(event, "trump3.mp3", 0.05f); }
+    public static void TrumpComp3( MessageReceivedEvent event) { playSound(event, "trump3.mp3", DEFAULT_VOLUME); }
 }

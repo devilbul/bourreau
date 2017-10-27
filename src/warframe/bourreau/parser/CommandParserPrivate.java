@@ -7,7 +7,7 @@ import java.util.Collections;
 
 public class CommandParserPrivate {
 
-    public CommandParserPrivate.CommandContainerPrivate parsePrivate(String rw, PrivateMessageReceivedEvent event){
+    public CommandContainerPrivate parsePrivate(String rw, PrivateMessageReceivedEvent event){
         ArrayList<String> split = new ArrayList<>();
         String beheaded = rw.replaceFirst("!","");
         String[] splitBeheaded = beheaded.split(" ");
@@ -17,7 +17,7 @@ public class CommandParserPrivate {
         split.subList(1,split.size()).toArray(args);
 
 
-        return new CommandParserPrivate.CommandContainerPrivate(rw, beheaded, splitBeheaded, invoke, args, event);
+        return new CommandContainerPrivate(rw, beheaded, splitBeheaded, invoke, args, event);
     }
 
     public class CommandContainerPrivate {

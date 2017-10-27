@@ -8,80 +8,97 @@ import org.json.JSONObject;
 import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Scanner;
 
+import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.parser.RivenParser.*;
 import static warframe.bourreau.riven.TxtToJson.Traitement;
 import static warframe.bourreau.riven.TxtToJson.sortie;
 import static warframe.bourreau.util.Find.*;
+import static warframe.bourreau.util.Levenshtein.CompareCommande;
 import static warframe.bourreau.util.Recup.recupString;
 
 public class RivenCommand extends Command {
 
     public static void Riven(MessageReceivedEvent event) {
-        if (event.getMessage().getContent().contains(" ")) {
-            String rawCommande = recupString(event.getMessage().getContent().toLowerCase());
-            String commande = rawCommande.replaceFirst(" ", "@").split("@")[0];
+        try {
+            if (event.getMessage().getContent().contains(" ")) {
+                String rawCommande = recupString(event.getMessage().getContent().toLowerCase());
+                String commande = rawCommande.replaceFirst(" ", "@").split("@")[0];
 
-            switch (commande) {
-                case "influence":
-                    Influence(event);
-                    break;
-                case "nom":
-                    Nom(event);
-                    break;
-                case "calcul":
-                    Calcul(event);
-                    break;
-                case "defi":
-                    Defi(event);
-                    break;
-                case "stat":
-                    Stat(event);
-                    break;
-                case "traite":
-                    Traite(event);
-                    break;
-                default:
-                    MessageBuilder message = new MessageBuilder();
+                switch (commande) {
+                    case "calcul":
+                        Calcul(event);
+                        break;
+                    case "defi":
+                        Defi(event);
+                        break;
+                    case "influence":
+                        Influence(event);
+                        break;
+                    case "info":
+                        Info(event);
+                        break;
+                    case "nom":
+                        Nom(event);
+                        break;
+                    case "stat":
+                        Stat(event);
+                        break;
+                    case "traite":
+                        Traite(event);
+                        break;
+                    default:
+                        MessageBuilder message = new MessageBuilder();
+                        String[] commandeRiven = {"calcul", "defi", "influence", "info", "nom", "stat"};
 
-                    event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.").queue();
+                        event.getTextChannel().sendMessage(CompareCommande(commande, commandeRiven)).queue();
+                        event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.").queue();
 
-                    message.append("You know nothing, ");
-                    message.append(event.getAuthor());
+                        message.append("You know nothing, ");
+                        message.append(event.getAuthor());
 
-                    event.getTextChannel().sendMessage(message.build()).queue();
-                    break;
+                        event.getTextChannel().sendMessage(message.build()).queue();
+                        break;
+                }
+            }
+            else {
+                MessageBuilder message = new MessageBuilder();
+
+                event.getTextChannel().sendMessage("Aucune action de riven saisie").queue();
+
+                message.append("You know nothing, ");
+                message.append(event.getAuthor());
+
+                event.getTextChannel().sendMessage(message.build()).queue();
             }
         }
-        else {
-            MessageBuilder message = new MessageBuilder();
-
-            event.getTextChannel().sendMessage("Aucune action de riven saisie").queue();
-
-            message.append("You know nothing, ");
-            message.append(event.getAuthor());
-
-            event.getTextChannel().sendMessage(message.build()).queue();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
     private static void Calcul(MessageReceivedEvent event) {
-        event.getTextChannel().sendMessage("Coming Soon").queue();
+        try {
+            event.getTextChannel().sendMessage("Coming Soon").queue();
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
+        }
     }
 
     private static void Defi(MessageReceivedEvent event) {
         try {
             String commande = recupString(event.getMessage().getContent().toLowerCase());
-            String riven = new String(Files.readAllBytes(Paths.get("riven" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
-            String version = new String(Files.readAllBytes(Paths.get("riven" + File.separator + "riven_mods_info.json")));
-            JSONObject versionJson = new JSONObject(version);
             EmbedBuilder defi = new EmbedBuilder();
 
             if (commande.contains(" ")) {
@@ -106,10 +123,7 @@ public class RivenCommand extends Command {
                         defi.addField("résultat :", defis, true);
                         defi.addField("pour savoir les complications possibles pour un défi", "tapez **__!riven defi " + categorie + " <numéro du défi>__**", true);
                         defi.setColor(new Color(155, 55, 255));
-                        if (FindJsonKey(versionJson, "current version"))
-                            defi.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | wf version : " + versionJson.getString("current version"), "http://i.imgur.com/BUkD1OV.png");
-                        else
-                            defi.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+                        defi.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
                     }
                     else {
                         if (Integer.valueOf(numDefi) < rivenJson.getJSONObject(categorie).getJSONObject("challenge").names().length()) {
@@ -144,10 +158,7 @@ public class RivenCommand extends Command {
                             for (int i=0; i<complications.length; i++)
                                 defi.addField(complications[i], "poids : " + weights[i] + "    /    multiplicateur : " + multipliers[i], false);
                             defi.setColor(new Color(155, 55, 255));
-                            if (FindJsonKey(versionJson, "current version"))
-                                defi.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | wf version : " + versionJson.getString("current version"), "http://i.imgur.com/BUkD1OV.png");
-                            else
-                                defi.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+                            defi.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
                         }
                         else
                             event.getTextChannel().sendMessage("pas de défi associé à ce numéro").queue();
@@ -170,15 +181,14 @@ public class RivenCommand extends Command {
                 defi.addField("afin d'afficher tous les défis possibles pour cette catégorie d'objet", "", true);
                 defi.addField("**__!riven defi <categorie>__**", "", true);
                 defi.setColor(new Color(155, 55, 255));
-                if (FindJsonKey(versionJson, "current version"))
-                    defi.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | wf version : " + versionJson.getString("current version"), "http://i.imgur.com/BUkD1OV.png");
-                else
-                    defi.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+                defi.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
                 event.getTextChannel().sendMessage(defi.build()).queue();
             }
-        } catch (IOException e){
-            e.printStackTrace();
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -188,8 +198,8 @@ public class RivenCommand extends Command {
 
             if (commande.contains(" ")) {
                 String cherche = recupString(commande);
-                String version = new String(Files.readAllBytes(Paths.get("riven" + File.separator + "riven_mods_info.json")));
-                JSONObject versionJson = new JSONObject(version);
+                String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
+                JSONObject rivenJson = new JSONObject(riven);
 
                 if (FindRivenJsonInfluenceTransforme(cherche) != null) {
                     EmbedBuilder influence = new EmbedBuilder();
@@ -197,58 +207,148 @@ public class RivenCommand extends Command {
                     influence.setTitle(ParserCategorie(FindRivenJsonInfluenceCatgorie(cherche)) + " : " + cherche, "http://warframe.wikia.com/wiki/" + ParserLowerToUpperCase(cherche));
                     influence.setDescription("Riven : influence");
                     influence.setThumbnail("http://warframe-builder.com/web/images/" + ParserCategorieBuilder(cherche) + "/" + ParserSpaceToUnderScore(cherche) + ".png");
-                    influence.addField("résultat :" , FindRivenJsonInfluenceTransforme(cherche), true);
-                    if (FindRivenJsonInfluenceDouble(cherche) > 0  && FindRivenJsonInfluenceDouble(cherche) < 0.7)
-                        influence.setImage("http://i.imgur.com/0Hkjs2t.png");
-                    else if (FindRivenJsonInfluenceDouble(cherche) > 0.75 && FindRivenJsonInfluenceDouble(cherche) < 0.875)
-                        influence.setImage("http://i.imgur.com/eKbr2if.png");
-                    else if (FindRivenJsonInfluenceDouble(cherche) > 0.95 && FindRivenJsonInfluenceDouble(cherche) < 1.125)
-                        influence.setImage("http://i.imgur.com/nWnOJFb.png");
-                    else if (FindRivenJsonInfluenceDouble(cherche) > 1.125 && FindRivenJsonInfluenceDouble(cherche) < 1.3)
-                        influence.setImage("http://i.imgur.com/GhBf9df.png");
-                    else if (FindRivenJsonInfluenceDouble(cherche) > 1.3 && FindRivenJsonInfluenceDouble(cherche) <  1.7)
-                        influence.setImage("http://i.imgur.com/cWaXulC.png");
                     influence.setColor(new Color(155, 55, 255));
-                    if (FindJsonKey(versionJson, "current version"))
-                        influence.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | wf version : " + versionJson.getString("current version"), "http://i.imgur.com/BUkD1OV.png");
-                    else
-                        influence.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+                    influence.addField("résultat :" , FindRivenJsonInfluenceTransforme(cherche), false);
+                    if (FindRivenJsonInfluenceDouble(cherche) >= 0  && FindRivenJsonInfluenceDouble(cherche) < 0.7)
+                        influence.setImage("http://i.imgur.com/0Hkjs2t.png");
+                    else if (FindRivenJsonInfluenceDouble(cherche) >= 0.70 && FindRivenJsonInfluenceDouble(cherche) < 0.875)
+                        influence.setImage("http://i.imgur.com/eKbr2if.png");
+                    else if (FindRivenJsonInfluenceDouble(cherche) >= 0.875 && FindRivenJsonInfluenceDouble(cherche) < 1.125)
+                        influence.setImage("http://i.imgur.com/nWnOJFb.png");
+                    else if (FindRivenJsonInfluenceDouble(cherche) >= 1.125 && FindRivenJsonInfluenceDouble(cherche) < 1.3)
+                        influence.setImage("http://i.imgur.com/GhBf9df.png");
+                    else if (FindRivenJsonInfluenceDouble(cherche) >= 1.3 && FindRivenJsonInfluenceDouble(cherche) <  2)
+                        influence.setImage("http://i.imgur.com/cWaXulC.png");
+                    influence.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
                     event.getTextChannel().sendMessage(influence.build()).queue();
                 }
-                else
+                else {
+                    String str = "";
+                    String[] armes;
+
+                    for (Object name : rivenJson.names()){
+                        for (int i=0; i<rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item").names().length(); i++)
+                            str += rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item").names().get(i) + "$";
+                    }
+
+                    armes = str.split("[$]");
+
+                    event.getTextChannel().sendMessage(CompareCommande(cherche, armes)).queue();
                     event.getTextChannel().sendMessage("erreur, l'objet saisi n'existe pas, ou est mal écrit").queue();
+                }
             }
             else
                 event.getTextChannel().sendMessage("aucun objet saisi").queue();
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
-    static void Info(MessageReceivedEvent event) {
+    private static void Info(MessageReceivedEvent event) {
         try {
             String commande = recupString(event.getMessage().getContent().toLowerCase());
-            String riven = new String(Files.readAllBytes(Paths.get("riven" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
-            String version = new String(Files.readAllBytes(Paths.get("riven" + File.separator + "riven_mods_info.json")));
-            JSONObject versionJson = new JSONObject(version);
-            EmbedBuilder stat = new EmbedBuilder();
+            EmbedBuilder info = new EmbedBuilder();
+            String polarity = "";
+            String curseAttenuation = "";
+            String buffAttenuation = "";
+            String curseNumber = "";
+            String buffNumber = "";
 
+            if (commande.contains(" ")) {
+                String categorie = recupString(commande);
 
-            stat.setTitle("Stat : ", "http://warframe.wikia.com/wiki/Riven_Mods");
-            stat.setDescription("Riven : stat");
-            stat.setThumbnail("http://i.imgur.com/2o2SbcK.png");
-            stat.setColor(new Color(155, 55, 255));
-            if (FindJsonKey(versionJson, "current version"))
-                stat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | wf version : " + versionJson.getString("current version"), "http://i.imgur.com/BUkD1OV.png");
-            else
-                stat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+                if (FindJsonKey(rivenJson, categorie)) {
+                    for (int i=0; i<rivenJson.getJSONObject(categorie).getJSONObject("info").getJSONArray("polarities").length(); i++) {
+                        String str = rivenJson.getJSONObject(categorie).getJSONObject("info").getJSONArray("polarities").getString(i);
 
-            event.getTextChannel().sendMessage(stat.build()).queue();
+                        switch (str) {
+                            case "ap_attack":
+                                polarity += "- madurai\n";
+                                break;
+                            case "ap_defense":
+                                polarity += "- vazarin\n";
+                                break;
+                            case "ap_tactic":
+                                polarity += "- naramon\n";
+                                break;
+                            case "ap_1":
+                                polarity += "- zenurik\n";
+                                break;
+                            case "ap_2":
+                                polarity += "- penjaga\n";
+                                break;
+                            case "ap_3":
+                                polarity += "- unairu\n";
+                                break;
+                            default:
+                                polarity += "- **à ajouter : " + str + "**\n";
+                                break;
+                        }
+                    }
 
-        } catch (IOException e){
-            e.printStackTrace();
+                    info.addField("polarité : ", polarity, false);
+
+                    info.addField("max rank limite : ", "8", false);
+
+                    buffNumber += rivenJson.getJSONObject(categorie).getJSONObject("info").getJSONArray("number of buffs").getString(0) + " - ";
+                    buffNumber += rivenJson.getJSONObject(categorie).getJSONObject("info").getJSONArray("number of buffs").getString(1);
+
+                    info.addField("nombre de buff : ", buffNumber, false);
+
+                    for (int i=0; i<rivenJson.getJSONObject(categorie).getJSONObject("info").getJSONArray("number of buffs attenuation").length(); i++)
+                        buffAttenuation += rivenJson.getJSONObject(categorie).getJSONObject("info").getJSONArray("number of buffs attenuation").getString(i) + " / ";
+
+                    buffAttenuation = buffAttenuation.substring(0, buffAttenuation.length() - 3);
+
+                    info.addField("facteur de reduction buff : ", buffAttenuation, false);
+
+                    curseNumber += rivenJson.getJSONObject(categorie).getJSONObject("info").getJSONArray("number of curses").getString(0) + " - ";
+                    curseNumber += rivenJson.getJSONObject(categorie).getJSONObject("info").getJSONArray("number of curses").getString(1);
+
+                    info.addField("nombre de debuff : ", curseNumber, false);
+
+                    for (int i=0; i<rivenJson.getJSONObject(categorie).getJSONObject("info").getJSONArray("number of buffs curse attenuation").length(); i++)
+                        curseAttenuation += rivenJson.getJSONObject(categorie).getJSONObject("info").getJSONArray("number of buffs curse attenuation").getString(i) + " / ";
+
+                    curseAttenuation = curseAttenuation.substring(0, curseAttenuation.length() - 3);
+
+                    info.addField("facteur de reduction debuff : ", curseAttenuation, false);
+
+                    info.setTitle("Info pour la catégorie : " + categorie, "http://warframe.wikia.com/wiki/Riven_Mods");
+                    info.setDescription("Riven : info");
+                    info.setThumbnail("http://i.imgur.com/2o2SbcK.png");
+                    info.setColor(new Color(155, 55, 255));
+                    info.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+                }
+                else
+                    event.getTextChannel().sendMessage("la catégorie saisie n'existe pas, ou est mal orthographié").queue();
+            }
+            else {
+                String mes = "";
+
+                for (Object name : rivenJson.names()) mes += "- " + name.toString() + "\n";
+
+                info.setTitle("Info : ", "http://warframe.wikia.com/wiki/Riven_Mods");
+                info.setDescription("Riven : info");
+                info.setThumbnail("http://i.imgur.com/2o2SbcK.png");
+                info.addField("veuillez indiquer une catégorie, de la liste suivante :", mes, true);
+                info.addField("afin d'afficher toutes les informations pour cette catégorie d'objet", "", true);
+                info.addField("**__!riven info <categorie>__**", "", true);
+                info.setColor(new Color(155, 55, 255));
+                info.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+            }
+
+            event.getTextChannel().sendMessage(info.build()).queue();
+
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -257,10 +357,8 @@ public class RivenCommand extends Command {
             String commande = recupString(event.getMessage().getContent().toLowerCase());
 
             if (commande.contains(" ")) {
-                String riven = new String(Files.readAllBytes(Paths.get("riven" + File.separator + sortie)));
+                String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
                 JSONObject rivenJson = new JSONObject(riven);
-                String version = new String(Files.readAllBytes(Paths.get("riven" + File.separator + "riven_mods_info.json")));
-                JSONObject versionJson = new JSONObject(version);
                 EmbedBuilder nom = new EmbedBuilder();
                 String cherche = recupString(commande);
                 String[] stat;
@@ -308,14 +406,6 @@ public class RivenCommand extends Command {
 
                 if (recupString(commande).length() < 6)
                     res += "";
-                else {
-                    if (cherche.equals("-"))
-                        res += "- statistique négative, inconnue\n";
-                    else if (cherche.length() == 0)
-                        res += "\n\navec peut-être une statistique négative, inconnue\n";
-
-                    res += "\nà savoir que les statistiques négatives n'apparaissent pas dans le nom d'un riven";
-                }
 
                 if (recupString(commande).length() < 6) nom.setTitle("Statistique : " + recupString(commande), "http://warframe.wikia.com/wiki/Riven_Mods");
                 else nom.setTitle("Statistique pour le nom de riven : " + recupString(commande), "http://warframe.wikia.com/wiki/Riven_Mods");
@@ -323,10 +413,7 @@ public class RivenCommand extends Command {
                 nom.setThumbnail("http://i.imgur.com/2o2SbcK.png");
                 nom.addField("résultat :" , res, true);
                 nom.setColor(new Color(155, 55, 255));
-                if (FindJsonKey(versionJson, "current version"))
-                    nom.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | wf version : " + versionJson.getString("current version"), "http://i.imgur.com/BUkD1OV.png");
-                else
-                    nom.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+                nom.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
                 if (cherche.contains("a") || cherche.contains("b") || cherche.contains("c") || cherche.contains("d") || cherche.contains("e") || cherche.contains("f") || cherche.contains("g") || cherche.contains("h")
                         || cherche.contains("i") || cherche.contains("j") || cherche.contains("k") || cherche.contains("l") || cherche.contains("m") || cherche.contains("n") || cherche.contains("o") || cherche.contains("p")
@@ -337,18 +424,18 @@ public class RivenCommand extends Command {
                     event.getTextChannel().sendMessage(nom.build()).queue();
             } else
                 event.getTextChannel().sendMessage("aucun nom de riven saisi").queue();
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
     private static void Stat(MessageReceivedEvent event) {
         try {
             String commande = recupString(event.getMessage().getContent().toLowerCase());
-            String riven = new String(Files.readAllBytes(Paths.get("riven" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
-            String version = new String(Files.readAllBytes(Paths.get("riven" + File.separator + "riven_mods_info.json")));
-            JSONObject versionJson = new JSONObject(version);
             EmbedBuilder stat = new EmbedBuilder();
 
             if (commande.contains(" ")) {
@@ -370,7 +457,12 @@ public class RivenCommand extends Command {
                                 stats += "\nsuffix : " + rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("suffix");
                                 stats += "\ntype d'opération : " + rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("operation type");
 
-                                if (rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").contains("%"))
+                                if (rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").contains("|")) {
+                                    String[] str = rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").split("[|]");
+
+                                    stat.addField("- " + str[0] + str[2], stats, false);
+                                }
+                                else if (rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").contains("%"))
                                     stat.addField("- " + rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").split("% ")[1], stats, false);
                                 else
                                     stat.addField("- " + rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").replaceFirst(" ", "%").split("%")[1], stats, false);
@@ -381,10 +473,7 @@ public class RivenCommand extends Command {
                             stat.setDescription("Riven : stat");
                             stat.setThumbnail("http://i.imgur.com/2o2SbcK.png");
                             stat.setColor(new Color(155, 55, 255));
-                            if (FindJsonKey(versionJson, "current version"))
-                                stat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | wf version : " + versionJson.getString("current version"), "http://i.imgur.com/BUkD1OV.png");
-                            else
-                                stat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+                            stat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
                             event.getTextChannel().sendMessage(stat.build()).queue();
                         } else
@@ -401,7 +490,12 @@ public class RivenCommand extends Command {
                             stats += "peut-être un buff : " + rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("can be buff");
                             stats += "\npeut-être un debuff : " + rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("can be curse");
 
-                            if (rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").contains("%"))
+                            if (rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").contains("|")) {
+                                String[] str = rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").split("[|]");
+
+                                stat.addField("- " + str[0] + str[2], stats, false);
+                            }
+                            else if (rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").contains("%"))
                                 stat.addField("- " + rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").split("% ")[1], stats, false);
                             else
                                 stat.addField("- " + rivenJson.getJSONObject(categorie).getJSONArray("upgrades").getJSONObject(i).getString("upgrade").replaceFirst(" ", "%").split("%")[1], stats, false);
@@ -412,10 +506,7 @@ public class RivenCommand extends Command {
                         stat.setDescription("Riven : stat");
                         stat.setThumbnail("http://i.imgur.com/2o2SbcK.png");
                         stat.setColor(new Color(155, 55, 255));
-                        if (FindJsonKey(versionJson, "current version"))
-                            stat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | wf version : " + versionJson.getString("current version"), "http://i.imgur.com/BUkD1OV.png");
-                        else
-                            stat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+                        stat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
                         event.getTextChannel().sendMessage(stat.build()).queue();
                     } else
@@ -434,24 +525,105 @@ public class RivenCommand extends Command {
                 stat.addField("afin d'afficher tous les statistique possibles pour cette catégorie d'objet", "", true);
                 stat.addField("**__!riven stat <categorie>__**", "", true);
                 stat.setColor(new Color(155, 55, 255));
-                if (FindJsonKey(versionJson, "current version"))
-                    stat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | wf version : " + versionJson.getString("current version"), "http://i.imgur.com/BUkD1OV.png");
-                else
-                    stat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
+                stat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
                 event.getTextChannel().sendMessage(stat.build()).queue();
             }
-        } catch (IOException e){
-            e.printStackTrace();
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
     private static void Traite(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
+                String adresse = new String(Files.readAllBytes(Paths.get("info" + File.separator + "RivenMods.json")));
+                String adresseSortie = System.getProperty("user.dir") + File.separator + "info" + File.separator + "RivenMods.json";
+                String adressePrimary = System.getProperty("user.dir") + File.separator + "input" + File.separator + "riven_primary.txt";
+                String adresseMelee = System.getProperty("user.dir") + File.separator + "input" + File.separator + "riven_melee.txt";
+                String adresseSecondary = System.getProperty("user.dir") + File.separator + "input" + File.separator + "riven_secondary.txt";
+                String adresseShotgun = System.getProperty("user.dir") + File.separator + "input" + File.separator + "riven_shotgun.txt";
+                FileWriter file = new FileWriter(adresseSortie);
+                JSONObject rivenJson = new JSONObject(adresse);
+                Scanner scanner;
+                String line;
+                String arme;
+                boolean fini = false;
+
+                if (new File(adressePrimary).exists()) {
+                    scanner = new Scanner(new File(adressePrimary));
+
+                    while (scanner.hasNext()) {
+                        line = scanner.nextLine().toLowerCase();
+                        arme = line.replaceFirst(" ", "@").split("@")[1];
+
+                        if (rivenJson.getJSONObject("rifle").getJSONObject("item").names().toString().contains(arme))
+                            rivenJson.getJSONObject("rifle").getJSONObject("item").getJSONArray(arme).put(1, String.valueOf((100 + Integer.valueOf(line.split(" ")[0]))/100.0));
+                    }
+                    fini = true;
+                }
+
+                if (new File(adresseMelee).exists()) {
+                    scanner = new Scanner(new File(adresseMelee));
+
+                    while (scanner.hasNext()) {
+                        line = scanner.nextLine().toLowerCase();
+                        arme = line.replaceFirst(" ", "@").split("@")[1];
+
+                        if (rivenJson.getJSONObject("melee").getJSONObject("item").names().toString().contains(arme))
+                            rivenJson.getJSONObject("melee").getJSONObject("item").getJSONArray(arme).put(1, String.valueOf((100 + Integer.valueOf(line.split(" ")[0]))/100.0));
+                    }
+                    fini = true;
+                }
+
+                if (new File(adresseSecondary).exists()) {
+                    scanner = new Scanner(new File(adresseSecondary));
+
+                    while (scanner.hasNext()) {
+                        line = scanner.nextLine().toLowerCase();
+                        arme = line.replaceFirst(" ", "@").split("@")[1];
+
+                        if (rivenJson.getJSONObject("pistol").getJSONObject("item").names().toString().contains(arme))
+                            rivenJson.getJSONObject("pistol").getJSONObject("item").getJSONArray(arme).put(1, String.valueOf((100 + Integer.valueOf(line.split(" ")[0]))/100.0));
+                    }
+                    fini = true;
+                }
+
+                if (new File(adresseShotgun).exists()) {
+                    scanner = new Scanner(new File(adresseShotgun));
+
+                    while (scanner.hasNext()) {
+                        line = scanner.nextLine().toLowerCase();
+                        arme = line.replaceFirst(" ", "@").split("@")[1];
+
+                        if (rivenJson.getJSONObject("shotgun").getJSONObject("item").names().toString().contains(arme))
+                            rivenJson.getJSONObject("shotgun").getJSONObject("item").getJSONArray(arme).put(1, String.valueOf((100 + Integer.valueOf(line.split(" ")[0]))/100.0));
+                    }
+                    fini = true;
+                }
+
+                if (fini)
+                    event.getTextChannel().sendMessage("Traitement effectué.").queue();
+
+                file.write(rivenJson.toString());
+                file.flush();
+                file.close();
+            }
+            else
+                event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
+        }
+    }
+
+    private static void Traite2(MessageReceivedEvent event) {
+        try {
+            if (FindAdmin(event, event.getMember())) {
                 String commande = recupString(event.getMessage().getContent().toLowerCase());
-                String adresseSortie = System.getProperty("user.dir") + File.separator + "riven" + File.separator + "riven_mods_info.json";
-                FileWriter rivenFile = new FileWriter(adresseSortie);
                 JSONObject rivenJson = new JSONObject();
 
                 if (commande.contains(" ")) {
@@ -473,15 +645,13 @@ public class RivenCommand extends Command {
                         event.getTextChannel().sendMessage("Traitement effectué.").queue();
                     }
                 }
-
-                rivenFile.write(rivenJson.toString());
-                rivenFile.flush();
-                rivenFile.close();
             }
             else
                 event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 }

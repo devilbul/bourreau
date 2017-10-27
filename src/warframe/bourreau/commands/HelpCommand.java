@@ -4,105 +4,126 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 
-import static warframe.bourreau.help.EmbedMessageHelp.*;
+import static warframe.bourreau.erreur.erreurGestion.*;
+import static warframe.bourreau.help.EmbedAdminHelp.MessageHelpAdmin;
+import static warframe.bourreau.help.EmbedAdminList.MessageListeCommandeAdmin;
+import static warframe.bourreau.help.EmbedGeneralHelp.MessageHelpGeneral;
+import static warframe.bourreau.help.EmbedCommandList.MessageListeCommande;
+import static warframe.bourreau.help.EmbedModoHelp.MessageHelpModo;
+import static warframe.bourreau.help.EmbedModoList.MessageListeCommandeModo;
+import static warframe.bourreau.help.EmbedRaidHelp.MessageHelpRaid;
+import static warframe.bourreau.help.EmbedRivenHelp.MessageHelpRiven;
+import static warframe.bourreau.help.EmbedSonHelp.MessageHelpSon;
+import static warframe.bourreau.help.EmbedSondageHelp.MessageHelpSondage;
+import static warframe.bourreau.help.EmbedTrollHelp.MessageHelpTroll;
 import static warframe.bourreau.util.Find.*;
 import static warframe.bourreau.util.Recup.recupString;
 
 public class HelpCommand extends Command {
 
     public static void Help(MessageReceivedEvent event) {
-        if (event.getMessage().getContent().contains(" ")) {
-            String help = recupString(event.getMessage().getContent().toLowerCase());
+        try {
+            if (event.getMessage().getContent().contains(" ")) {
+                String help = recupString(event.getMessage().getContent().toLowerCase());
 
-            switch (help) {
-                // command son
-                case "ah":
-                case "bucher":
-                case "gg":
-                case "gogole":
-                case "nah":
-                case "pigeon":
-                case "souffrir":
-                case "trump":
-                    event.getTextChannel().sendMessage(MessageHelpSon(help)).queue();
-                    break;
-                // commande troll
-                case "pute":
-                case "RIP":
-                case "rip":
-                case "segpa":
-                case "tg":
-                    event.getTextChannel().sendMessage(MessageHelpTroll(help)).queue();
-                    break;
-                // commandes que tout le monde peut faire
-                case "alliance":
-                case "baro":
-                case "clan":
-                case "discordwf":
-                case "idée":
-                case "info":
-                case "invite":
-                case "lead":
-                case "progres":
-                case "pvp":
-                case "pvp hebdo":
-                case "raid":
-                case "site":
-                case "steam":
-                case "sortie":
-                case "syndicat":
-                case "ts3":
-                case "up":
-                case "updates":
-                    event.getTextChannel().sendMessage(MessageHelpGeneral(help)).queue();
-                    break;
-                // commande riven
-                case "riven":
-                case "riven defi":
-                case "riven influence":
-                case "riven nom":
-                    event.getTextChannel().sendMessage(MessageHelpRiven(help)).queue();
-                    break;
-                // commande sondage
-                case "sondage":
-                case "sondage affiche":
-                case "sondage reponses":
-                case "sondage clear":
-                case "sondage create":
-                case "sondage resultat":
-                case "sondage vote":
-                    event.getTextChannel().sendMessage(MessageHelpSondage(help)).queue();
-                    break;
-                // commande raid
-                case "affiche":
-                case "cancel":
-                case "present":
-                    event.getTextChannel().sendMessage(MessageHelpRaid(help)).queue();
-                    break;
-                default:
-                    MessageBuilder message = new MessageBuilder();
+                switch (help) {
+                    // command son
+                    case "ah":
+                    case "bucher":
+                    case "gg":
+                    case "gogole":
+                    case "nah":
+                    case "pigeon":
+                    case "souffrir":
+                    case "trump":
+                        event.getTextChannel().sendMessage(MessageHelpSon(help)).queue();
+                        break;
+                    // commande troll
+                    case "pute":
+                    case "RIP":
+                    case "rip":
+                    case "segpa":
+                    case "tg":
+                        event.getTextChannel().sendMessage(MessageHelpTroll(help)).queue();
+                        break;
+                    // commandes que tout le monde peut faire
+                    case "alerts":
+                    case "alliance":
+                    case "baro":
+                    case "clan":
+                    case "discordwf":
+                    case "goals":
+                    case "idée":
+                    case "idee":
+                    case "info":
+                    case "invasions":
+                    case "invite":
+                    case "lead":
+                    case "progres":
+                    case "pvp":
+                    case "pvp hebdo":
+                    case "raid":
+                    case "regle":
+                    case "site":
+                    case "steam":
+                    case "sortie":
+                    case "syndicat":
+                    case "ts3":
+                    case "up":
+                    case "updates":
+                    case "void":
+                        event.getTextChannel().sendMessage(MessageHelpGeneral(help)).queue();
+                        break;
+                    // commande riven
+                    case "riven":
+                    case "riven calcul":
+                    case "riven defi":
+                    case "riven influence":
+                    case "riven info":
+                    case "riven nom":
+                    case "riven stat":
+                        event.getTextChannel().sendMessage(MessageHelpRiven(help)).queue();
+                        break;
+                    // commande sondage
+                    case "sondage":
+                    case "sondage affiche":
+                    case "sondage reponses":
+                    case "sondage clear":
+                    case "sondage create":
+                    case "sondage resultat":
+                    case "sondage vote":
+                        event.getTextChannel().sendMessage(MessageHelpSondage(help)).queue();
+                        break;
+                    // commande raid
+                    case "affiche":
+                    case "cancel":
+                    case "present":
+                        event.getTextChannel().sendMessage(MessageHelpRaid(help)).queue();
+                        break;
+                    default:
+                        MessageBuilder message = new MessageBuilder();
 
-                    event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes  (sur un salon textuel ou en message privé). \nPS : apprends à écrire.").queue();
+                        event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes  (sur un salon textuel ou en message privé). \nPS : apprends à écrire.").queue();
 
-                    message.append("You know nothing, ");
-                    message.append(event.getAuthor());
+                        message.append("You know nothing, ");
+                        message.append(event.getAuthor());
 
-                    event.getTextChannel().sendMessage(message.build()).queue();
-                    break;
+                        event.getTextChannel().sendMessage(message.build()).queue();
+                        break;
+                }
+            } else {
+                if (FindAdmin(event, event.getMember())) {
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageListeCommandeAdmin()).queue();
+                } else if (FindModo(event, event.getMember())) {
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageListeCommandeModo()).queue();
+                }
+
+                event.getTextChannel().sendMessage(MessageListeCommande(false, false)).queue();
             }
         }
-        else {
-            if (FindAdmin(event, event.getMember())) {
-                event.getAuthor().openPrivateChannel().complete();
-                event.getAuthor().getPrivateChannel().sendMessage(MessageListeCommandeAdmin()).queue();
-                event.getAuthor().getPrivateChannel().close();
-            } else if (FindModo(event, event.getMember())) {
-                event.getAuthor().openPrivateChannel().complete();
-                event.getAuthor().getPrivateChannel().sendMessage(MessageListeCommandeModo()).queue();
-                event.getAuthor().getPrivateChannel().close();
-            }
-
-            event.getTextChannel().sendMessage(MessageListeCommande(false, false)).queue();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -120,9 +141,7 @@ public class HelpCommand extends Command {
                 case "pigeon":
                 case "souffrir":
                 case "trump":
-                    event.getAuthor().openPrivateChannel().complete();
-                    event.getAuthor().getPrivateChannel().sendMessage(MessageHelpSon(help)).queue();
-                    event.getAuthor().getPrivateChannel().close();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpSon(help)).queue();
                     break;
                 // commande troll
                 case "pute":
@@ -130,23 +149,26 @@ public class HelpCommand extends Command {
                 case "rip":
                 case "segpa":
                 case "tg":
-                    event.getAuthor().openPrivateChannel().complete();
-                    event.getAuthor().getPrivateChannel().sendMessage(MessageHelpTroll(help)).queue();
-                    event.getAuthor().getPrivateChannel().close();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpTroll(help)).queue();
                     break;
                 // commandes que tout le monde peut faire
+                case "alerts":
                 case "alliance":
                 case "baro":
                 case "clan":
                 case "discordwf":
+                case "goals":
                 case "idée":
+                case "idee":
                 case "info":
+                case "invasions":
                 case "invite":
                 case "lead":
                 case "progres":
                 case "pvp":
                 case "pvp hebdo":
                 case "raid":
+                case "regle":
                 case "site":
                 case "steam":
                 case "sortie":
@@ -154,18 +176,18 @@ public class HelpCommand extends Command {
                 case "ts3":
                 case "up":
                 case "updates":
-                    event.getAuthor().openPrivateChannel().complete();
-                    event.getAuthor().getPrivateChannel().sendMessage(MessageHelpGeneral(help)).queue();
-                    event.getAuthor().getPrivateChannel().close();
+                case "void":
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpGeneral(help)).queue();
                     break;
                 // commande riven
                 case "riven":
+                case "riven calcul":
                 case "riven defi":
                 case "riven influence":
+                case "riven info":
                 case "riven nom":
-                    event.getAuthor().openPrivateChannel().complete();
-                    event.getAuthor().getPrivateChannel().sendMessage(MessageHelpRiven(help)).queue();
-                    event.getAuthor().getPrivateChannel().close();
+                case "riven stat":
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpRiven(help)).queue();
                     break;
                 // commande sondage
                 case "sondage":
@@ -175,60 +197,43 @@ public class HelpCommand extends Command {
                 case "sondage create":
                 case "sondage resultat":
                 case "sondage vote":
-                    event.getAuthor().openPrivateChannel().complete();
-                    event.getAuthor().getPrivateChannel().sendMessage(MessageHelpSondage(help)).queue();
-                    event.getAuthor().getPrivateChannel().close();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpSondage(help)).queue();
                     break;
                 // commande raid
                 case "affiche":
                 case "cancel":
                 case "present":
-                    event.getAuthor().openPrivateChannel().complete();
-                    event.getAuthor().getPrivateChannel().sendMessage(MessageHelpRaid(help)).queue();
-                    event.getAuthor().getPrivateChannel().close();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpRaid(help)).queue();
                     break;
                 // commande admin / modo
                 case "aubucher":
                 case "deafen":
-                case "getbans":
                 case "kick":
                 case "mute":
                 case "tenno":
                 case "undeafen":
                 case "unmute":
-                    event.getAuthor().openPrivateChannel().complete();
-                    event.getAuthor().getPrivateChannel().sendMessage(MessageHelpAdmin(help)).queue();
-                    event.getAuthor().getPrivateChannel().sendMessage(MessageHelpModo(help)).queue();
-                    event.getAuthor().getPrivateChannel().close();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpAdmin(help)).queue();
                     break;
                 case "addclan":
                 case "ban":
                 case "removeclan":
                 case "setgame":
                 case "unban":
-                    event.getAuthor().openPrivateChannel().complete();
-                    event.getAuthor().getPrivateChannel().sendMessage(MessageHelpAdmin(help)).queue();
-                    event.getAuthor().getPrivateChannel().close();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpModo(help)).queue();
                     break;
                 default:
                     MessageBuilder message = new MessageBuilder();
 
-                    event.getAuthor().openPrivateChannel().complete();
-
-                    event.getAuthor().getPrivateChannel().sendMessage("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.").queue();
-
+                    message.append("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.");
                     message.append("You know nothing, ");
                     message.append(event.getAuthor());
 
-                    event.getAuthor().getPrivateChannel().sendMessage(message.build()).queue();
-                    event.getAuthor().getPrivateChannel().close();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(message.build()).queue();
                     break;
             }
         }
-        else {
-            event.getAuthor().openPrivateChannel().complete();
-            event.getAuthor().getPrivateChannel().sendMessage(MessageListeCommande(FindAdminPrive(event, event.getAuthor()), FindModoPrive(event, event.getAuthor()))).queue();
-            event.getAuthor().getPrivateChannel().close();
-        }
+        else
+            event.getAuthor().openPrivateChannel().complete().sendMessage(MessageListeCommande(FindAdminPrive(event, event.getAuthor()), FindModoPrive(event, event.getAuthor()))).queue();
     }
 }

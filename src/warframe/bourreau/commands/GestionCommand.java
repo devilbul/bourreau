@@ -1,73 +1,79 @@
 package warframe.bourreau.commands;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
-import static warframe.bourreau.util.Find.FindAdmin;
-import static warframe.bourreau.util.Find.FindClan;
+import static warframe.bourreau.erreur.erreurGestion.*;
+import static warframe.bourreau.util.Find.*;
 import static warframe.bourreau.util.Recup.recupString;
 
 public class GestionCommand extends Command {
 
     public static void AddClan(MessageReceivedEvent event) {
-        try {
-            if (FindAdmin(event, event.getMember())) {
-                String commande = event.getMessage().getContent();
+                try {
+                    if (FindAdmin(event, event.getMember())) {
+                        String commande = event.getMessage().getContent();
 
-                if (commande.contains(" ")) {
-                    String[] newClan = recupString(event.getMessage().getContent()).replaceFirst("/", "@").split(" @ ");
+                        if (commande.contains(" ")) {
+                            String[] newClan = recupString(event.getMessage().getContent()).replaceFirst("/", "@").split(" @ ");
+                            String clan = newClan[0];
+                            String[] leaders = newClan[1].replace("/", "@").split(" @ ");
 
-                    if (newClan.length >= 2) {
-                        String leader = newClan[1];
-                        String clan = newClan[0];
-                        String alliance = new String(Files.readAllBytes(Paths.get("info" + File.separator + "alliance.json")));
-                        JSONObject allianceJson = new JSONObject(alliance);
-                        JSONObject clanJson = allianceJson.getJSONObject("clan");
+                            if (newClan.length >= 2) {
+                                String alliance = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Alliance.json")));
+                                JSONObject allianceJson = new JSONObject(alliance);
+                                JSONObject clanJson = allianceJson.getJSONObject("clans");
+                                JSONObject infoJson = allianceJson.getJSONObject("infos");
 
-                        if (!FindClan(clanJson.names(), clan)) {
-                            String adresseAlliance = System.getProperty("user.dir") + File.separator + "info" + File.separator + "alliance.json";
-                            FileWriter file = new FileWriter(adresseAlliance);
-                            JSONObject newClanJson = new JSONObject();
-                            JSONObject newAllianceJson = new JSONObject();
+                                if (!FindClan(clanJson.names(), clan)) {
+                                    String adresseAlliance = System.getProperty("user.dir") + File.separator + "info" + File.separator + "Alliance.json";
+                                    FileWriter file = new FileWriter(adresseAlliance);
+                                    JSONObject newClanJson = new JSONObject();
+                                    JSONObject newAllianceJson = new JSONObject();
+                                    JSONArray leaderJson = new JSONArray();
 
-                            newClanJson.put("nom", clan);
-                            newClanJson.put("leader", leader);
+                                    for (int i=0; i<leaders.length; i++)
+                                        leaderJson.put(i, leaders[i]);
 
-                            clanJson.put(clan, newClanJson);
+                                    newClanJson.put("leaders", leaderJson);
+                                    newClanJson.put("logoUrl", "");
+                                    clanJson.put(clan, newClanJson);
+                                    infoJson.put("nomAlliance", "French Connection");
+                                    infoJson.put("nbClan", clanJson.length());
+                                    newAllianceJson.put("infos", infoJson);
+                                    newAllianceJson.put("clans", clanJson);
 
-                            event.getTextChannel().sendMessage("clan ajouté.").queue();
+                                    event.getTextChannel().sendMessage("clan ajouté.").queue();
 
-                            newAllianceJson.put("nomAlliance", "French Connection");
-                            newAllianceJson.put("nbClan", clanJson.length());
-                            newAllianceJson.put("clan", clanJson);
-
-                            file.write(newAllianceJson.toString());
-                            file.flush();
-                            file.close();
+                                    file.write(newAllianceJson.toString());
+                                    file.flush();
+                                    file.close();
+                                }
+                                else
+                                    event.getTextChannel().sendMessage("le clan saisi est déjà dans l'alliance.").queue();
+                            }
+                            else if (newClan.length ==1)
+                                event.getTextChannel().sendMessage("aucun leader saisi.").queue();
+                            else
+                                event.getTextChannel().sendMessage("erreur de syntaxe, syntaxe :                        !addclan <nom du clan> <nom du leader>" +
+                                        "\nsi plusieurs leader, la syntaxe change :     !addclan <nom du clan> <leader1/leader2/.../leaderN>").queue();
                         }
                         else
-                            event.getTextChannel().sendMessage("le clan saisi est déjà dans l'alliance.").queue();
+                            event.getTextChannel().sendMessage("aucun clan saisi.").queue();
                     }
-                    else if (newClan.length ==1)
-                        event.getTextChannel().sendMessage("aucun leader saisi.").queue();
                     else
-                        event.getTextChannel().sendMessage("erreur de syntaxe, syntaxe :                        !addclan <nom du clan> <nom du leader>" +
-                                "\nsi plusieurs leader, la syntaxe change :     !addclan <nom du clan> <leader1/leader2/.../leaderN>").queue();
+                        event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
                 }
-                else
-                    event.getTextChannel().sendMessage("aucun clan saisi.").queue();
-            }
-            else
-                event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
+                catch (Exception e) {
+                    afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -77,21 +83,24 @@ public class GestionCommand extends Command {
                 String commande = event.getMessage().getContent();
 
                 if (commande.contains(" ")) {
-                    String clan = recupString(event.getMessage().getContent());
-                    String alliance = new String(Files.readAllBytes(Paths.get("info" + File.separator + "alliance.json")));
+                    String clanLower = recupString(event.getMessage().getContent());
+                    String alliance = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Alliance.json")));
                     JSONObject allianceJson = new JSONObject(alliance);
-                    JSONObject clanJson = allianceJson.getJSONObject("clan");
+                    JSONObject clanJson = allianceJson.getJSONObject("clans");
+                    JSONObject infoJson = allianceJson.getJSONObject("infos");
 
-                    if (FindClan(clanJson.names(), clan) ){
-                        String adresseAlliance = System.getProperty("user.dir") + File.separator + "info" + File.separator + "alliance.json";
+                    if (FindClanLower(clanJson.names(), clanLower) ){
+                        String adresseAlliance = System.getProperty("user.dir") + File.separator + "info" + File.separator + "Alliance.json";
                         FileWriter file = new FileWriter(adresseAlliance);
                         JSONObject newAllianceJson = new JSONObject();
 
-                        clanJson.remove(clan);
+                        clanJson.remove(FindClanKey(clanJson.names(),clanLower));
 
-                        newAllianceJson.put("nomAlliance", "French Connection");
-                        newAllianceJson.put("nbClan", clanJson.length());
-                        newAllianceJson.put("clan", clanJson);
+                        infoJson.put("nomAlliance", "French Connection");
+                        infoJson.put("nbClan", clanJson.length());
+
+                        newAllianceJson.put("infos", infoJson);
+                        newAllianceJson.put("clans", clanJson);
 
                         event.getTextChannel().sendMessage("clan supprimé.").queue();
 
@@ -108,8 +117,64 @@ public class GestionCommand extends Command {
             else
                 event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
+        }
+    }
+
+    public static void AddLogoUrl(MessageReceivedEvent event) {
+        try {
+            if (FindAdmin(event, event.getMember())) {
+                String commande = event.getMessage().getContent();
+
+                if (commande.contains(" ")) {
+                    String[] newClan = recupString(event.getMessage().getContent()).replaceFirst("/", "@").split(" @ ");
+                    String clanSelect = newClan[0].toLowerCase();
+                    String url = newClan[1];
+
+                    if (newClan.length == 2) {
+                        String alliance = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Alliance.json")));
+                        JSONObject allianceJson = new JSONObject(alliance);
+                        JSONObject clanJson = allianceJson.getJSONObject("clans");
+                        JSONObject infosJson = allianceJson.getJSONObject("infos");
+
+                        if (FindClanLower(clanJson.names(), clanSelect)) {
+                            String adresseAlliance = System.getProperty("user.dir") + File.separator + "info" + File.separator + "Alliance.json";
+                            FileWriter file = new FileWriter(adresseAlliance);
+                            JSONObject newClanJson = new JSONObject();
+                            JSONObject newAllianceJson = new JSONObject();
+
+                            newClanJson.put("leaders", clanJson.getJSONObject(FindClanKey(clanJson.names(),clanSelect)).getJSONArray("leaders"));
+                            newClanJson.put("logoUrl", url);
+                            clanJson.put(FindClanKey(clanJson.names(),clanSelect), newClanJson);
+
+                            newAllianceJson.put("clans", clanJson);
+                            newAllianceJson.put("infos", infosJson);
+
+                            event.getTextChannel().sendMessage("url ajouté.").queue();
+
+                            file.write(newAllianceJson.toString());
+                            file.flush();
+                            file.close();
+                        }
+                        else
+                            event.getTextChannel().sendMessage("le clan saisi n'est dans l'alliance, ou est mal orthographié.").queue();
+                    }
+                    else if (newClan.length == 1)
+                        event.getTextChannel().sendMessage("aucun url saisi.").queue();
+                    else
+                        event.getTextChannel().sendMessage("erreur de syntaxe, syntaxe :                        !addclan <nom du clan> <url>").queue();
+                }
+                else
+                    event.getTextChannel().sendMessage("aucun clan saisi.").queue();
+            }
+            else
+                event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 }

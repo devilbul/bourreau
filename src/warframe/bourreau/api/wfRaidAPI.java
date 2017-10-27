@@ -6,7 +6,6 @@ import org.json.JSONArray;
 
 import java.awt.*;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -15,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
+import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.parser.TimeParser.ParseSecToTime;
 import static warframe.bourreau.parser.TimeParser.ParseTimeToSec;
 import static warframe.bourreau.util.Recup.recupPseudo;
@@ -24,44 +24,54 @@ import static warframe.bourreau.util.urlReadJson.readAll;
 public class wfRaidAPI {
 
     public static void RaidStat(MessageReceivedEvent event) {
-        String user;
-        String urlApi = "https://api.trials.wf/api/player/pc/";
-        String urlSite = "https://trials.wf/player/?user=";
+        try {
+            String user;
+            String urlApi = "https://api.trials.wf/api/player/pc/";
+            String urlSite = "https://trials.wf/player/?user=";
 
-        if (event.getMessage().getContent().contains(" ")) {
-            user = recupPseudo(event.getMessage().getContent());
-            urlApi += user + "/completed";
-            urlSite += user;
+            if (event.getMessage().getContent().contains(" ")) {
+                user = recupPseudo(event.getMessage().getContent());
+                urlApi += user + "/completed";
+                urlSite += user;
 
-            TraiteRaidStat(event, user, urlApi, urlSite);
+                TraiteRaidStat(event, user, urlApi, urlSite);
+            } else {
+                user = event.getAuthor().getName();
+                urlApi += user + "/completed";
+                urlSite += user;
+
+                TraiteRaidStat(event, user, urlApi, urlSite);
+            }
         }
-        else {
-            user = event.getAuthor().getName();
-            urlApi += user + "/completed";
-            urlSite += user;
-
-            TraiteRaidStat(event, user, urlApi, urlSite);
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
     public static void RaidStatDetails(MessageReceivedEvent event) {
-        String user;
-        String urlApi = "https://api.trials.wf/api/player/pc/";
-        String urlSite = "https://trials.wf/player/?user=";
+        try {
+            String user;
+            String urlApi = "https://api.trials.wf/api/player/pc/";
+            String urlSite = "https://trials.wf/player/?user=";
 
-        if (recupString(event.getMessage().getContent()).contains(" ")) {
-            user = recupPseudo(recupString(event.getMessage().getContent()));
-            urlApi += user + "/completed";
-            urlSite += user;
+            if (recupString(event.getMessage().getContent()).contains(" ")) {
+                user = recupPseudo(recupString(event.getMessage().getContent()));
+                urlApi += user + "/completed";
+                urlSite += user;
 
-            TraiteRaidStatDetail(event, user, urlApi, urlSite);
+                TraiteRaidStatDetail(event, user, urlApi, urlSite);
+            } else {
+                user = event.getAuthor().getName();
+                urlApi += user + "/completed";
+                urlSite += user;
+
+                TraiteRaidStatDetail(event, user, urlApi, urlSite);
+            }
         }
-        else {
-            user = event.getAuthor().getName();
-            urlApi += user + "/completed";
-            urlSite += user;
-
-            TraiteRaidStatDetail(event, user, urlApi, urlSite);
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -106,8 +116,10 @@ public class wfRaidAPI {
             }
             else
                 event.getTextChannel().sendMessage("Pas de raid, pour le pseudo saisi.").queue();
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -231,8 +243,10 @@ public class wfRaidAPI {
             }
             else
                 event.getTextChannel().sendMessage("Pas de raid, pour le pseudo saisi.").queue();
-        } catch (IOException e) {
-            e.printStackTrace();
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 }

@@ -6,12 +6,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 import static warframe.bourreau.InitID.raidsID;
+import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.DateHeure.GiveDate;
 import static warframe.bourreau.util.MessageOnEvent.MessageNoThingRaid;
 
@@ -42,8 +42,9 @@ public class RaidCommand extends Command {
             else
                 MessageNoThingRaid(event);
         }
-        catch(IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -76,8 +77,9 @@ public class RaidCommand extends Command {
             else
                 event.getTextChannel().sendMessage("aucun sondage de raid en cours.").complete().delete().completeAfter(10, TimeUnit.SECONDS);
         }
-        catch(IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -114,9 +116,9 @@ public class RaidCommand extends Command {
             else
                 event.getTextChannel().sendMessage("aucun sondage de raid en cours.").complete().delete().completeAfter(10, TimeUnit.SECONDS);
         }
-        catch(IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
-
 }

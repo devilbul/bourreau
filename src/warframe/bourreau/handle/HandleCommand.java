@@ -5,12 +5,16 @@ import warframe.bourreau.parser.CommandParser;
 import warframe.bourreau.thread.ThreadSon;
 
 import static warframe.bourreau.Main.commands;
+import static warframe.bourreau.erreur.erreurGestion.afficheErreur;
+import static warframe.bourreau.erreur.erreurGestion.saveErreur;
 import static warframe.bourreau.util.Find.FindAdmin;
+import static warframe.bourreau.util.Levenshtein.CompareCommande;
+import static warframe.bourreau.util.Levenshtein.distance;
 import static warframe.bourreau.util.MessageOnEvent.MessageNoThing;
 
 public class HandleCommand {
 
-    public static void handleCommand(CommandParser.CommandContainer cmd) {
+public static void handleCommand(CommandParser.CommandContainer cmd) {
         if (commands.containsKey(cmd.invoke)) {
             boolean safe = Command.called();
 
@@ -79,7 +83,7 @@ public class HandleCommand {
                     case "pute":
                         TrollCommand.Pute(cmd.event);
                         break;
-                    case "RIP" :
+                    case "RIP":
                     case "rip":
                         TrollCommand.RIP(cmd.event);
                         break;
@@ -106,6 +110,9 @@ public class HandleCommand {
                     case "discordwf":
                         InfoCommand.DiscordWarframe(cmd.event);
                         break;
+                    case "goals":
+                        InfoCommand.Goals(cmd.event);
+                        break;
                     case "idée":
                     case "idee":
                         InfoCommand.Idee(cmd.event);
@@ -130,6 +137,9 @@ public class HandleCommand {
                         break;
                     case "raid":
                         InfoCommand.Raid(cmd.event);
+                        break;
+                    case "regle":
+                        RegleCommand.Reglement(cmd.event);
                         break;
                     case "site":
                         InfoCommand.Site(cmd.event);
@@ -181,6 +191,9 @@ public class HandleCommand {
                     case "addclan":
                         GestionCommand.AddClan(cmd.event);
                         break;
+                    case "addurl":
+                        GestionCommand.AddLogoUrl(cmd.event);
+                        break;
                     case "aubucher":
                         aubucher.start();
                         break;
@@ -190,14 +203,14 @@ public class HandleCommand {
                     case "deafen":
                         AdminCommand.Deafen(cmd.event);
                         break;
-                    case "getbans":
-                        AdminCommand.GetBans(cmd.event);
-                        break;
                     case "kick":
                         AdminCommand.Kick(cmd.event);
                         break;
                     case "mute":
                         AdminCommand.Mute(cmd.event);
+                        break;
+                    case "ping":
+                        AdminCommand.Ping(cmd.event);
                         break;
                     case "setgame":
                         AdminCommand.SetGame(cmd.event);
@@ -218,6 +231,11 @@ public class HandleCommand {
                         AdminCommand.UnMute(cmd.event);
                         break;
 
+                    // commande erreur
+                    case "erreur":
+                        ErreurCommand.Erreur(cmd.event);
+                        break;
+
                     // test
                     case "test":
                         Command.Test(cmd.event);
@@ -233,14 +251,15 @@ public class HandleCommand {
                         ShutdownCommand.Shutdown(cmd.event);
                         break;
                     //---------------------------------------------------------------//
-                    default :
+                    default:
                         cmd.event.getTextChannel().sendMessage("Fuck").queue();
                         break;
                 }
             }
-        }
-        else
+        } else {
+            cmd.event.getTextChannel().sendMessage(CompareCommande(cmd.invoke, commands.keySet().toArray())).queue();
             MessageNoThing(cmd.event);
+        }
     }
 }
 

@@ -15,30 +15,38 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
+import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.parser.StringParser.ParseInsertSpace;
 import static warframe.bourreau.util.Find.FindJsonKey;
 import static warframe.bourreau.util.Find.FindNamesJSONObkect;
 import static warframe.bourreau.util.MessageOnEvent.MessageNoThing;
 import static warframe.bourreau.util.Recup.recupString;
 import static warframe.bourreau.util.urlReadJson.readAll;
-import static warframe.bourreau.util.wfAPIUtil.*;
 
 public class warframeAPI {
 
     public static void Alert(MessageReceivedEvent event) {
         String urlApi = "http://content.warframe.com/dynamic/worldState.php";
+        String urlLanugage = "https://raw.githubusercontent.com/WFCD/warframe-worldstate-data/master/data/languages.json";
 
-        try (InputStream is = new URL(urlApi).openStream()) {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            String starChar = new String(Files.readAllBytes(Paths.get("input" + File.separator + "StarChar.json")));
+        try {
+            InputStream isApi = new URL(urlApi).openStream();
+            InputStream isLanguage = new URL(urlLanugage).openStream();
+            BufferedReader rdApi = new BufferedReader(new InputStreamReader(isApi, Charset.forName("UTF-8")));
+            BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
+            String jsonTextApi = readAll(rdApi);
+            String jsonTextLanguage = readAll(rdLanguage);
+            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            String mission = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
+            JSONObject warframeJson = new JSONObject(jsonTextApi);
+            JSONObject languageJson = new JSONObject(jsonTextLanguage);
             JSONObject starCharJson = new JSONObject(starChar);
-            JSONObject warframeJson = new JSONObject(jsonText);
+            JSONObject missionJson = new JSONObject(mission);
             JSONArray alertsJson = warframeJson.getJSONArray("Alerts");
             EmbedBuilder alert = new EmbedBuilder();
             long time = Instant.now().toEpochMilli();
             long expire;
-            String jours;
+            String jour;
             String heure;
             String minute;
             String seconde;
@@ -54,14 +62,14 @@ public class warframeAPI {
                 node = starCharJson.getJSONObject(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getString("location")).getString("name").replace("[","$").split("[$]");
 
                 expire = Long.parseLong(alertsJson.getJSONObject(i).getJSONObject("Expiry").getJSONObject("$date").getString("$numberLong"));
-                jours = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
+                jour = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
                 heure = new SimpleDateFormat("HH").format(new Date(expire - time - 3600000));
                 minute = new SimpleDateFormat("mm").format(new Date(expire - time - 3600000));
                 seconde = new SimpleDateFormat("ss").format(new Date(expire - time - 3600000));
 
-                if (!jours.equals("01")) {
-                    if (jours.charAt(0) == '0') fin += jours.substring(1) + "d ";
-                    else fin += jours + "d ";
+                if (!jour.equals("01")) {
+                    if (jour.charAt(0) == '0') fin += jour.substring(1) + "d ";
+                    else fin += jour + "d ";
                 }
                 if (heure.equals("00")) fin += "";
                 else if (heure.charAt(0) == '0') fin += heure.substring(1) + "h ";
@@ -78,33 +86,15 @@ public class warframeAPI {
                 recompense += "          - " + alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getInt("credits") + " cr\n";
 
                 if (alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").names().length() > 1) {
-                    if (FindNamesJSONObkect(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").names(), "items")) {
-                        if (alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("items").getString(0).contains("AlertFusion")) {
-                            if (alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("items").getString(0).contains("AlertFusionBundleSmall"))
-                                recompense += "          - 80 endo \n";
-                            else if (alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("items").getString(0).contains("AlertFusionBundleMedium"))
-                                recompense += "          - 100 endo \n";
-                            else if (alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("items").getString(0).contains("AlertFusionBundleLarge"))
-                                recompense += "          - 150 endo \n";
-                            else
-                                recompense += "          - (item à ajouter : "  + alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("items").getString(0) + ")" + " \n";
-                        }
-                        else {
-                            String[] str = alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("items").getString(0).split("/");
-
-                            recompense += "          - " + ParseInsertSpace(str[str.length - 1]) + " \n";
-                        }
-                    }
-                    if (FindNamesJSONObkect(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").names(), "countedItems")) {
-                        String[] str = alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").split("/");
-
+                    if (FindNamesJSONObkect(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").names(), "items"))
+                        recompense += "          - " + languageJson.getJSONObject(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("items").getString(0).toLowerCase()).getString("value") + " \n";
+                    if (FindNamesJSONObkect(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").names(), "countedItems"))
                         recompense += "          - " + alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("countedItems").getJSONObject(0).getInt("ItemCount") +
-                                " " + TypeRewardAlert(str[str.length - 1]) + "\n";
-                    }
+                                " " + languageJson.getJSONObject(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").toLowerCase()).getString("value") + "\n";
                 }
 
                 if (node[1].contains("PH")) node[1] = "Earth]";
-                alert.addField(node[0] + " (" + node[1].substring(0, node[1].length()-1) + ") - " + TypeMission(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getString("missionType")),
+                alert.addField(node[0] + " (" + node[1].substring(0, node[1].length()-1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getString("missionType")).getString("value"),
                         "expire dans : " + fin + "\nlevel : " + level[0] + " - " + level[1] + "\nrécompenses :\n" + recompense, false);
             }
 
@@ -112,30 +102,39 @@ public class warframeAPI {
             alert.setDescription("en cours");
             alert.setThumbnail("http://i.imgur.com/KQ7f9l7.png");
             alert.setColor(new Color(178, 23, 46));
-            alert.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+            alert.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
             event.getTextChannel().sendMessage(alert.build()).queue();
 
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
     public static void AlertWithInterest(MessageReceivedEvent event) {
         String urlApi = "http://content.warframe.com/dynamic/worldState.php";
+        String urlLanugage = "https://raw.githubusercontent.com/WFCD/warframe-worldstate-data/master/data/languages.json";
 
-        try (InputStream is = new URL(urlApi).openStream()) {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            String starChar = new String(Files.readAllBytes(Paths.get("input" + File.separator + "StarChar.json")));
+        try {
+            InputStream isApi = new URL(urlApi).openStream();
+            InputStream isLanguage = new URL(urlLanugage).openStream();
+            BufferedReader rdApi = new BufferedReader(new InputStreamReader(isApi, Charset.forName("UTF-8")));
+            BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
+            String jsonTextApi = readAll(rdApi);
+            String jsonTextLanguage = readAll(rdLanguage);
+            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            String mission = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
+            JSONObject warframeJson = new JSONObject(jsonTextApi);
+            JSONObject languageJson = new JSONObject(jsonTextLanguage);
             JSONObject starCharJson = new JSONObject(starChar);
-            JSONObject warframeJson = new JSONObject(jsonText);
+            JSONObject missionJson = new JSONObject(mission);
             JSONArray alertsJson = warframeJson.getJSONArray("Alerts");
             EmbedBuilder alert = new EmbedBuilder();
             long time = Instant.now().toEpochMilli();
             long expire;
-            String jours;
+            String jour;
             String heure;
             String minute;
             String seconde;
@@ -151,14 +150,14 @@ public class warframeAPI {
                     node = starCharJson.getJSONObject(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getString("location")).getString("name").replace("[","$").split("[$]");
 
                     expire = Long.parseLong(alertsJson.getJSONObject(i).getJSONObject("Expiry").getJSONObject("$date").getString("$numberLong"));
-                    jours = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
+                    jour = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
                     heure = new SimpleDateFormat("HH").format(new Date(expire - time - 3600000));
                     minute = new SimpleDateFormat("mm").format(new Date(expire - time - 3600000));
                     seconde = new SimpleDateFormat("ss").format(new Date(expire - time - 3600000));
 
-                    if (!jours.equals("01")) {
-                        if (jours.charAt(0) == '0') fin += jours.substring(1) + "d ";
-                        else fin += jours + "d ";
+                    if (!jour.equals("01")) {
+                        if (jour.charAt(0) == '0') fin += jour.substring(1) + "d ";
+                        else fin += jour + "d ";
                     }
                     if (heure.equals("00")) fin += "";
                     else if (heure.charAt(0) == '0') fin += heure.substring(1) + "h ";
@@ -175,27 +174,24 @@ public class warframeAPI {
                     if (FindNamesJSONObkect(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").names(), "items")) {
                         if (alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("items").getString(0).contains("StoreItems") &&
                                 !alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("items").getString(0).contains("Fusion")) {
-                            String[] str = alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("items").getString(0).split("/");
-
                             recompense = "          - " + alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getInt("credits") + " cr\n";
-                            recompense += "          - " + ParseInsertSpace(str[str.length - 1]) + " \n";
+                            recompense += "          - " + languageJson.getJSONObject(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("items").getString(0).toLowerCase()).getString("value") + " \n";
 
                             if (node[1].contains("PH")) node[1] = "Earth]";
-                            alert.addField(node[0] + " (" + node[1].substring(0, node[1].length()-1) + ") - " + TypeMission(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getString("missionType")),
+                            alert.addField(node[0] + " (" + node[1].substring(0, node[1].length()-1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getString("missionType")).getString("value"),
                                     "expire dans : " + fin + "\nlevel : " + level[0] + " - " + level[1] + "\nrécompenses :\n" + recompense, false);
                         }
                     }
                     if (FindNamesJSONObkect(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").names(), "countedItems")) {
                         if (alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").contains("Alertium") ||
-                                alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").contains("Catbrow")) {
-                            String[] str = alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").split("/");
-
+                                alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").contains("Catbrow")||
+                                alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").contains("Eventium")) {
                             recompense = "          - " + alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getInt("credits") + " cr\n";
                             recompense += "          - " + alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("countedItems").getJSONObject(0).getInt("ItemCount") +
-                                    " " + TypeRewardAlert(str[str.length - 1]) + "\n";
+                                    " " + languageJson.getJSONObject(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getJSONObject("missionReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").toLowerCase()).getString("value") + "\n";
 
                             if (node[1].contains("PH")) node[1] = "Earth]";
-                            alert.addField(node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getString("missionType")),
+                            alert.addField(node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(alertsJson.getJSONObject(i).getJSONObject("MissionInfo").getString("missionType")).getString("value"),
                                     "expire dans : " + fin + "\nlevel : " + level[0] + " - " + level[1] + "\nrécompenses :\n" + recompense, false);
                         }
                     }
@@ -208,7 +204,7 @@ public class warframeAPI {
             alert.setDescription("en cours, ayant une récompenses intéressante\n");
             alert.setThumbnail("http://i.imgur.com/KQ7f9l7.png");
             alert.setColor(new Color(178, 23, 46));
-            alert.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+            alert.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
             event.getTextChannel().sendMessage(alert.build()).queue();
 
@@ -220,53 +216,109 @@ public class warframeAPI {
 
     public static void Baro(MessageReceivedEvent event) {
         String urlApi = "http://content.warframe.com/dynamic/worldState.php";
+        String urlLanugage = "https://raw.githubusercontent.com/WFCD/warframe-worldstate-data/master/data/languages.json";
 
-        try (InputStream is = new URL(urlApi).openStream()) {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            String starChar = new String(Files.readAllBytes(Paths.get("input" + File.separator + "StarChar.json")));
+        try {
+            InputStream isApi = new URL(urlApi).openStream();
+            InputStream isLanguage = new URL(urlLanugage).openStream();
+            BufferedReader rdApi = new BufferedReader(new InputStreamReader(isApi, Charset.forName("UTF-8")));
+            BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
+            String jsonTextApi = readAll(rdApi);
+            String jsonTextLanguage = readAll(rdLanguage);
+            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            JSONObject warframeJson = new JSONObject(jsonTextApi);
+            JSONObject languageJson = new JSONObject(jsonTextLanguage);
             JSONObject starCharJson = new JSONObject(starChar);
-            JSONObject warframeJson = new JSONObject(jsonText);
             JSONObject baroJson = warframeJson.getJSONArray("VoidTraders").getJSONObject(0);
             EmbedBuilder baro = new EmbedBuilder();
             long time = Instant.now().toEpochMilli();
             long active = Long.parseLong(baroJson.getJSONObject("Activation").getJSONObject("$date").getString("$numberLong"));
-            String jours = new SimpleDateFormat("dd").format(new Date(active - time - 3600000));
-            String heure = new SimpleDateFormat("HH").format(new Date(active - time - 3600000));
-            String minute = new SimpleDateFormat("mm").format(new Date(active - time - 3600000));
-            String seconde = new SimpleDateFormat("ss").format(new Date(active - time - 3600000));
+            long expire = Long.parseLong(baroJson.getJSONObject("Expiry").getJSONObject("$date").getString("$numberLong"));
+            String jour;
+            String heure;
+            String minute;
+            String seconde;
             String debut = "";
+            String fin = "";
+            String[] node;
 
-            if (!jours.equals("01")) {
-                jours = String.valueOf(Long.valueOf(jours) - 1);
-                if (jours.charAt(0) == '0') debut += jours.substring(1) + "d ";
-                else debut += jours + "d ";
-            }
-            if (heure.charAt(0) == '0') debut += heure.substring(1) + "h ";
-            else debut += heure + "h ";
-            if (minute.charAt(0) == '0') debut += minute.substring(1) + "m ";
-            else debut += minute + "m ";
-            if (seconde.charAt(0) == '0') debut += seconde.substring(1) + "s";
-            else debut += seconde + "s";
+            node = starCharJson.getJSONObject(baroJson.getString("Node")).getString("name").split(" ");
 
             if (Long.valueOf(baroJson.getJSONObject("Activation").getJSONObject("$date").getString("$numberLong")) - time > 0) {
+                jour = new SimpleDateFormat("dd").format(new Date(active - time - 3600000));
+                heure = new SimpleDateFormat("HH").format(new Date(active - time - 3600000));
+                minute = new SimpleDateFormat("mm").format(new Date(active - time - 3600000));
+                seconde = new SimpleDateFormat("ss").format(new Date(active - time - 3600000));
+
+                if (!jour.equals("01")) {
+                    jour = String.valueOf(Long.valueOf(jour) - 1);
+                    if (jour.charAt(0) == '0') debut += jour.substring(1) + "d ";
+                    else debut += jour + "d ";
+                }
+                if (heure.charAt(0) == '0') debut += heure.substring(1) + "h ";
+                else debut += heure + "h ";
+                if (minute.charAt(0) == '0') debut += minute.substring(1) + "m ";
+                else debut += minute + "m ";
+                if (seconde.charAt(0) == '0') debut += seconde.substring(1) + "s";
+                else debut += seconde + "s";
+
                 baro.setDescription("Void Trader");
-                baro.addField("Le marchand arrive dans " + debut, "sur le relai de " + baroJson.getString("Node").split("H")[0] + " : " + starCharJson.getJSONObject(baroJson.getString("Node")).getString("name").split(" ")[0] + " " + starCharJson.getJSONObject(baroJson.getString("Node")).getString("name").split(" ")[1], false);
+                baro.addField("Le marchand arrive dans " + debut, "sur le relai de " + baroJson.getString("Node").split("H")[0] + " : " + node[0] + " " + node[1], false);
             }
             else if (Long.valueOf(baroJson.getJSONObject("Activation").getJSONObject("$date").getString("$numberLong")) - time < 1) {
-                baro.setDescription(""); /***/
-                baro.addField("", "", false); /***/
+                jour = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
+                heure = new SimpleDateFormat("HH").format(new Date(expire - time - 3600000));
+                minute = new SimpleDateFormat("mm").format(new Date(expire - time - 3600000));
+                seconde = new SimpleDateFormat("ss").format(new Date(expire - time - 3600000));
+
+                if (!jour.equals("01")) {
+                    jour = String.valueOf(Long.valueOf(jour) - 1);
+                    if (jour.charAt(0) == '0') fin += jour.substring(1) + "d ";
+                    else fin += jour + "d ";
+                }
+                if (heure.charAt(0) == '0') fin += heure.substring(1) + "h ";
+                else fin += heure + "h ";
+                if (minute.charAt(0) == '0') fin += minute.substring(1) + "m ";
+                else fin += minute + "m ";
+                if (seconde.charAt(0) == '0') fin += seconde.substring(1) + "s";
+                else fin += seconde + "s";
+
+                baro.setDescription("actuellemeent sur : " + node[0] + " " + node[1]);
+
+                for (int i=0; i<baroJson.getJSONArray("Manifest").length(); i++)
+                    baro.addField(languageJson.getJSONObject(baroJson.getJSONArray("Manifest").getJSONObject(i).getString("ItemType").toLowerCase()).getString("value"),
+                            baroJson.getJSONArray("Manifest").getJSONObject(i).getInt("RegularPrice") + " cr - " + baroJson.getJSONArray("Manifest").getJSONObject(i).getInt("PrimePrice") + " ducats", false);
+
+                baro.addField("Temps avant son départ du relai : " + node[0] + " " + node[1], fin, false);
             }
 
             baro.setTitle("Baro Ki'Teer", "https://www.warframe.wikia.com/wiki/Sortie");
             baro.setThumbnail("http://vignette4.wikia.nocookie.net/warframe/images/d/d8/MarchandDuN%C3%A9ant.png/revision/latest?cb=20150630171447&path-prefix=fr");
             baro.setColor(new Color(36, 153, 153));
-            baro.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+            baro.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
             event.getTextChannel().sendMessage(baro.build()).queue();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
+        }
+    }
+
+    public static void Darvo(MessageReceivedEvent event){
+        String urlApi = "http://content.warframe.com/dynamic/worldState.php";
+
+        try (InputStream is = new URL(urlApi).openStream()) {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            String jsonText = readAll(rd);
+            JSONObject warframeJson = new JSONObject(jsonText);
+
+            /***/
+
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -281,20 +333,159 @@ public class warframeAPI {
             /***/
 
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
+        }
+    }
+
+    public static void Goal(MessageReceivedEvent event) {
+        String urlApi = "http://content.warframe.com/dynamic/worldState.php";
+        String urlLanugage = "https://raw.githubusercontent.com/WFCD/warframe-worldstate-data/master/data/languages.json";
+
+        try {
+            InputStream isApi = new URL(urlApi).openStream();
+            InputStream isLanguage = new URL(urlLanugage).openStream();
+            BufferedReader rdApi = new BufferedReader(new InputStreamReader(isApi, Charset.forName("UTF-8")));
+            BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
+            String jsonTextApi = readAll(rdApi);
+            String jsonTextLanguage = readAll(rdLanguage);
+            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            String missionInfo = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
+            JSONObject starCharJson = new JSONObject(starChar);
+            JSONObject warframeJson = new JSONObject(jsonTextApi);
+            JSONObject languageJson = new JSONObject(jsonTextLanguage);
+            JSONObject missionJson = new JSONObject(missionInfo);
+            JSONArray goalsJson = warframeJson.getJSONArray("Goals");
+            EmbedBuilder goal = new EmbedBuilder();
+            long time = Instant.now().toEpochMilli();
+            long expire;
+            String jour;
+            String heure;
+            String minute;
+            String seconde;
+            String fin;
+            String recompense;
+            String mission;
+            String progression;
+            String[] node;
+            int[] level;
+            double pourcentage;
+
+            if (goalsJson.length() > 0) {
+                expire = Long.parseLong(goalsJson.getJSONObject(0).getJSONObject("Expiry").getJSONObject("$date").getString("$numberLong"));
+                jour = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
+                heure = new SimpleDateFormat("HH").format(new Date(expire - time - 3600000));
+                minute = new SimpleDateFormat("mm").format(new Date(expire - time - 3600000));
+                seconde = new SimpleDateFormat("ss").format(new Date(expire - time - 3600000));
+                fin = "";
+                recompense = "";
+                mission = "";
+                level = new int[2];
+
+                if (!jour.equals("01")) {
+                    if (jour.charAt(0) == '0') fin += jour.substring(1) + "d ";
+                    else fin += jour + "d ";
+                }
+                if (heure.equals("00")) fin += "";
+                else if (heure.charAt(0) == '0') fin += heure.substring(1) + "h ";
+                else fin += heure + "h ";
+                if (minute.equals("00") && heure.equals("00")) fin += "";
+                else if (minute.charAt(0) == '0') fin += minute.substring(1) + "m ";
+                else fin += minute + "m ";
+                if (seconde.charAt(0) == '0') fin += seconde.substring(1) + "s";
+                else fin += seconde + "s";
+
+                if (FindJsonKey(goalsJson.getJSONObject(0), "VictimNode")) {
+
+                    if (goalsJson.getJSONObject(0).getString("ScoreVar").contains("Fomorian")) {
+                        goal.setTitle("Balor Fomorian : " , "http://warframe.wikia.com/wiki/Fomorian");
+                        goal.setThumbnail("https://vignette1.wikia.nocookie.net/warframe/images/1/13/DEGrineerFomorian.png");
+                    }
+                    else if (goalsJson.getJSONObject(0).getString("Desc").toLowerCase().contains("corpusrazorbackproject")) {
+                        goal.setTitle("Razorback Armada : " , "http://warframe.wikia.com/wiki/Razorback");
+                        goal.setThumbnail("https://vignette2.wikia.nocookie.net/warframe/images/2/24/ArmoredJackal.png");
+                    }
+                    else {
+                        String[] str = goalsJson.getJSONObject(0).getString("Desc").toLowerCase().split("/");
+                        goal.setTitle(str[str.length-1], null);
+                    }
+
+                    node = starCharJson.getJSONObject(goalsJson.getJSONObject(0).getJSONObject("MissionInfo").getString("location")).getString("name").replace("[","$").split("[$]");
+                    level[0] = goalsJson.getJSONObject(0).getJSONObject("MissionInfo").getInt("minEnemyLevel");
+                    level[1] = goalsJson.getJSONObject(0).getJSONObject("MissionInfo").getInt("maxEnemyLevel");
+
+                    mission += "type : " + missionJson.getJSONObject("MissionType").getJSONObject(goalsJson.getJSONObject(0).getJSONObject("MissionInfo").getString("missionType")).getString("value") + "\n";
+                    mission += "level : " + level[0] + " - " + level[1] + "\n";
+
+                    if (goalsJson.getJSONObject(0).getJSONObject("MissionInfo").getBoolean("archwingRequired"))
+                        mission += "archwing requis\n";
+
+                    if (languageJson.toString().toLowerCase().contains("razorback") || languageJson.toString().toLowerCase().contains("razor back"))
+                        mission += languageJson.getJSONObject(goalsJson.getJSONObject(0).getJSONObject("MissionInfo").getJSONArray("requiredItems").getString(0).toLowerCase()).getString("value") + " requis";
+                    else {
+                        String[] str = goalsJson.getJSONObject(0).getJSONObject("MissionInfo").getJSONArray("requiredItems").getString(0).toLowerCase().split("/");
+                        mission += str[str.length-1] + " requis";
+                    }
+
+                    if (node[1].contains("PH")) node[1] = "Earth]";
+                    goal.addField("Mission : " + node[0] + " (" + node[1].substring(0, node[1].length()-1) + ")\n", mission, false);
+
+                    pourcentage = goalsJson.getJSONObject(0).getDouble("HealthPct") * 100;
+                    progression = String.valueOf((int) (pourcentage * 100)/100.0) + "%";
+
+                    goal.addField("Progression : ", progression, false);
+
+                    node = starCharJson.getJSONObject(goalsJson.getJSONObject(0).getString("VictimNode")).getString("name").replace("[","$").split("[$]");
+
+                    if (node[1].contains("PH")) node[1] = "Earth]";
+                    goal.addField("Relais ciblé :", node[0] + " (" + node[1].substring(0, node[1].length()-1) + ")", false);
+                }
+
+                recompense += goalsJson.getJSONObject(0).getJSONObject("Reward").getInt("credits") + " cr";
+
+                for (int i=0; i<goalsJson.getJSONObject(0).getJSONObject("Reward").getJSONArray("items").length(); i++) {
+                    String[] str = goalsJson.getJSONObject(0).getJSONObject("Reward").getJSONArray("items").getString(i).split("/");
+                    recompense += "\n" + ParseInsertSpace(str[str.length - 1]);
+                }
+
+                goal.addField("Récompenses :", recompense, false);
+                goal.setDescription("expire dans : " + fin);
+                goal.setColor(new Color(250, 50, 50));
+                goal.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
+            }
+            else if (goalsJson.length() == 0) {
+                goal.setTitle("Tactical Alert :", null);
+                goal.setDescription("");
+                goal.addField("Aucune alerte tactique en cours", "", false);
+                goal.setColor(new Color(250, 50, 50));
+                goal.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
+
+            }
+
+            event.getTextChannel().sendMessage(goal.build()).complete();
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
     public static void Invasion(MessageReceivedEvent event) {
         String urlApi = "http://content.warframe.com/dynamic/worldState.php";
+        String urlLanugage = "https://raw.githubusercontent.com/WFCD/warframe-worldstate-data/master/data/languages.json";
 
-        try (InputStream is = new URL(urlApi).openStream()) {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            String starChar = new String(Files.readAllBytes(Paths.get("input" + File.separator + "StarChar.json")));
+        try {
+            InputStream isApi = new URL(urlApi).openStream();
+            InputStream isLanguage = new URL(urlLanugage).openStream();
+            BufferedReader rdApi = new BufferedReader(new InputStreamReader(isApi, Charset.forName("UTF-8")));
+            BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
+            String jsonTextApi = readAll(rdApi);
+            String jsonTextLanguage = readAll(rdLanguage);
+            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            JSONObject warframeJson = new JSONObject(jsonTextApi);
+            JSONObject languageJson = new JSONObject(jsonTextLanguage);
             JSONObject starCharJson = new JSONObject(starChar);
-            JSONObject warframeJson = new JSONObject(jsonText);
             JSONArray invasionsJson = warframeJson.getJSONArray("Invasions");
             EmbedBuilder invasions = new EmbedBuilder();
             String[] factions;
@@ -328,24 +519,19 @@ public class warframeAPI {
                         avancement = String.valueOf((int) (pourcentage * 100) / 100.0) + "%";
                     }
 
-                    if (recompenses.length == 1) {
-                        String[] str = invasionsJson.getJSONObject(i).getJSONObject("DefenderReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").split("[/]");
-                        recompenses[0] = str[str.length - 1];
-                    }
+                    if (recompenses.length == 1)
+                        recompenses[0] = languageJson.getJSONObject(invasionsJson.getJSONObject(i).getJSONObject("DefenderReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").toLowerCase()).getString("value");
                     else if (recompenses.length == 2) {
-                        String[] str = invasionsJson.getJSONObject(i).getJSONObject("DefenderReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").split("[/]");
-                        String[] str1 = invasionsJson.getJSONObject(i).getJSONObject("AttackerReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").split("[/]");
-                        recompenses[0] = str[str.length - 1];
-                        recompenses[1] = str1[str1.length - 1];
+                        recompenses[0] = languageJson.getJSONObject(invasionsJson.getJSONObject(i).getJSONObject("DefenderReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").toLowerCase()).getString("value");
+                        recompenses[1] = languageJson.getJSONObject(invasionsJson.getJSONObject(i).getJSONObject("AttackerReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").toLowerCase()).getString("value");
                     }
 
-                    for (int j=0; j<recompenses.length; j++) {
-                        if (recompenses[j].toLowerCase().contains("component")) recompense += "        - en combatant contre : " + factions[j] + "\n           " + TypeReward(recompenses[j]) + "\n";
-                        else recompense += "        - en combatant contre : " + factions[j] + "\n           " + ParseInsertSpace(recompenses[j]) + "\n";
-                    }
+                    for (int j=0; j<recompenses.length; j++)
+                        recompense += "        - en combatant contre : " + factions[j] + "\n           " + recompenses[j] + "\n";
 
                     if (node[1].contains("PH")) node[1] = "Earth]";
-                    invasions.addField(node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") : " + factions[0] + " vs " + factions[1], "avancement : " + avancement + "\nrécompense(s) :\n" + recompense, false);
+                    invasions.addField(node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") : " + languageJson.getJSONObject(invasionsJson.getJSONObject(i).getString("LocTag").toLowerCase()).getString("value"),
+                            "**" + factions[0] + " vs " + factions[1] + "**\navancement : " + avancement + "\nrécompense(s) :\n" + recompense, false);
                 }
             }
 
@@ -353,24 +539,31 @@ public class warframeAPI {
             invasions.setDescription("en cours");
             invasions.setThumbnail("https://raw.githubusercontent.com/aliasfalse/genesis/master/src/resources/invasion.png");
             invasions.setColor(new Color(70, 70, 255));
-            invasions.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+            invasions.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
             event.getTextChannel().sendMessage(invasions.build()).queue();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
     public static void InvasionWithInterest(MessageReceivedEvent event) {
         String urlApi = "http://content.warframe.com/dynamic/worldState.php";
+        String urlLanugage = "https://raw.githubusercontent.com/WFCD/warframe-worldstate-data/master/data/languages.json";
 
-        try (InputStream is = new URL(urlApi).openStream()) {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-            String jsonText = readAll(rd);
-            String starChar = new String(Files.readAllBytes(Paths.get("input" + File.separator + "StarChar.json")));
+        try {
+            InputStream isApi = new URL(urlApi).openStream();
+            InputStream isLanguage = new URL(urlLanugage).openStream();
+            BufferedReader rdApi = new BufferedReader(new InputStreamReader(isApi, Charset.forName("UTF-8")));
+            BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
+            String jsonTextApi = readAll(rdApi);
+            String jsonTextLanguage = readAll(rdLanguage);
+            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            JSONObject warframeJson = new JSONObject(jsonTextApi);
+            JSONObject languageJson = new JSONObject(jsonTextLanguage);
             JSONObject starCharJson = new JSONObject(starChar);
-            JSONObject warframeJson = new JSONObject(jsonText);
             JSONArray invasionsJson = warframeJson.getJSONArray("Invasions");
             EmbedBuilder invasions = new EmbedBuilder();
             String[] factions;
@@ -407,25 +600,19 @@ public class warframeAPI {
                             avancement = String.valueOf((int) (pourcentage * 100) / 100.0) + "%";
                         }
 
-                        if (recompenses.length == 1) {
-                            String[] str = invasionsJson.getJSONObject(i).getJSONObject("DefenderReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").split("[/]");
-                            recompenses[0] = str[str.length - 1];
-                        } else if (recompenses.length == 2) {
-                            String[] str = invasionsJson.getJSONObject(i).getJSONObject("DefenderReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").split("[/]");
-                            String[] str1 = invasionsJson.getJSONObject(i).getJSONObject("AttackerReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").split("[/]");
-                            recompenses[0] = str[str.length - 1];
-                            recompenses[1] = str1[str1.length - 1];
+                        if (recompenses.length == 1)
+                            recompenses[0] = languageJson.getJSONObject(invasionsJson.getJSONObject(i).getJSONObject("DefenderReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").toLowerCase()).getString("value");
+                        else if (recompenses.length == 2) {
+                            recompenses[0] = languageJson.getJSONObject(invasionsJson.getJSONObject(i).getJSONObject("DefenderReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").toLowerCase()).getString("value");
+                            recompenses[1] = languageJson.getJSONObject(invasionsJson.getJSONObject(i).getJSONObject("AttackerReward").getJSONArray("countedItems").getJSONObject(0).getString("ItemType").toLowerCase()).getString("value");
                         }
 
-                        for (int j = 0; j < recompenses.length; j++) {
-                            if (recompenses[j].toLowerCase().contains("component"))
-                                recompense += "        - en combatant contre : " + factions[j] + "\n           " + TypeReward(recompenses[j]) + "\n";
-                            else
-                                recompense += "        - en combatant contre : " + factions[j] + "\n           " + ParseInsertSpace(recompenses[j]) + "\n";
-                        }
+                        for (int j=0; j<recompenses.length; j++)
+                            recompense += "        - en combatant contre : " + factions[j] + "\n           " + recompenses[j] + "\n";
 
                         if (node[1].contains("PH")) node[1] = "Earth]";
-                        invasions.addField(node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") : " + factions[0] + " vs " + factions[1], "avancement : " + avancement + "\nrécompense(s) :\n" + recompense, false);
+                        invasions.addField(node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") : " + languageJson.getJSONObject(invasionsJson.getJSONObject(i).getString("LocTag").toLowerCase()).getString("value"),
+                                "**" + factions[0] + " vs " + factions[1] + "**\navancement : " + avancement + "\nrécompense(s) :\n" + recompense, false);
                     }
                 }
             }
@@ -436,12 +623,13 @@ public class warframeAPI {
             invasions.setDescription("en cours, ayant une récompenses intéressante");
             invasions.setThumbnail("https://raw.githubusercontent.com/aliasfalse/genesis/master/src/resources/invasion.png");
             invasions.setColor(new Color(70, 70, 255));
-            invasions.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+            invasions.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
             event.getTextChannel().sendMessage(invasions.build()).queue();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -452,13 +640,15 @@ public class warframeAPI {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
             String commande = event.getMessage().getContent().toLowerCase();
+            String pvpInfo = new String(Files.readAllBytes(Paths.get("info" + File.separator + "DefiConclave.json")));
             JSONObject warframeJson = new JSONObject(jsonText);
+            JSONObject pvpInfoJson = new JSONObject(pvpInfo);
             JSONArray pvpJson = warframeJson.getJSONArray("PVPChallengeInstances");
             EmbedBuilder pvp = new EmbedBuilder();
             long time = Instant.now().toEpochMilli();
             int key = -1;
             long expire;
-            String jours;
+            String jour;
             String heure;
             String minute;
             String seconde;
@@ -477,14 +667,14 @@ public class warframeAPI {
                     }
 
                     expire = Long.parseLong(pvpJson.getJSONObject(key).getJSONObject("endDate").getJSONObject("$date").getString("$numberLong"));
-                    jours = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
+                    jour = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
                     heure = new SimpleDateFormat("HH").format(new Date(expire - time - 3600000));
                     minute = new SimpleDateFormat("mm").format(new Date(expire - time - 3600000));
                     seconde = new SimpleDateFormat("ss").format(new Date(expire - time - 3600000));
 
-                    if (!jours.equals("01")) {
-                        if (jours.charAt(0) == '0') fin += jours.substring(1) + "d ";
-                        else fin += jours + "d ";
+                    if (!jour.equals("01")) {
+                        if (jour.charAt(0) == '0') fin += jour.substring(1) + "d ";
+                        else fin += jour + "d ";
                     }
                     if (heure.equals("00")) fin += "";
                     else if (heure.charAt(0) == '0') fin += heure.substring(1) + "h ";
@@ -510,14 +700,14 @@ public class warframeAPI {
                 }
 
                 expire = Long.parseLong(pvpJson.getJSONObject(key).getJSONObject("endDate").getJSONObject("$date").getString("$numberLong"));
-                jours = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
+                jour = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
                 heure = new SimpleDateFormat("HH").format(new Date(expire - time - 3600000));
                 minute = new SimpleDateFormat("mm").format(new Date(expire - time - 3600000));
                 seconde = new SimpleDateFormat("ss").format(new Date(expire - time - 3600000));
 
-                if (!jours.equals("01")) {
-                    if (jours.charAt(0) == '0') fin += jours.substring(1) + "d ";
-                    else fin += jours + "d ";
+                if (!jour.equals("01")) {
+                    if (jour.charAt(0) == '0') fin += jour.substring(1) + "d ";
+                    else fin += jour + "d ";
                 }
                 if (heure.equals("00")) fin += "";
                 else if (heure.charAt(0) == '0') fin += heure.substring(1) + "h ";
@@ -531,22 +721,26 @@ public class warframeAPI {
                 pvp.setDescription("Défi conclave quotidien, expire dans : " + fin);
 
                 for (int i=0; i<pvpJson.length(); i++) {
-                    if (pvpJson.getJSONObject(i).getString("Category").contains("TypeCategory_DAILY"))
-                        pvp.addField(DefiPvpModeDaily(pvpJson.getJSONObject(i).getString("PVPMode")), DefiPvpDaily(pvpJson.getJSONObject(i).getString("PVPMode"), pvpJson.getJSONObject(i).getString("challengeTypeRefID")), false);
+                    if (pvpJson.getJSONObject(i).getString("Category").contains("TypeCategory_DAILY")) {
+                        if (FindJsonKey(pvpInfoJson.getJSONObject("defi"), pvpJson.getJSONObject(i).getString("challengeTypeRefID")))
+                            pvp.addField(pvpInfoJson.getJSONObject("mode").getString(pvpJson.getJSONObject(i).getString("PVPMode")), pvpInfoJson.getJSONObject("defi").getString(pvpJson.getJSONObject(i).getString("challengeTypeRefID")), false);
+                        else
+                            pvp.addField(pvpInfoJson.getJSONObject("mode").getString(pvpJson.getJSONObject(i).getString("PVPMode")), "défi à ajouter : " + pvpJson.getJSONObject(i).getString("challengeTypeRefID"), false);
+                    }
                 }
             }
 
             pvp.setTitle("Conclave : " + defi, "http://warframe.wikia.com/wiki/Conclave");
             pvp.setThumbnail("https://vignette2.wikia.nocookie.net/warframe/images/7/7f/Teshin.png/revision/latest?cb=20150818043033");
             pvp.setColor(new Color(10, 10, 10));
-            pvp.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+            pvp.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
             event.getTextChannel().sendMessage(pvp.build()).queue();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
-
     }
 
     public static void Sortie(MessageReceivedEvent event) {
@@ -555,23 +749,27 @@ public class warframeAPI {
         try (InputStream is = new URL(urlApi).openStream()) {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
-            String starChar = new String(Files.readAllBytes(Paths.get("input" + File.separator + "StarChar.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            String sortieInfo = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Sortie.json")));
+            String mission = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
             JSONObject starCharJson = new JSONObject(starChar);
+            JSONObject sortieInfoJson = new JSONObject(sortieInfo);
             JSONObject warframeJson = new JSONObject(jsonText);
+            JSONObject missionJson = new JSONObject(mission);
             JSONObject sortieJson = warframeJson.getJSONArray("Sorties").getJSONObject(0);
             EmbedBuilder sortie = new EmbedBuilder();
             long time = Instant.now().toEpochMilli();
             long expire = Long.parseLong(sortieJson.getJSONObject("Expiry").getJSONObject("$date").getString("$numberLong"));
-            String jours = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
+            String jour = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
             String heure = new SimpleDateFormat("HH").format(new Date(expire - time - 3600000));
             String minute = new SimpleDateFormat("mm").format(new Date(expire - time - 3600000));
             String seconde = new SimpleDateFormat("ss").format(new Date(expire - time - 3600000));
             String fin = "";
             String[] node;
 
-            if (!jours.equals("01")) {
-                if (jours.charAt(0) == '0') fin += jours.substring(1) + "d ";
-                else fin += jours + "d ";
+            if (!jour.equals("01")) {
+                if (jour.charAt(0) == '0') fin += jour.substring(1) + "d ";
+                else fin += jour + "d ";
             }
             if (heure.equals("00")) fin += "";
             else if (heure.charAt(0) == '0') fin += heure.substring(1) + "h ";
@@ -586,19 +784,21 @@ public class warframeAPI {
                 node = starCharJson.getJSONObject(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("node")).getString("name").replace("[","$").split("[$]");
 
                 if (node[1].contains("PH")) node[1] = "Earth]";
-                sortie.addField(node[0] + " (" + node[1].substring(0, node[1].length()-1) + ") - " + TypeMission(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("missionType")), Conditions(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("modifierType")), false);
+                sortie.addField(node[0] + " (" + node[1].substring(0, node[1].length()-1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("missionType")).getString("value"),
+                        sortieInfoJson.getJSONObject("modifierTypes").getString(sortieJson.getJSONArray("Variants").getJSONObject(i).getString("modifierType")), false);
             }
 
-            sortie.setTitle("Sortie vs : " + Boss(sortieJson.getString("Boss")), "https://www.warframe.wikia.com/wiki/Sortie");
-            sortie.setThumbnail(BossImage(Boss(sortieJson.getString("Boss"))));
+            sortie.setTitle("Sortie vs : " + sortieInfoJson.getJSONObject("bosses").getJSONObject(sortieJson.getString("Boss")).getString("name"), "https://www.warframe.wikia.com/wiki/Sortie");
+            sortie.setThumbnail(sortieInfoJson.getJSONObject("bosses").getJSONObject(sortieJson.getString("Boss")).getString("image"));
             sortie.setDescription("expire dans : " + fin);
             sortie.setColor(new Color(250, 50, 50));
-            sortie.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+            sortie.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
             event.getTextChannel().sendMessage(sortie.build()).complete();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -608,9 +808,11 @@ public class warframeAPI {
         try (InputStream is = new URL(urlApi).openStream()) {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
-            String starChar = new String(Files.readAllBytes(Paths.get("input" + File.separator + "StarChar.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            String mission = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
             JSONObject starCharJson = new JSONObject(starChar);
             JSONObject warframeJson = new JSONObject(jsonText);
+            JSONObject missionJson = new JSONObject(mission);
             JSONArray syndicatJson = warframeJson.getJSONArray("SyndicateMissions");
             EmbedBuilder syndicat = new EmbedBuilder();
             String commande = event.getMessage().getContent().toLowerCase();
@@ -621,16 +823,16 @@ public class warframeAPI {
                 JSONArray missionsJson = null;
                 long time = Instant.now().toEpochMilli();
                 long expire = Long.parseLong(syndicatJson.getJSONObject(0).getJSONObject("Expiry").getJSONObject("$date").getString("$numberLong"));
-                String jours = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
+                String jour = new SimpleDateFormat("dd").format(new Date(expire - time - 3600000));
                 String heure = new SimpleDateFormat("HH").format(new Date(expire - time - 3600000));
                 String minute = new SimpleDateFormat("mm").format(new Date(expire - time - 3600000));
                 String seconde = new SimpleDateFormat("ss").format(new Date(expire - time - 3600000));
                 String fin = "";
                 String[] node;
 
-                if (!jours.equals("01")) {
-                    if (jours.charAt(0) == '0') fin += jours.substring(1) + "d ";
-                    else fin += jours + "d ";
+                if (!jour.equals("01")) {
+                    if (jour.charAt(0) == '0') fin += jour.substring(1) + "d ";
+                    else fin += jour + "d ";
                 }
                 if (heure.equals("00")) fin += "";
                 else if (heure.charAt(0) == '0') fin += heure.substring(1) + "h ";
@@ -655,11 +857,11 @@ public class warframeAPI {
                         for (int i = 0; i<missionsJson.length(); i++) {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
-                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
+                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")).getString("value") + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(55, 64, 69)); //#374045
-                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
                         event.getTextChannel().sendMessage(syndicat.build()).queue();
                         break;
@@ -671,11 +873,11 @@ public class warframeAPI {
                         for (int i = 0; i<missionsJson.length(); i++) {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
-                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
+                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")).getString("value") + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(42, 60, 46)); //#2A3C2E
-                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
                         event.getTextChannel().sendMessage(syndicat.build()).queue();
                         break;
@@ -687,11 +889,11 @@ public class warframeAPI {
                         for (int i = 0; i<missionsJson.length(); i++) {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
-                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
+                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")).getString("value") + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(61, 55, 93)); //#3D375D
-                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
                         event.getTextChannel().sendMessage(syndicat.build()).queue();
                         break;
@@ -703,11 +905,11 @@ public class warframeAPI {
                         for (int i = 0; i<missionsJson.length(); i++) {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
-                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
+                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")).getString("value") + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(61, 73, 99)); //#3D4963
-                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
                         event.getTextChannel().sendMessage(syndicat.build()).queue();
                         break;
@@ -719,11 +921,11 @@ public class warframeAPI {
                         for (int i = 0; i<missionsJson.length(); i++) {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
-                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
+                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")).getString("value") + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(61, 24, 57)); //#3D1839
-                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
                         event.getTextChannel().sendMessage(syndicat.build()).queue();
                         break;
@@ -735,11 +937,11 @@ public class warframeAPI {
                         for (int i = 0; i<missionsJson.length(); i++) {
                             node = starCharJson.getJSONObject(missionsJson.getString(i)).getString("name").replace("[","$").split("[$]");
                             if (node[1].contains("PH")) node[1] = "Earth]";
-                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")) + "\n";
+                            missions += node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(starCharJson.getJSONObject(missionsJson.getString(i)).getString("mission_type")).getString("value") + "\n";
                         }
                         syndicat.addField("liste des missions :", missions, false);
                         syndicat.setColor(new Color(44, 63, 70)); //#2C3F46
-                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+                        syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : arframe.com", "http://i.imgur.com/BUkD1OV.png");
 
                         event.getTextChannel().sendMessage(syndicat.build()).queue();
                         break;
@@ -756,13 +958,14 @@ public class warframeAPI {
                 syndicat.addField("les suivants :", "\nMéridien d'acier\nVoile Rouge\nLa Séquence Perrin\nCéphalon Suda\nNouveau Loka\nArbitres d'Hexis", true);
                 syndicat.addField("avec la commande : **__!syndicat <choix du syndicat>__**", "exemple : !syndicat NewLoka", false);
                 syndicat.setColor(new Color(70, 70, 255));
-                syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+                syndicat.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
                 event.getTextChannel().sendMessage(syndicat.build()).queue();
             }
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -814,8 +1017,9 @@ public class warframeAPI {
                 event.getTextChannel().sendMessage(hotfix.build()).complete();
             }
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 
@@ -825,9 +1029,11 @@ public class warframeAPI {
         try (InputStream is = new URL(urlApi).openStream()) {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
-            String starChar = new String(Files.readAllBytes(Paths.get("input" + File.separator + "StarChar.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            String mission = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
             JSONObject starCharJson = new JSONObject(starChar);
             JSONObject warframeJson = new JSONObject(jsonText);
+            JSONObject missionJson = new JSONObject(mission);
             JSONArray fissureJson = warframeJson.getJSONArray("ActiveMissions");
             EmbedBuilder voidFissure = new EmbedBuilder();
             long time = Instant.now().toEpochMilli();
@@ -844,7 +1050,7 @@ public class warframeAPI {
                 voidFissure.setTitle("Fissure du Néant : " + tiers, "http://warframe.wikia.com/wiki/Void_Fissure");
 
                 for (int i = 0; i < fissureJson.length(); i++) {
-                    if (TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")).toLowerCase().equals(tiers)) {
+                    if (missionJson.getJSONObject("VoidFissure").getJSONObject(fissureJson.getJSONObject(i).getString("Modifier")).getString("value").toLowerCase().equals(tiers)) {
                         fin = "";
                         expire = Long.parseLong(fissureJson.getJSONObject(i).getJSONObject("Expiry").getJSONObject("$date").getString("$numberLong"));
                         heure = new SimpleDateFormat("HH").format(new Date(expire - time - 3600000));
@@ -857,13 +1063,15 @@ public class warframeAPI {
                         if (minute.equals("00") && heure.equals("00")) fin += "";
                         else if (minute.charAt(0) == '0') fin += minute.substring(1) + "m ";
                         else fin += minute + "m ";
-                        if (seconde.charAt(0) == '0') fin += seconde.substring(1) + "s";    
+                        if (seconde.charAt(0) == '0') fin += seconde.substring(1) + "s";
                         else fin += seconde + "s";
 
                         node = starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").split(" ");
 
                         if (node[1].contains("PH")) node[1] = "Earth]";
-                        voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : " + node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
+                        voidFissure.addField(missionJson.getJSONObject("VoidFissure").getJSONObject(fissureJson.getJSONObject(i).getString("Modifier")).getString("value") + " : " +
+                                node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")).getString("value"),
+                                "expire dans : " + fin, false);
                     }
                 }
             }
@@ -889,7 +1097,9 @@ public class warframeAPI {
                     node = starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("name").replace("[","$").split("[$]");
 
                     if (node[1].contains("PH")) node[1] = "Earth]";
-                    voidFissure.addField(TypeFissure(fissureJson.getJSONObject(i).getString("Modifier")) + " : " + node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + TypeMission(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")), "expire dans : " + fin, false);
+                    voidFissure.addField(missionJson.getJSONObject("VoidFissure").getJSONObject(fissureJson.getJSONObject(i).getString("Modifier")).getString("value") + " : " +
+                            node[0] + " (" + node[1].substring(0, node[1].length() - 1) + ") - " + missionJson.getJSONObject("MissionType").getJSONObject(starCharJson.getJSONObject(fissureJson.getJSONObject(i).getString("Node")).getString("mission_type")).getString("value"),
+                            "expire dans : " + fin, false);
                 }
 
                 voidFissure.addField("pour voir les fissures d'un seul tiers :", "tapez la commande : **__!void <tiers>__**\n   <tiers> parmi : axi, neo, meso, lith", false);
@@ -898,12 +1108,13 @@ public class warframeAPI {
             voidFissure.setDescription("missions où une fissure du néant est apparue");
             voidFissure.setThumbnail("https://vignette3.wikia.nocookie.net/warframe/images/9/9c/LuminousIconLarge.png");
             voidFissure.setColor(new Color(240, 180, 20));
-            voidFissure.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : www.warframe.com", "http://i.imgur.com/BUkD1OV.png");
+            voidFissure.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())) + " | Source : warframe.com", "http://i.imgur.com/BUkD1OV.png");
 
             event.getTextChannel().sendMessage(voidFissure.build()).queue();
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
         }
     }
 }
