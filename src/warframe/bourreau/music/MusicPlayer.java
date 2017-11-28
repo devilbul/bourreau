@@ -1,52 +1,43 @@
 package warframe.bourreau.music;
 
-import net.dv8tion.jda.core.audio.AudioConnection;
-import net.dv8tion.jda.core.audio.AudioSendHandler;
-import net.dv8tion.jda.player.AbstractMusicPlayer;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.core.entities.Guild;
 
-import java.io.IOException;
-import java.util.Arrays;
+public class MusicPlayer {
 
-public class MusicPlayer extends AbstractMusicPlayer implements AudioSendHandler {
-    private static final int PCM_FRAME_SIZE = 4;
-    private byte[] buffer = new byte[AudioConnection.OPUS_FRAME_SIZE * PCM_FRAME_SIZE];
+    private final AudioPlayer audioPlayer;
+    private final AudioListener listener;
+    private final Guild guild;
 
-    @Override
-    public boolean canProvide() { return state.equals(State.PLAYING); }
+    public MusicPlayer(AudioPlayer audioPlayer, Guild guild) {
+        this.audioPlayer = audioPlayer;
+        this.guild = guild;
+        listener = new AudioListener(this);
+        audioPlayer.addListener(listener);
+    }
 
-    @Override
-    public byte[] provide20MsAudio() {
-//        if (currentAudioStream == null || audioFormat == null)
-//            throw new IllegalStateException("The Audio source was never set for this player!\n" +
-//                    "Please provide an AudioInputStream using setAudioSource.");
-        try {
-            int amountRead = currentAudioStream.read(buffer, 0, buffer.length);
-            if (amountRead > -1) {
-                if (amountRead < buffer.length)
-                    Arrays.fill(buffer, amountRead, buffer.length - 1, (byte) 0);
+    public AudioPlayer getAudioPlayer() {
+        return audioPlayer;
+    }
 
-                if (volume != 1) {
-                    short sample;
-                    for (int i = 0; i < buffer.length; i+=2) {
-                        sample = (short)((buffer[i + 1] & 0xff) | (buffer[i] << 8));
-                        sample = (short) (sample * volume);
-                        buffer[i + 1] = (byte)(sample & 0xff);
-                        buffer[i] = (byte)((sample >> 8) & 0xff);
-                    }
-                }
+    public Guild getGuild() {
+        return guild;
+    }
 
-                return buffer;
-            }
-            else {
-                sourceFinished();
-                return null;
-            }
-        }
-        catch (IOException e) {
-            LOG.debug("A source closed unexpectantly? Oh well I guess...");
-            sourceFinished();
-        }
+    public AudioListener getListener() {
+        return listener;
+    }
 
-        return null;
+    public AudioHandler getAudioHandler() {
+        return new AudioHandler(audioPlayer);
+    }
+
+    public synchronized void playTrack(AudioTrack track){
+        listener.queue(track);
+    }
+
+    public synchronized void skipTrack() {
+        listener.nextTrack();
     }
 }

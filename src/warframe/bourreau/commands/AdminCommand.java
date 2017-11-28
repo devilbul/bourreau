@@ -5,6 +5,7 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
+import warframe.bourreau.util.Command;
 
 import java.awt.*;
 import java.io.File;
@@ -14,14 +15,16 @@ import java.time.Instant;
 import java.util.Date;
 
 import static warframe.bourreau.InitID.*;
+import static warframe.bourreau.commands.BasedCommand.Information;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.Find.FindAdmin;
 import static warframe.bourreau.util.Find.FindModo;
 import static warframe.bourreau.util.Find.FindUserVC;
 import static warframe.bourreau.util.Recup.*;
 
-public class AdminCommand extends Command {
+public class AdminCommand extends SimpleCommand {
 
+    @Command(name="tenno")
     public static void AddUserToTenno(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
@@ -45,6 +48,7 @@ public class AdminCommand extends Command {
         }
     }
 
+    @Command(name="aubucher")
     public static void AuBucher(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
@@ -54,7 +58,7 @@ public class AdminCommand extends Command {
                     if (FindUserVC(event) != null) {
                         event.getGuild().getController().moveVoiceMember(event.getGuild().getMemberById(id), event.getJDA().getVoiceChannelById(bucherID)).queue();
                         event.getGuild().getController().addRolesToMember(event.getGuild().getMemberById(id), event.getGuild().getRoleById(heretiqueID)).queue();
-                        event.getTextChannel().sendMessage("Hérétique ,au bucher !");
+                        event.getTextChannel().sendMessage("Hérétique ,au bucher !").queue();
                     }
                     else
                         event.getTextChannel().sendMessage(event.getJDA().getUserById(id).getName() + " n'est pas dans un salon vocal.\nil n'a pas été envoyer au bucher.").queue();
@@ -71,6 +75,7 @@ public class AdminCommand extends Command {
         }
     }
 
+    @Command(name="ban")
     public static void Ban(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
@@ -96,6 +101,7 @@ public class AdminCommand extends Command {
         }
     }
 
+    @Command(name="deafen")
     public static void Deafen(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
@@ -124,6 +130,7 @@ public class AdminCommand extends Command {
         }
     }
 
+    @Command(name="kick")
     public static void Kick(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
@@ -152,6 +159,7 @@ public class AdminCommand extends Command {
         }
     }
 
+    @Command(name="mute")
     public static void Mute(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
@@ -180,6 +188,7 @@ public class AdminCommand extends Command {
         }
     }
 
+    @Command(name="ping")
     public static void Ping(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
@@ -202,6 +211,7 @@ public class AdminCommand extends Command {
         }
     }
 
+    @Command(name="setgame")
     public static void SetGame(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
@@ -235,6 +245,7 @@ public class AdminCommand extends Command {
         }
     }
 
+    @Command(name="unban")
     public static void UnBan(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
@@ -257,6 +268,7 @@ public class AdminCommand extends Command {
         }
     }
 
+    @Command(name="undeafen")
     public static void UnDeafen(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
@@ -276,6 +288,7 @@ public class AdminCommand extends Command {
         }
     }
 
+    @Command(name="unmute")
     public static void UnMute(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {

@@ -11,9 +11,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.dv8tion.jda.player.source.AudioInfo;
 import net.dv8tion.jda.player.source.AudioSource;
 import net.dv8tion.jda.player.source.AudioTimestamp;
-import warframe.bourreau.music.MusicPlayer;
+import warframe.bourreau.music.MusicPlayerOld;
 import warframe.bourreau.parser.CommandParser;
 import warframe.bourreau.thread.ThreadSon;
+import warframe.bourreau.util.Command;
 
 import static warframe.bourreau.InitID.audioManager;
 import static warframe.bourreau.InitID.player;
@@ -24,8 +25,9 @@ import static warframe.bourreau.util.Find.FindAdmin;
 import static warframe.bourreau.util.Levenshtein.CompareCommande;
 import static warframe.bourreau.util.Recup.recupString;
 
-public class SonCommand extends Command {
+public class SonCommand extends SimpleCommand {
 
+    @Command(name="leave")
     public static void Leave(MessageReceivedEvent event) {
         try {
             AudioManager manager = event.getGuild().getAudioManager();
@@ -55,6 +57,7 @@ public class SonCommand extends Command {
         }
     }
 
+    @Command(name="son")
     public static void Son(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
@@ -198,7 +201,7 @@ public class SonCommand extends Command {
     private static void Reset(MessageReceivedEvent event) {
         try {
             player.stop();
-            player = new MusicPlayer();
+            player = new MusicPlayerOld();
             player.setVolume(DEFAULT_VOLUME);
             audioManager.setSendingHandler(player);
             event.getChannel().sendMessage("Music player has been completely reset.").queue();

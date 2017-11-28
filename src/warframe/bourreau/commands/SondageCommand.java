@@ -5,6 +5,7 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
+import warframe.bourreau.util.Command;
 
 import java.awt.*;
 import java.io.File;
@@ -20,8 +21,9 @@ import static warframe.bourreau.util.Find.*;
 import static warframe.bourreau.util.Levenshtein.CompareCommande;
 import static warframe.bourreau.util.Recup.recupString;
 
-public class SondageCommand extends  Command {
+public class SondageCommand extends SimpleCommand {
 
+    @Command(name="sondage")
     public static void Sondage(MessageReceivedEvent event) {
         try {
             if (event.getMessage().getContent().contains(" ")) {

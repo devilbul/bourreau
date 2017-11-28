@@ -3,19 +3,20 @@ package warframe.bourreau.commands;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import warframe.bourreau.util.Command;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.Find.*;
 import static warframe.bourreau.util.Recup.recupString;
 
-public class GestionCommand extends Command {
+public class GestionCommand extends SimpleCommand {
 
+    @Command(name="addclan")
     public static void AddClan(MessageReceivedEvent event) {
                 try {
                     if (FindAdmin(event, event.getMember())) {
@@ -77,6 +78,7 @@ public class GestionCommand extends Command {
         }
     }
 
+    @Command(name="removeclan")
     public static void RemoveClan(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
@@ -123,6 +125,7 @@ public class GestionCommand extends Command {
         }
     }
 
+    @Command(name="addurl")
     public static void AddLogoUrl(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {

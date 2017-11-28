@@ -27,7 +27,7 @@ public class erreurGestion {
         message.addField("localize :", e.getLocalizedMessage(), false);
 
         event.getGuild().getTextChannelsByName("admin_perso", true).get(0).sendMessage(message.build()).queue();
-        event.getTextChannel().sendMessage("Une erreur est survenue.\nUn rapport a été créé.").queue();
+        event.getTextChannel().sendMessage("Une erreur est survenue.").queue();
     }
 
     public static void saveErreur(MessageReceivedEvent event, Exception e) {

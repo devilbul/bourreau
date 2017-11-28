@@ -13,7 +13,7 @@ public class HandleCommand {
 
     public static void handleCommand(CommandParser.CommandContainer cmd) {
         if (commands.containsKey(cmd.invoke)) {
-            boolean safe = Command.called();
+            boolean safe = SimpleCommand.called();
 
             if (safe) {
                 Thread aubucher = new ThreadAuBucher(cmd);
@@ -44,7 +44,6 @@ public class HandleCommand {
                     case "pute":
                         TrollCommand.Pute(cmd.event);
                         break;
-                    case "RIP":
                     case "rip":
                         TrollCommand.RIP(cmd.event);
                         break;
@@ -74,7 +73,6 @@ public class HandleCommand {
                     case "goals":
                         InfoCommand.Goals(cmd.event);
                         break;
-                    case "idée":
                     case "idee":
                         InfoCommand.Idee(cmd.event);
                         break;
@@ -205,15 +203,15 @@ public class HandleCommand {
 
                     // test
                     case "test":
-                        Command.Test(cmd.event);
+                        BasedCommand.Test(cmd.event);
                         break;
 
                     // commande  bot
                     case "about":
-                        Command.AboutBot(cmd.event);
+                        BasedCommand.AboutBot(cmd.event);
                         break;
                     case "botnews":
-                        Command.AfficheUpdateBot(cmd.event);
+                        BasedCommand.AfficheUpdateBot(cmd.event);
                         break;
 
                     // commande arrêt
@@ -227,7 +225,7 @@ public class HandleCommand {
                 }
             }
         } else {
-            cmd.event.getTextChannel().sendMessage(CompareCommande(cmd.invoke, commands.keySet().toArray())).queue();
+            if (!commands.isEmpty()) cmd.event.getTextChannel().sendMessage(CompareCommande(cmd.invoke, commands.keySet().toArray())).queue();
             MessageNoThing(cmd.event);
         }
     }

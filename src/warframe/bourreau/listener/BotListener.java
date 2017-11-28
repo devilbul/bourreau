@@ -11,7 +11,7 @@ import warframe.bourreau.Main;
 
 import static warframe.bourreau.InitID.*;
 import static warframe.bourreau.Main.*;
-import static warframe.bourreau.commands.Command.Presentation;
+import static warframe.bourreau.commands.BasedCommand.Presentation;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.handle.HandleCommand.handleCommand;
 import static warframe.bourreau.handle.HandleCommandPrivate.handleCommandPrivate;
@@ -35,7 +35,7 @@ public class BotListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if ((event.getAuthor() != event.getJDA().getSelfUser()) && !event.getAuthor().isBot() && !event.getMessage().getChannel().toString().startsWith("PC")) {
+        if (!event.getAuthor().equals(event.getJDA().getSelfUser()) && !event.getAuthor().isBot() && !event.getMessage().getChannel().toString().startsWith("PC")) {
             if (event.getMember().getRoles().size() == 0) Presentation(event);
 
             if (event.getMessage().getContent().startsWith("!")) {

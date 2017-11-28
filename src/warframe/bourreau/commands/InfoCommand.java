@@ -4,6 +4,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import warframe.bourreau.util.Command;
 
 import java.awt.*;
 import java.io.File;
@@ -20,8 +21,9 @@ import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.Find.FindClanKey;
 import static warframe.bourreau.util.Recup.recupString;
 
-public class InfoCommand extends Command {
+public class InfoCommand extends SimpleCommand {
 
+    @Command(name="alerts")
     public static void Alerts(MessageReceivedEvent event) {
         try {
             String commande = event.getMessage().getContent().toLowerCase();
@@ -35,6 +37,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="alliance")
     public static void Alliance(MessageReceivedEvent event) {
         try {
             String info = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Alliance.json")));
@@ -60,6 +63,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="discordwf")
     public static void DiscordWarframe(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("https://discord.gg/K4GbEUe").queue();
@@ -70,6 +74,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="goals")
     public static void Goals(MessageReceivedEvent event) {
         try {
             Goal(event);
@@ -80,6 +85,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="idee")
     public static void Idee(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("https://docs.google.com/document/d/1kb-sIRzCQlau5JL2q2WZRFlUy94JKWLF8p4xvfRXJFU/edit?usp=sharing").queue();
@@ -90,6 +96,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="info")
     public static void Info(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("https://deathsnacks.com/wf").queue();
@@ -100,6 +107,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="invasions")
     public static void Invasions(MessageReceivedEvent event) {
         try {
             String commande = event.getMessage().getContent().toLowerCase();
@@ -113,6 +121,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="invite")
     public static void InvitationServeur(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("https://discord.me/frenchco").queue();
@@ -123,6 +132,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="clan")
     public static void ListClan(MessageReceivedEvent event) {
         try {
             String clanString = "";
@@ -150,6 +160,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="lead")
     public static void ListLeader(MessageReceivedEvent event) {
         try {
             String commande = event.getMessage().getContent();
@@ -220,6 +231,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="proges")
     public static void Progression(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("Voici ma progression : \nhttps://trello.com/b/JEEkreCv").queue();
@@ -230,6 +242,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="pvp")
     public static void PvpChallenge(MessageReceivedEvent event) {
         try {
             PVPChallenge(event);
@@ -240,6 +253,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="raid")
     public static void Raid(MessageReceivedEvent event) {
         try {
             if (event.getMessage().getContent().contains("detail")) RaidStatDetails(event);
@@ -251,6 +265,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="site")
     public static void Site(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("http://wfraid.teamfr.net/").queue();
@@ -261,6 +276,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="sortie")
     public static void Sorties(MessageReceivedEvent event) {
         try {
             Sortie(event);
@@ -271,6 +287,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="steam")
     public static void Steam(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("http://steamcommunity.com/groups/wfraid").queue();
@@ -281,6 +298,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="syndicat")
     public static void Syndicats(MessageReceivedEvent event) {
         try {
             Syndicat(event);
@@ -291,6 +309,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="ts")
     public static void Ts (MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("mine.ts-devil.eu:8334").queue();
@@ -301,6 +320,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="up")
     public static void Upcoming(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("https://warframe.wikia.com/wiki/Upcoming_Features").queue();
@@ -311,6 +331,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="updates")
     public static void UpdateHotfix(MessageReceivedEvent event) {
         try {
             Updates(event);
@@ -321,6 +342,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="baro")
     public static void VoidTraders(MessageReceivedEvent event) {
         try {
             Baro(event);
@@ -331,6 +353,7 @@ public class InfoCommand extends Command {
         }
     }
 
+    @Command(name="void")
     public static void Void(MessageReceivedEvent event) {
         try {
             VoidFissure(event);

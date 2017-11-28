@@ -2,6 +2,7 @@ package warframe.bourreau.commands;
 
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import warframe.bourreau.util.Command;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -9,12 +10,13 @@ import static warframe.bourreau.InitID.*;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.Find.FindUserVC;
 
-public class TrollCommand extends Command {
+public class TrollCommand extends SimpleCommand {
 
     public static void FDP(MessageReceivedEvent event) {
 
     }
 
+    @Command(name="pute")
     public static void Pute(MessageReceivedEvent event) {
         try {
             MessageBuilder pute = new MessageBuilder();
@@ -55,6 +57,7 @@ public class TrollCommand extends Command {
 
     }
 
+    @Command(name="rip")
     public static void RIP(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("#JeSuisBourreau !").queue();
@@ -65,6 +68,7 @@ public class TrollCommand extends Command {
         }
     }
 
+    @Command(name="segpa")
     public static void Segpta(MessageReceivedEvent event) {
         try {
             MessageBuilder segpa = new MessageBuilder();
@@ -101,6 +105,7 @@ public class TrollCommand extends Command {
         }
     }
 
+    @Command(name="tg")
     public static void Tg(MessageReceivedEvent event) {
         try {
             MessageBuilder message = new MessageBuilder();

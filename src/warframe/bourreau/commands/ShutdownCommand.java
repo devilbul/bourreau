@@ -1,14 +1,16 @@
 package warframe.bourreau.commands;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import warframe.bourreau.util.Command;
 
 import static warframe.bourreau.InitID.accueilID;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.Find.FindAdmin;
 import static warframe.bourreau.messsage.MessageOnEvent.MessageDeDeconnection;
 
-public class ShutdownCommand extends Command {
+public class ShutdownCommand extends SimpleCommand {
 
+    @Command(name="shutdown")
     public static void Shutdown(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {

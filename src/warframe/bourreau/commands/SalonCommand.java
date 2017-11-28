@@ -3,18 +3,18 @@ package warframe.bourreau.commands;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import warframe.bourreau.util.Command;
 
 import static net.dv8tion.jda.core.Permission.*;
-import static net.dv8tion.jda.core.Permission.VOICE_CONNECT;
-import static net.dv8tion.jda.core.Permission.VOICE_SPEAK;
 import static warframe.bourreau.InitID.clanID;
 import static warframe.bourreau.erreur.erreurGestion.afficheErreur;
 import static warframe.bourreau.erreur.erreurGestion.saveErreur;
 import static warframe.bourreau.util.Find.FindAdmin;
 import static warframe.bourreau.util.Recup.recupString;
 
-public class SalonCommand extends Command{
+public class SalonCommand extends SimpleCommand {
 
+    @Command(name="createsalonclan")
     public static void CreateSalonClan(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
@@ -36,7 +36,7 @@ public class SalonCommand extends Command{
                         Role every = event.getGuild().getPublicRole();
 
                         if (event.getGuild().getRolesByName(clan, true).size() == 0) {
-                            newRole = event.getGuild().getController().createRole().setName(clan).setPermissions(NICKNAME_CHANGE, VIEW_CHANNEL, MESSAGE_WRITE, MESSAGE_TTS,
+                            newRole = event.getGuild().getController().createRole().setName(clan).setPermissions(NICKNAME_CHANGE, MESSAGE_WRITE, VIEW_CHANNEL, MESSAGE_TTS,
                                     MESSAGE_ATTACH_FILES, MESSAGE_EMBED_LINKS, MESSAGE_HISTORY, MESSAGE_MENTION_EVERYONE, MESSAGE_EXT_EMOJI, MESSAGE_ADD_REACTION,
                                     VOICE_CONNECT, VOICE_SPEAK, VOICE_USE_VAD).complete();
                         } else
@@ -79,6 +79,7 @@ public class SalonCommand extends Command{
         }
     }
 
+    @Command(name="deletesalonclan")
     public static void DeleteSalonClan(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {

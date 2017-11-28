@@ -3,6 +3,7 @@ package warframe.bourreau.commands;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+import warframe.bourreau.util.Command;
 
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.help.EmbedAdminHelp.MessageHelpAdmin;
@@ -19,8 +20,9 @@ import static warframe.bourreau.help.EmbedTrollHelp.MessageHelpTroll;
 import static warframe.bourreau.util.Find.*;
 import static warframe.bourreau.util.Recup.recupString;
 
-public class HelpCommand extends Command {
+public class HelpCommand extends SimpleCommand {
 
+    @Command(name="help")
     public static void Help(MessageReceivedEvent event) {
         try {
             if (event.getMessage().getContent().contains(" ")) {
@@ -40,7 +42,6 @@ public class HelpCommand extends Command {
                         break;
                     // commande troll
                     case "pute":
-                    case "RIP":
                     case "rip":
                     case "segpa":
                     case "tg":
@@ -53,7 +54,6 @@ public class HelpCommand extends Command {
                     case "clan":
                     case "discordwf":
                     case "goals":
-                    case "idée":
                     case "idee":
                     case "info":
                     case "invasions":
@@ -145,7 +145,6 @@ public class HelpCommand extends Command {
                     break;
                 // commande troll
                 case "pute":
-                case "RIP":
                 case "rip":
                 case "segpa":
                 case "tg":
@@ -158,7 +157,6 @@ public class HelpCommand extends Command {
                 case "clan":
                 case "discordwf":
                 case "goals":
-                case "idée":
                 case "idee":
                 case "info":
                 case "invasions":

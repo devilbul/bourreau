@@ -6,7 +6,7 @@ import warframe.bourreau.util.Tempo;
 
 import static warframe.bourreau.InitID.player;
 import static warframe.bourreau.Main.DEFAULT_VOLUME;
-import static warframe.bourreau.music.PlaySound.playSound;
+import static warframe.bourreau.music.PlaySoundOld.playSound;
 
 public class ThreadSon extends Thread {
         private CommandParser.CommandContainer cmd;

@@ -10,7 +10,7 @@ public class HandleCommandPrivate {
 
     public static void handleCommandPrivate(CommandParserPrivate.CommandContainerPrivate cmd) {
         if (commands.containsKey(cmd.invoke)) {
-            boolean safe = Command.called();
+            boolean safe = SimpleCommand.called();
 
             if (safe) {
                 switch (cmd.invoke) {
@@ -27,7 +27,7 @@ public class HandleCommandPrivate {
                         HelpCommand.HelpPrivate(cmd.event);
                         break;
                     case "about":
-                        Command.AboutBotPrivate(cmd.event);
+                        BasedCommand.AboutBotPrivate(cmd.event);
                         break;
                     default:
                         cmd.event.getAuthor().openPrivateChannel().complete().sendMessage("Commande à faire sur un salon textuel du serveur " + cmd.event.getJDA().getGuilds().get(0).getName() + "\nou commande inconnue !").complete();

@@ -5,7 +5,7 @@ import warframe.bourreau.commands.SonCommand;
 import warframe.bourreau.parser.CommandParser;
 import warframe.bourreau.util.Tempo;
 
-import static warframe.bourreau.music.PlaySound.playSoundMention;
+import static warframe.bourreau.music.PlaySoundOld.playSoundMention;
 import static warframe.bourreau.util.Find.FindAdmin;
 
 public class ThreadAuBucher extends Thread {

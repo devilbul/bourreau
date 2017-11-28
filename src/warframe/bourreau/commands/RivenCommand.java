@@ -4,6 +4,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
+import warframe.bourreau.util.Command;
 
 import java.awt.*;
 import java.io.File;
@@ -23,8 +24,9 @@ import static warframe.bourreau.util.Find.*;
 import static warframe.bourreau.util.Levenshtein.CompareCommande;
 import static warframe.bourreau.util.Recup.recupString;
 
-public class RivenCommand extends Command {
+public class RivenCommand extends SimpleCommand {
 
+    @Command(name="riven")
     public static void Riven(MessageReceivedEvent event) {
         try {
             if (event.getMessage().getContent().contains(" ")) {

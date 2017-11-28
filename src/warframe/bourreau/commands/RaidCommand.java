@@ -15,7 +15,7 @@ import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.DateHeure.GiveDate;
 import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThingRaid;
 
-public class RaidCommand extends Command {
+public class RaidCommand extends SimpleCommand {
 
     public static void AffichePresent(MessageReceivedEvent event) {
         try {
