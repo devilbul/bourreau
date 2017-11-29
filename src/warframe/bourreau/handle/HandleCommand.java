@@ -4,7 +4,7 @@ import warframe.bourreau.commands.*;
 import warframe.bourreau.parser.CommandParser;
 import warframe.bourreau.thread.ThreadAuBucher;
 
-import static warframe.bourreau.Main.commands;
+import static warframe.bourreau.Bourreau.commands;
 import static warframe.bourreau.handle.HandleSonCommand.handleSonCommand;
 import static warframe.bourreau.util.Levenshtein.CompareCommande;
 import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThing;

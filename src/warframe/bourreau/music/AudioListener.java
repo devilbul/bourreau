@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class AudioListener extends AudioEventAdapter {
 
-    private final BlockingQueue<AudioTrack> tracks = new LinkedBlockingQueue<>();
+    private final BlockingQueue<AudioTrack> tracks = new LinkedBlockingQueue<AudioTrack>();
     private final MusicPlayer player;
 
     public AudioListener(MusicPlayer player) {

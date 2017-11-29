@@ -4,7 +4,7 @@ import net.dv8tion.jda.core.MessageBuilder;
 import warframe.bourreau.commands.*;
 import warframe.bourreau.parser.CommandParserPrivate;
 
-import static warframe.bourreau.Main.commands;
+import static warframe.bourreau.Bourreau.commands;
 
 public class HandleCommandPrivate {
 

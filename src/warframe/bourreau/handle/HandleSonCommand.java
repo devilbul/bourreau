@@ -7,7 +7,7 @@ import warframe.bourreau.thread.ThreadSon;
 import warframe.bourreau.util.Tempo;
 
 import static warframe.bourreau.InitID.queueSon;
-import static warframe.bourreau.Main.commands;
+import static warframe.bourreau.Bourreau.commands;
 import static warframe.bourreau.thread.ThreadSon.isPlayed;
 import static warframe.bourreau.util.Find.FindAdmin;
 

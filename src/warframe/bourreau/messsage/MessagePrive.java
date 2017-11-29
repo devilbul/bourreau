@@ -9,7 +9,7 @@ import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import java.util.List;
 
 import static warframe.bourreau.InitID.*;
-import static warframe.bourreau.Main.*;
+import static warframe.bourreau.Bourreau.*;
 
 public class MessagePrive {
 

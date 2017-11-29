@@ -7,10 +7,10 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import warframe.bourreau.Main;
+import warframe.bourreau.Bourreau;
 
 import static warframe.bourreau.InitID.*;
-import static warframe.bourreau.Main.*;
+import static warframe.bourreau.Bourreau.*;
 import static warframe.bourreau.commands.BasedCommand.Presentation;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.handle.HandleCommand.handleCommand;
@@ -43,7 +43,7 @@ public class BotListener extends ListenerAdapter {
                     event.getTextChannel().addReactionById(event.getMessage().getId(), event.getJDA().getEmoteById(checkID)).queue();
                     if (event.getMessage().getContent().startsWith("!")) {
                         AddReaction(event);
-                        handleCommand(Main.parser.parse(event.getMessage().getContent().toLowerCase(), event));
+                        handleCommand(Bourreau.parser.parse(event.getMessage().getContent().toLowerCase(), event));
                     }
                 }
             }
@@ -57,7 +57,7 @@ public class BotListener extends ListenerAdapter {
                 if (event.getMessage().getContent().startsWith("!")) {
                     AddReactionPrivate(event);
                     event.getAuthor().openPrivateChannel().complete().addReactionById(event.getMessage().getId(), event.getJDA().getEmoteById(checkID)).queue();
-                    handleCommandPrivate(Main.parserPrivate.parsePrivate(event.getMessage().getContent().toLowerCase(), event));
+                    handleCommandPrivate(Bourreau.parserPrivate.parsePrivate(event.getMessage().getContent().toLowerCase(), event));
                 }
             }
         }

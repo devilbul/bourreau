@@ -4,7 +4,7 @@ import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import warframe.bourreau.util.Command;
 
 import static warframe.bourreau.InitID.*;
-import static warframe.bourreau.Main.getJda;
+import static warframe.bourreau.Bourreau.getJda;
 import static warframe.bourreau.util.Find.FindRolePrive;
 import static warframe.bourreau.messsage.MessagePrive.MessageRecrutement;
 

@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Timer;
 
-import static warframe.bourreau.Main.VINGT_QUATRE_HEURES;
+import static warframe.bourreau.Bourreau.VINGT_QUATRE_HEURES;
 
 public class LanceTimer {
 

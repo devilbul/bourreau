@@ -4,7 +4,7 @@ import warframe.bourreau.commands.SimpleCommand;
 
 import java.lang.reflect.Method;
 
-import static warframe.bourreau.Main.commands;
+import static warframe.bourreau.Bourreau.commands;
 
 public final class CommandMap {
 

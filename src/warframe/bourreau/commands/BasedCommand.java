@@ -14,10 +14,9 @@ import java.time.Instant;
 import java.util.*;
 
 import static warframe.bourreau.InitID.*;
-import static warframe.bourreau.Main.botVersion;
+import static warframe.bourreau.Bourreau.botVersion;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.messsage.Message.MessageAbout;
-import static warframe.bourreau.thread.ThreadSon.isPlayed;
 import static warframe.bourreau.util.Find.FindAdmin;
 import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThing;
 
@@ -36,7 +35,7 @@ public class BasedCommand extends SimpleCommand {
                 EmbedBuilder news = new EmbedBuilder();
 
                 news.addField("=> modification des commandes de son", "   - refonte du système, fixant tous les bugs\n- maintenant, si un son est en cours de lecture et " +
-                        "qu'une nouvelle commande son est exécutée, la première commande est interrompu, laissant place à la nouvlle.", false);
+                        "qu'une nouvelle commande son est exécutée, la première commande est interrompu, laissant place à la nouvelle.", false);
                 news.addField("=> ajout commande about", "   affiche quelques informations du bot.", false);
 
                 news.addField("=> mise à jour de la commande help", "", false);

@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static warframe.bourreau.InitID.*;
-import static warframe.bourreau.Main.getJda;
+import static warframe.bourreau.Bourreau.getJda;
 import static warframe.bourreau.riven.TxtToJson.sortie;
 import static warframe.bourreau.util.Transforme.TransformeInfluence;
 

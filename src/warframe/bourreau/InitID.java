@@ -5,11 +5,10 @@ import net.dv8tion.jda.core.managers.AudioManager;
 import warframe.bourreau.commands.*;
 import warframe.bourreau.listener.MusicListener;
 import warframe.bourreau.music.MusicManager;
-import warframe.bourreau.parser.CommandParser;
 
 import java.util.ArrayList;
 
-import static warframe.bourreau.Main.commands;
+import static warframe.bourreau.Bourreau.commands;
 import static warframe.bourreau.util.CommandMap.registerCommands;
 import static warframe.bourreau.util.Find.FindBucher;
 import static warframe.bourreau.util.Find.FindEmote;
@@ -173,7 +172,7 @@ public class InitID {
         InitHashMap();
         InitQueue();
 
-        //serveurID = jda.getGuildsByName("French Connection", true).get(0).getId();
-        serveurID = jda.getGuildsByName("serveur test", true).get(0).getId();
+        serveurID = jda.getGuildsByName("French Connection", true).get(0).getId();
+        //serveurID = jda.getGuildsByName("serveur test", true).get(0).getId();
     }
 }

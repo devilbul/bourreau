@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
-import static warframe.bourreau.Main.botVersion;
+import static warframe.bourreau.Bourreau.botVersion;
 
 public class Message {
 
