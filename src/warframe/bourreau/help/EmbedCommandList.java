@@ -30,7 +30,7 @@ public class EmbedCommandList {
                         "\n•  !clan" +
                         "\n•  !discordDE" +
                         "\n•  !goals" +
-                        "\n•  !idée ou !idee" +
+                        "\n•  !idee" +
                         "\n•  !info" +
                         "\n•  !invasions" +
                         "\n•  !invite" +

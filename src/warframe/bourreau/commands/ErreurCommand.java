@@ -4,6 +4,7 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
+import warframe.bourreau.util.Command;
 
 import java.awt.*;
 import java.io.File;
@@ -18,8 +19,9 @@ import static warframe.bourreau.util.Find.FindModo;
 import static warframe.bourreau.util.Levenshtein.CompareCommande;
 import static warframe.bourreau.util.Recup.recupString;
 
-public class ErreurCommand extends Command {
+public class ErreurCommand extends SimpleCommand {
 
+    @Command(name="erreur")
     public static void Erreur(MessageReceivedEvent event) {
             if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
                 String rawCommande = recupString(event.getMessage().getContent().toLowerCase());

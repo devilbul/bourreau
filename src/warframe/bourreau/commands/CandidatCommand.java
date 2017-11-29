@@ -1,14 +1,16 @@
 package warframe.bourreau.commands;
 
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+import warframe.bourreau.util.Command;
 
 import static warframe.bourreau.InitID.*;
 import static warframe.bourreau.Main.getJda;
 import static warframe.bourreau.util.Find.FindRolePrive;
 import static warframe.bourreau.messsage.MessagePrive.MessageRecrutement;
 
-public class CandidatCommand extends Command {
+public class CandidatCommand extends SimpleCommand {
 
+    @Command(name="candidate")
     public static void Candidate(PrivateMessageReceivedEvent event) {
         if (!FindRolePrive(event, getJda().getGuildById(serveurID).getRoleById(membreAllianceID))) {
             MessageRecrutement(event);

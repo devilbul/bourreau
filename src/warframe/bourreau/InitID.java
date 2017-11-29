@@ -2,10 +2,12 @@ package warframe.bourreau;
 
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.managers.AudioManager;
-import warframe.bourreau.music.MusicPlayer;
-import warframe.bourreau.thread.ThreadSon;
+import warframe.bourreau.commands.*;
+import warframe.bourreau.listener.MusicListener;
+import warframe.bourreau.music.MusicManager;
 
-import static warframe.bourreau.Main.DEFAULT_VOLUME;
+import static warframe.bourreau.Main.commands;
+import static warframe.bourreau.util.CommandMap.registerCommands;
 import static warframe.bourreau.util.Find.FindBucher;
 import static warframe.bourreau.util.Find.FindEmote;
 
@@ -45,11 +47,9 @@ public class InitID {
     public static String membreAllianceID;
     public static String leaderClanID;
 
-    //manager audio
+    //music
     public static AudioManager audioManager;
-
-    //player music
-    public static MusicPlayer player;
+    public static MusicManager manager;
 
     private static void InitTextChannel(JDA jda) {
         accueilID = jda.getTextChannelsByName("accueil",true).get(0).getId();
@@ -67,7 +67,7 @@ public class InitID {
     }
 
     private static void InitCategory(JDA jda) {
-        if (!jda.getCategoriesByName("Alliance",true).isEmpty())    clanID = jda.getCategoriesByName("Alliance", true).get(0).getId();
+        if (!jda.getCategoriesByName("Clan",true).isEmpty())    clanID = jda.getCategoriesByName("Clan", true).get(0).getId();
         else jda.getTextChannelById(accueilID).sendMessage("Il n'y a pas de categorie Alliance").queue();
     }
 
@@ -130,14 +130,28 @@ public class InitID {
         audioManager = jda.getGuilds().get(0).getAudioManager();
     }
 
-    private static void InitPlayer() {
-        if (audioManager.getSendingHandler() == null) {
-            player = new MusicPlayer();
-            player.setVolume(DEFAULT_VOLUME);
-            audioManager.setSendingHandler(player);
-        }
-        else
-            player = (MusicPlayer) audioManager.getSendingHandler();
+    private static void InitMusicManager(JDA jda) {
+        manager = new MusicManager();
+        manager.getPlayer(jda.getGuilds().get(0)).getAudioPlayer().addListener(new MusicListener());
+    }
+
+    private static void InitHashMap() {
+        registerCommands(new AdminCommand(), new BasedCommand(), new CandidatCommand(), new ClaimCommand(), new ErreurCommand(), new GestionCommand(),
+                new HelpCommand(), new InfoCommand(), new RaidCommand(), new RegleCommand(), new RivenCommand(), new SalonCommand(), new ShutdownCommand(),
+                new SimpleCommand(), new SonCommand(), new SondageCommand(), new TrollCommand());
+        commands.put("ah" , new SimpleCommand());
+        commands.put("bucher" , new SimpleCommand());
+        commands.put("gg" , new SimpleCommand());
+        commands.put("gogole" , new SimpleCommand());
+        commands.put("nah" , new SimpleCommand());
+        commands.put("pigeon" , new SimpleCommand());
+        commands.put("son", new SimpleCommand());
+        commands.put("souffrir" , new SimpleCommand());
+        commands.put("trump" , new SimpleCommand());
+        commands.put("trumpcomp" , new SimpleCommand());
+        commands.put("trumpcomp2" , new SimpleCommand());
+        commands.put("trumpcomp3" , new SimpleCommand());
+
     }
 
     static void InitIDMain(JDA jda) {
@@ -147,7 +161,8 @@ public class InitID {
         InitEmote(jda);
         InitRole(jda);
         InitAudioManager(jda);
-        InitPlayer();
+        InitMusicManager(jda);
+        InitHashMap();
 
         //serveurID = jda.getGuildsByName("French Connection", true).get(0).getId();
         serveurID = jda.getGuildsByName("serveur test", true).get(0).getId();

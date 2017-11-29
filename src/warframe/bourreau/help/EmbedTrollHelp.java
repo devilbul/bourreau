@@ -17,7 +17,6 @@ public class EmbedTrollHelp {
             case "pute":
                 helpMessage.addField("__Aide pour__ :   " + help, "**syntaxe** :      !" + help + "\n**effet :**         à découvrir", false);
                 break;
-            case "RIP":
             case "rip":
                 helpMessage.addField("__Aide pour__ :   " + help, "**syntaxe** :      !" + help + "\n**effet :**         à découvrir", false);
                 break;

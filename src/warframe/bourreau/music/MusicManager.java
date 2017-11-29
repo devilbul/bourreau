@@ -36,32 +36,32 @@ public class MusicManager {
         manager.loadItemOrdered(player, source, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                channel.sendMessage("Ajout de la piste " + track.getInfo().title + ".").queue();
+                //channel.sendMessage("Ajout de la piste " + track.getInfo().title + ".").queue();
                 player.playTrack(track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                StringBuilder builder = new StringBuilder();
-                builder.append("Ajout de la playlist **").append(playlist.getName()).append("**\n");
+                //StringBuilder builder = new StringBuilder();
+                //builder.append("Ajout de la playlist **").append(playlist.getName()).append("**\n");
 
                 for (int i=0; i < playlist.getTracks().size() && i < 5; i++) {
                     AudioTrack track = playlist.getTracks().get(i);
-                    builder.append("\n **->** ").append(track.getInfo().title);
+                    //builder.append("\n **->** ").append(track.getInfo().title);
                     player.playTrack(track);
                 }
 
-                channel.sendMessage(builder.toString()).queue();
+                //channel.sendMessage(builder.toString()).queue();
             }
 
             @Override
             public void noMatches() {
-                channel.sendMessage("La piste " + source + " n'a pas été trouvé.").queue();
+                //channel.sendMessage("La piste " + source + " n'a pas été trouvé.").queue();
             }
 
             @Override
             public void loadFailed(FriendlyException e) {
-                channel.sendMessage("Impossible de jouer la piste (raison : " + e.getMessage() + ")").queue();
+                //channel.sendMessage("Impossible de jouer la piste (raison : " + e.getMessage() + ")").queue();
             }
         });
     }

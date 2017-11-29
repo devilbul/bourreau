@@ -33,7 +33,7 @@ public class EmbedGeneralHelp {
             case "goals":
 
                 break;
-            case "idée":
+            case "idee":
                 helpMessage.addField("__Aide pour__ :   " + help, "**syntaxe** :      !" + help + "\n**effet :**         donne un lien vers un google doc, pour proposer une idée de commande", false);
                 break;
             case "info":

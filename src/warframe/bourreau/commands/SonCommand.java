@@ -11,13 +11,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import net.dv8tion.jda.player.source.AudioInfo;
 import net.dv8tion.jda.player.source.AudioSource;
 import net.dv8tion.jda.player.source.AudioTimestamp;
-import warframe.bourreau.music.MusicPlayerOld;
 import warframe.bourreau.parser.CommandParser;
 import warframe.bourreau.thread.ThreadSon;
 import warframe.bourreau.util.Command;
 
 import static warframe.bourreau.InitID.audioManager;
-import static warframe.bourreau.InitID.player;
 import static warframe.bourreau.Main.DEFAULT_VOLUME;
 import static warframe.bourreau.erreur.erreurGestion.afficheErreur;
 import static warframe.bourreau.erreur.erreurGestion.saveErreur;
@@ -47,8 +45,6 @@ public class SonCommand extends SimpleCommand {
 
             fichier = "alea" + File.separator + choix + ".wav";
 
-            player.setVolume(0.05f);
-
             new ThreadSon(cmd, fichier).start();
         }
         catch (Exception e) {
@@ -66,7 +62,7 @@ public class SonCommand extends SimpleCommand {
                     String commande = rawCommande.replaceFirst(" ", "@").split("@")[0];
 
                     switch (commande) {
-                        case "list":
+                        /*case "list":
                             List(event);
                             break;
                         case "nowplaying":
@@ -83,7 +79,7 @@ public class SonCommand extends SimpleCommand {
                             break;
                         case "pause":
                             Pause(event);
-                            break;
+                            break;*/
                         default:
                             MessageBuilder message = new MessageBuilder();
                             String[] commandeRiven = {"list", "nowplaying", "skip", "reset", "stop", "pause"};
@@ -116,7 +112,7 @@ public class SonCommand extends SimpleCommand {
         }
     }
 
-    private static void List(MessageReceivedEvent event) {
+    /*private static void List(MessageReceivedEvent event) {
         try {
             List<AudioSource> queue = player.getAudioQueue();
             boolean error = false;
@@ -167,9 +163,9 @@ public class SonCommand extends SimpleCommand {
             afficheErreur(event, e);
             saveErreur(event, e);
         }
-    }
+    }*/
 
-    private static void NowPlaying(MessageReceivedEvent event) {
+    /*private static void NowPlaying(MessageReceivedEvent event) {
         try {
             if (player.isPlaying()) {
                 AudioTimestamp currentTime = player.getCurrentTimestamp();
@@ -196,9 +192,9 @@ public class SonCommand extends SimpleCommand {
             afficheErreur(event, e);
             saveErreur(event, e);
         }
-    }
+    }*/
 
-    private static void Reset(MessageReceivedEvent event) {
+    /*private static void Reset(MessageReceivedEvent event) {
         try {
             player.stop();
             player = new MusicPlayerOld();
@@ -232,5 +228,5 @@ public class SonCommand extends SimpleCommand {
             afficheErreur(event, e);
             saveErreur(event, e);
         }
-    }
+    }*/
 }
