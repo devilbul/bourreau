@@ -18,6 +18,7 @@ public class ThreadAuBucher extends Thread {
             setPlayedBucher(true);
             playSoundMention(cmd.event);
             Tempo.Temporisation(7000);
+
             while (isPlayed) { System.out.print(""); }
             manager.getPlayer(cmd.event.getGuild()).getAudioPlayer().stopTrack();
             AdminCommand.AuBucher(cmd.event);

@@ -5,20 +5,16 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.managers.AudioManager;
 
 import java.io.File;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import net.dv8tion.jda.player.source.AudioInfo;
-import net.dv8tion.jda.player.source.AudioSource;
-import net.dv8tion.jda.player.source.AudioTimestamp;
 import warframe.bourreau.parser.CommandParser;
 import warframe.bourreau.thread.ThreadSon;
 import warframe.bourreau.util.Command;
 
-import static warframe.bourreau.InitID.audioManager;
-import static warframe.bourreau.Main.DEFAULT_VOLUME;
+import static warframe.bourreau.InitID.queueSon;
 import static warframe.bourreau.erreur.erreurGestion.afficheErreur;
 import static warframe.bourreau.erreur.erreurGestion.saveErreur;
+import static warframe.bourreau.thread.ThreadSon.isPlayed;
 import static warframe.bourreau.util.Find.FindAdmin;
 import static warframe.bourreau.util.Levenshtein.CompareCommande;
 import static warframe.bourreau.util.Recup.recupString;
@@ -45,7 +41,8 @@ public class SonCommand extends SimpleCommand {
 
             fichier = "alea" + File.separator + choix + ".wav";
 
-            new ThreadSon(cmd, fichier).start();
+            if (!isPlayed()) new ThreadSon(cmd, fichier).start();
+            else queueSon.add(fichier);
         }
         catch (Exception e) {
             afficheErreur(cmd.event, e);

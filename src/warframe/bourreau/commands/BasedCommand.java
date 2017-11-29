@@ -4,13 +4,11 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import warframe.bourreau.util.Command;
 
 import java.awt.*;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
@@ -19,9 +17,9 @@ import static warframe.bourreau.InitID.*;
 import static warframe.bourreau.Main.botVersion;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.messsage.Message.MessageAbout;
+import static warframe.bourreau.thread.ThreadSon.isPlayed;
 import static warframe.bourreau.util.Find.FindAdmin;
 import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThing;
-import static warframe.bourreau.util.Find.FindUserVC;
 
 public class BasedCommand extends SimpleCommand {
 
@@ -133,18 +131,7 @@ public class BasedCommand extends SimpleCommand {
     @Command(name="test")
     public static void Test(MessageReceivedEvent event) {
         try {
-            String file = "bucher.mp4";
-            String adresse = System.getProperty("user.dir") + File.separator + "music" + File.separator + file;
-            VoiceChannel channel = FindUserVC(event);
 
-            if (channel == null)
-                event.getTextChannel().sendMessage("Client non conneté à un salon vocal.").queue();
-            else {
-                if (!audioManager.isConnected())
-                    audioManager.openAudioConnection(channel);
-
-                manager.loadTrack(event.getTextChannel(), adresse);
-            }
         }
         catch (Exception e) {
             afficheErreur(event, e);

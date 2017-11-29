@@ -1,13 +1,14 @@
 package warframe.bourreau.handle;
 
-import warframe.bourreau.commands.Command;
+import warframe.bourreau.commands.SimpleCommand;
 import warframe.bourreau.commands.SonCommand;
 import warframe.bourreau.parser.CommandParser;
 import warframe.bourreau.thread.ThreadSon;
 import warframe.bourreau.util.Tempo;
 
-import static warframe.bourreau.InitID.player;
+import static warframe.bourreau.InitID.queueSon;
 import static warframe.bourreau.Main.commands;
+import static warframe.bourreau.thread.ThreadSon.isPlayed;
 import static warframe.bourreau.util.Find.FindAdmin;
 
 class HandleSonCommand {
@@ -15,81 +16,79 @@ class HandleSonCommand {
     static void handleSonCommand(CommandParser.CommandContainer cmd){
 
         if (commands.containsKey(cmd.invoke)) {
-            boolean safe = Command.called();
+            boolean safe = SimpleCommand.called();
 
-            if (player.isPlaying()) player.stop();
+            if(!isPlayed()) queueSon.add("first");
 
             if (safe) {
                 switch (cmd.invoke) {
                     case "ah":
-                        //player.stop();
                         Tempo.Temporisation(4);
-                        new ThreadSon(cmd,"ah.mp3").start();
+                        if (!isPlayed()) new ThreadSon(cmd,"ah.mp3").start();
+                        else queueSon.add("ah.mp3");
                         break;
                     case "bucher":
-                        //player.stop();
                         Tempo.Temporisation(4);
-                        new ThreadSon(cmd,"bucher.mp4").start();
+                        if (!isPlayed()) new ThreadSon(cmd,"bucher.mp4").start();
+                        else queueSon.add("bucher.mp4");
                         break;
                     case "gg":
-                        //player.stop();
                         Tempo.Temporisation(4);
-                        new ThreadSon(cmd,"gg.mp3").start();
+                        if (!isPlayed()) new ThreadSon(cmd,"gg.mp3").start();
+                        else queueSon.add("gg.mp3");
                         break;
                     case "gogole":
-                        //player.stop();
                         Tempo.Temporisation(4);
-                        new ThreadSon(cmd,"gogole.mp3").start();
+                        if (!isPlayed()) new ThreadSon(cmd,"gogole.mp3").start();
+                        else queueSon.add("gogole.mp3");
                         break;
                     case "nah":
-                        //player.stop();
                         Tempo.Temporisation(4);
-                        new ThreadSon(cmd,"nah.ogg").start();
+                        if (!isPlayed()) new ThreadSon(cmd,"nah.ogg").start();
+                        else queueSon.add("nah.ogg");
                         break;
                     case "leave":
                         SonCommand.Leave(cmd.event);
                         break;
                     case "pigeon":
-                        //player.stop();
                         Tempo.Temporisation(4);
-                        new ThreadSon(cmd,"pigeon.wav").start();
+                        if (!isPlayed()) new ThreadSon(cmd,"pigeon.wav").start();
+                        else queueSon.add("pigeon.wav");
                         break;
                     case "son":
-                        //player.stop();
                         Tempo.Temporisation(4);
                         SonCommand.Son(cmd.event);
                         break;
                     case "souffrir":
-                        //player.stop();
                         Tempo.Temporisation(4);
-                        new ThreadSon(cmd,"souffrir.wav").start();
+                        if (!isPlayed()) new ThreadSon(cmd,"souffrir.wav").start();
+                        else queueSon.add("souffrir.wav");
                         break;
                     case "trump":
-                        //player.stop();
                         Tempo.Temporisation(4);
                         SonCommand.Trump(cmd);
                         break;
                     case "trumpcomp":
                         if (FindAdmin(cmd.event, cmd.event.getMember())) {
-                            //player.stop();
                             Tempo.Temporisation(4);
-                            new ThreadSon(cmd,"trump.mp3").start();
+                            if (!isPlayed()) new ThreadSon(cmd,"trump.mp3").start();
+                            else queueSon.add("trump.mp3");
                         }
                         else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
                         break;
                     case "trumpcomp2":
                         if (FindAdmin(cmd.event, cmd.event.getMember())) {
-                            //player.stop();
                             Tempo.Temporisation(4);
-                            new ThreadSon(cmd,"trump2.mp3").start();
+                            if (!isPlayed()) new ThreadSon(cmd,"trump2.mp3").start();
+                            else queueSon.add("trump2.mp3");
                         }
                         else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
                         break;
                     case "trumpcomp3":
                         if (FindAdmin(cmd.event, cmd.event.getMember())) {
-                            //player.stop();
                             Tempo.Temporisation(4);
-                            new ThreadSon(cmd,"trump3.mp3").start();
+                            if (!isPlayed()) new ThreadSon(cmd,"trump3.mp3").start();
+                            else queueSon.add("trump3.mp3");
                         }
                         else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
                         break;

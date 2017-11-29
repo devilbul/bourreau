@@ -5,6 +5,9 @@ import net.dv8tion.jda.core.managers.AudioManager;
 import warframe.bourreau.commands.*;
 import warframe.bourreau.listener.MusicListener;
 import warframe.bourreau.music.MusicManager;
+import warframe.bourreau.parser.CommandParser;
+
+import java.util.ArrayList;
 
 import static warframe.bourreau.Main.commands;
 import static warframe.bourreau.util.CommandMap.registerCommands;
@@ -50,6 +53,7 @@ public class InitID {
     //music
     public static AudioManager audioManager;
     public static MusicManager manager;
+    public static ArrayList<String> queueSon;
 
     private static void InitTextChannel(JDA jda) {
         accueilID = jda.getTextChannelsByName("accueil",true).get(0).getId();
@@ -135,6 +139,10 @@ public class InitID {
         manager.getPlayer(jda.getGuilds().get(0)).getAudioPlayer().addListener(new MusicListener());
     }
 
+    private static void InitQueue() {
+        queueSon = new ArrayList<>();
+    }
+
     private static void InitHashMap() {
         registerCommands(new AdminCommand(), new BasedCommand(), new CandidatCommand(), new ClaimCommand(), new ErreurCommand(), new GestionCommand(),
                 new HelpCommand(), new InfoCommand(), new RaidCommand(), new RegleCommand(), new RivenCommand(), new SalonCommand(), new ShutdownCommand(),
@@ -163,6 +171,7 @@ public class InitID {
         InitAudioManager(jda);
         InitMusicManager(jda);
         InitHashMap();
+        InitQueue();
 
         //serveurID = jda.getGuildsByName("French Connection", true).get(0).getId();
         serveurID = jda.getGuildsByName("serveur test", true).get(0).getId();
