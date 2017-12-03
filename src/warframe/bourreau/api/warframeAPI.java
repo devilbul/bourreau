@@ -36,8 +36,8 @@ public class warframeAPI {
             BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
             String jsonTextApi = readAll(rdApi);
             String jsonTextLanguage = readAll(rdLanguage);
-            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
-            String mission = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "StarChar.json")));
+            String mission = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Mission.json")));
             JSONObject warframeJson = new JSONObject(jsonTextApi);
             JSONObject languageJson = new JSONObject(jsonTextLanguage);
             JSONObject starCharJson = new JSONObject(starChar);
@@ -124,8 +124,8 @@ public class warframeAPI {
             BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
             String jsonTextApi = readAll(rdApi);
             String jsonTextLanguage = readAll(rdLanguage);
-            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
-            String mission = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "StarChar.json")));
+            String mission = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Mission.json")));
             JSONObject warframeJson = new JSONObject(jsonTextApi);
             JSONObject languageJson = new JSONObject(jsonTextLanguage);
             JSONObject starCharJson = new JSONObject(starChar);
@@ -225,7 +225,7 @@ public class warframeAPI {
             BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
             String jsonTextApi = readAll(rdApi);
             String jsonTextLanguage = readAll(rdLanguage);
-            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "StarChar.json")));
             JSONObject warframeJson = new JSONObject(jsonTextApi);
             JSONObject languageJson = new JSONObject(jsonTextLanguage);
             JSONObject starCharJson = new JSONObject(starChar);
@@ -350,8 +350,8 @@ public class warframeAPI {
             BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
             String jsonTextApi = readAll(rdApi);
             String jsonTextLanguage = readAll(rdLanguage);
-            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
-            String missionInfo = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "StarChar.json")));
+            String missionInfo = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Mission.json")));
             JSONObject starCharJson = new JSONObject(starChar);
             JSONObject warframeJson = new JSONObject(jsonTextApi);
             JSONObject languageJson = new JSONObject(jsonTextLanguage);
@@ -482,7 +482,7 @@ public class warframeAPI {
             BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
             String jsonTextApi = readAll(rdApi);
             String jsonTextLanguage = readAll(rdLanguage);
-            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "StarChar.json")));
             JSONObject warframeJson = new JSONObject(jsonTextApi);
             JSONObject languageJson = new JSONObject(jsonTextLanguage);
             JSONObject starCharJson = new JSONObject(starChar);
@@ -560,7 +560,7 @@ public class warframeAPI {
             BufferedReader rdLanguage = new BufferedReader(new InputStreamReader(isLanguage, Charset.forName("UTF-8")));
             String jsonTextApi = readAll(rdApi);
             String jsonTextLanguage = readAll(rdLanguage);
-            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "StarChar.json")));
             JSONObject warframeJson = new JSONObject(jsonTextApi);
             JSONObject languageJson = new JSONObject(jsonTextLanguage);
             JSONObject starCharJson = new JSONObject(starChar);
@@ -640,7 +640,7 @@ public class warframeAPI {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
             String commande = event.getMessage().getContent().toLowerCase();
-            String pvpInfo = new String(Files.readAllBytes(Paths.get("info" + File.separator + "DefiConclave.json")));
+            String pvpInfo = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "DefiConclave.json")));
             JSONObject warframeJson = new JSONObject(jsonText);
             JSONObject pvpInfoJson = new JSONObject(pvpInfo);
             JSONArray pvpJson = warframeJson.getJSONArray("PVPChallengeInstances");
@@ -749,9 +749,9 @@ public class warframeAPI {
         try (InputStream is = new URL(urlApi).openStream()) {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
-            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
-            String sortieInfo = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Sortie.json")));
-            String mission = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "StarChar.json")));
+            String sortieInfo = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Sortie.json")));
+            String mission = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Mission.json")));
             JSONObject starCharJson = new JSONObject(starChar);
             JSONObject sortieInfoJson = new JSONObject(sortieInfo);
             JSONObject warframeJson = new JSONObject(jsonText);
@@ -808,8 +808,8 @@ public class warframeAPI {
         try (InputStream is = new URL(urlApi).openStream()) {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
-            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
-            String mission = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "StarChar.json")));
+            String mission = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Mission.json")));
             JSONObject starCharJson = new JSONObject(starChar);
             JSONObject warframeJson = new JSONObject(jsonText);
             JSONObject missionJson = new JSONObject(mission);
@@ -1029,8 +1029,8 @@ public class warframeAPI {
         try (InputStream is = new URL(urlApi).openStream()) {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
-            String starChar = new String(Files.readAllBytes(Paths.get("info" + File.separator + "StarChar.json")));
-            String mission = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Mission.json")));
+            String starChar = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "StarChar.json")));
+            String mission = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Mission.json")));
             JSONObject starCharJson = new JSONObject(starChar);
             JSONObject warframeJson = new JSONObject(jsonText);
             JSONObject missionJson = new JSONObject(mission);

@@ -54,7 +54,7 @@ public class Find {
 
     public static double FindRivenJsonInfluenceDouble(String cherche) {
         try {
-            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
             for (Object name : rivenJson.names()) {
@@ -75,7 +75,7 @@ public class Find {
 
     public static String FindRivenJsonInfluenceTransforme(String cherche) {
         try {
-            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
             for (Object name : rivenJson.names()) {
@@ -96,7 +96,7 @@ public class Find {
 
     public static String FindRivenJsonInfluenceCatgorie(String cherche) {
         try {
-            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
             for (Object name : rivenJson.names()) {

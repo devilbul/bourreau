@@ -32,10 +32,10 @@ public class erreurGestion {
 
     public static void saveErreur(MessageReceivedEvent event, Exception e) {
         try {
-            String erreur = new String(Files.readAllBytes(Paths.get("erreur" + File.separator + "Erreur.json")));
-            String idErreur = new String(Files.readAllBytes(Paths.get("erreur" + File.separator + "IdErreur.json")));
-            String adresseErreur = System.getProperty("user.dir") + File.separator + "erreur" + File.separator + "Erreur.json";
-            String adresseIdErreur = System.getProperty("user.dir") + File.separator + "erreur" + File.separator + "IdErreur.json";
+            String erreur = new String(Files.readAllBytes(Paths.get("res" + File.separator + "erreur" + File.separator + "Erreur.json")));
+            String idErreur = new String(Files.readAllBytes(Paths.get("res" + File.separator + "erreur" + File.separator + "IdErreur.json")));
+            String adresseErreur = System.getProperty("user.dir") + File.separator + "res" + File.separator + "erreur" + File.separator + "Erreur.json";
+            String adresseIdErreur = System.getProperty("user.dir") + File.separator + "res" + File.separator + "erreur" + File.separator + "IdErreur.json";
             String StackTrace = "";
             FileWriter file = new FileWriter(adresseErreur);
             FileWriter fileId = new FileWriter(adresseIdErreur);

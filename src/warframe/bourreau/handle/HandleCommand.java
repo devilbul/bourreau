@@ -16,7 +16,7 @@ public class HandleCommand {
             boolean safe = SimpleCommand.called();
 
             if (safe) {
-                Thread aubucher = new ThreadAuBucher(cmd);
+                Thread aubucher = new ThreadAuBucher(cmd.event);
 
                 switch (cmd.invoke) {
                     // liste des commandes
@@ -112,7 +112,7 @@ public class HandleCommand {
                     case "syndicat":
                         InfoCommand.Syndicats(cmd.event);
                         break;
-                    case "ts3":
+                    case "ts":
                         InfoCommand.Ts(cmd.event);
                         break;
                     case "up":

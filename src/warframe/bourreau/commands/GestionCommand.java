@@ -28,13 +28,13 @@ public class GestionCommand extends SimpleCommand {
                             String[] leaders = newClan[1].replace("/", "@").split(" @ ");
 
                             if (newClan.length >= 2) {
-                                String alliance = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Alliance.json")));
+                                String alliance = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
                                 JSONObject allianceJson = new JSONObject(alliance);
                                 JSONObject clanJson = allianceJson.getJSONObject("clans");
                                 JSONObject infoJson = allianceJson.getJSONObject("infos");
 
                                 if (!FindClan(clanJson.names(), clan)) {
-                                    String adresseAlliance = System.getProperty("user.dir") + File.separator + "info" + File.separator + "Alliance.json";
+                                    String adresseAlliance = System.getProperty("user.dir") + File.separator + "res" + File.separator + "info" + File.separator + "Alliance.json";
                                     FileWriter file = new FileWriter(adresseAlliance);
                                     JSONObject newClanJson = new JSONObject();
                                     JSONObject newAllianceJson = new JSONObject();
@@ -86,13 +86,13 @@ public class GestionCommand extends SimpleCommand {
 
                 if (commande.contains(" ")) {
                     String clanLower = recupString(event.getMessage().getContent());
-                    String alliance = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Alliance.json")));
+                    String alliance = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
                     JSONObject allianceJson = new JSONObject(alliance);
                     JSONObject clanJson = allianceJson.getJSONObject("clans");
                     JSONObject infoJson = allianceJson.getJSONObject("infos");
 
                     if (FindClanLower(clanJson.names(), clanLower) ){
-                        String adresseAlliance = System.getProperty("user.dir") + File.separator + "info" + File.separator + "Alliance.json";
+                        String adresseAlliance = System.getProperty("user.dir") + File.separator + "res" + File.separator + "info" + File.separator + "Alliance.json";
                         FileWriter file = new FileWriter(adresseAlliance);
                         JSONObject newAllianceJson = new JSONObject();
 
@@ -137,13 +137,13 @@ public class GestionCommand extends SimpleCommand {
                     String url = newClan[1];
 
                     if (newClan.length == 2) {
-                        String alliance = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Alliance.json")));
+                        String alliance = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
                         JSONObject allianceJson = new JSONObject(alliance);
                         JSONObject clanJson = allianceJson.getJSONObject("clans");
                         JSONObject infosJson = allianceJson.getJSONObject("infos");
 
                         if (FindClanLower(clanJson.names(), clanSelect)) {
-                            String adresseAlliance = System.getProperty("user.dir") + File.separator + "info" + File.separator + "Alliance.json";
+                            String adresseAlliance = System.getProperty("user.dir") + File.separator + "res" + File.separator + "info" + File.separator + "Alliance.json";
                             FileWriter file = new FileWriter(adresseAlliance);
                             JSONObject newClanJson = new JSONObject();
                             JSONObject newAllianceJson = new JSONObject();

@@ -61,7 +61,7 @@ public class ErreurCommand extends SimpleCommand {
     private static void ListErreur(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
-                String erreur = new String(Files.readAllBytes(Paths.get("erreur" + File.separator + "Erreur.json")));
+                String erreur = new String(Files.readAllBytes(Paths.get("res" + File.separator + "erreur" + File.separator + "Erreur.json")));
                 JSONObject erreurJson = new JSONObject(erreur);
                 EmbedBuilder message = new EmbedBuilder();
                 String erreurName;
@@ -99,7 +99,7 @@ public class ErreurCommand extends SimpleCommand {
 
                 if (commande.contains(" ")) {
                     String erreurID = "erreur " + recupString(commande);
-                    String erreur = new String(Files.readAllBytes(Paths.get("erreur" + File.separator + "Erreur.json")));
+                    String erreur = new String(Files.readAllBytes(Paths.get("res" + File.separator + "erreur" + File.separator + "Erreur.json")));
                     JSONObject erreurJson = new JSONObject(erreur);
 
                     if (FindJsonKey(erreurJson, erreurID)) {
@@ -138,11 +138,11 @@ public class ErreurCommand extends SimpleCommand {
 
                 if (commande.contains(" ")) {
                     String erreurID = "erreur " + recupString(commande);
-                    String erreur = new String(Files.readAllBytes(Paths.get("erreur" + File.separator + "Erreur.json")));
+                    String erreur = new String(Files.readAllBytes(Paths.get("res" + File.separator + "erreur" + File.separator + "Erreur.json")));
                     JSONObject erreurJson = new JSONObject(erreur);
 
                     if (FindJsonKey(erreurJson, erreurID)) {
-                        String adresseErreur = System.getProperty("user.dir") + File.separator + "erreur" + File.separator + "Erreur.json";
+                        String adresseErreur = System.getProperty("user.dir") + File.separator + "res" + File.separator + "erreur" + File.separator + "Erreur.json";
                         FileWriter file = new FileWriter(adresseErreur);
 
                         erreurJson.remove(erreurID);
@@ -171,7 +171,7 @@ public class ErreurCommand extends SimpleCommand {
         try {
             if (FindAdmin(event, event.getMember())) {
                 JSONObject erreurJson = new JSONObject();
-                String adresseErreur = System.getProperty("user.dir") + File.separator + "erreur" + File.separator + "Erreur.json";
+                String adresseErreur = System.getProperty("user.dir") + File.separator + "res" + File.separator + "erreur" + File.separator + "Erreur.json";
                 FileWriter file = new FileWriter(adresseErreur);
 
                 file.write(erreurJson.toString());

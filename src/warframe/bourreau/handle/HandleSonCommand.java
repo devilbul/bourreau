@@ -18,33 +18,31 @@ class HandleSonCommand {
         if (commands.containsKey(cmd.invoke)) {
             boolean safe = SimpleCommand.called();
 
-            if(!isPlayed()) queueSon.add("first");
-
             if (safe) {
                 switch (cmd.invoke) {
                     case "ah":
                         Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd,"ah.mp3").start();
+                        if (!isPlayed()) new ThreadSon(cmd.event,"ah.mp3").start();
                         else queueSon.add("ah.mp3");
                         break;
                     case "bucher":
                         Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd,"bucher.mp4").start();
+                        if (!isPlayed()) new ThreadSon(cmd.event,"bucher.mp4").start();
                         else queueSon.add("bucher.mp4");
                         break;
                     case "gg":
                         Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd,"gg.mp3").start();
+                        if (!isPlayed()) new ThreadSon(cmd.event,"gg.mp3").start();
                         else queueSon.add("gg.mp3");
                         break;
                     case "gogole":
                         Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd,"gogole.mp3").start();
+                        if (!isPlayed()) new ThreadSon(cmd.event,"gogole.mp3").start();
                         else queueSon.add("gogole.mp3");
                         break;
                     case "nah":
                         Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd,"nah.ogg").start();
+                        if (!isPlayed()) new ThreadSon(cmd.event,"nah.ogg").start();
                         else queueSon.add("nah.ogg");
                         break;
                     case "leave":
@@ -52,7 +50,7 @@ class HandleSonCommand {
                         break;
                     case "pigeon":
                         Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd,"pigeon.wav").start();
+                        if (!isPlayed()) new ThreadSon(cmd.event,"pigeon.wav").start();
                         else queueSon.add("pigeon.wav");
                         break;
                     case "son":
@@ -61,17 +59,17 @@ class HandleSonCommand {
                         break;
                     case "souffrir":
                         Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd,"souffrir.wav").start();
+                        if (!isPlayed()) new ThreadSon(cmd.event,"souffrir.wav").start();
                         else queueSon.add("souffrir.wav");
                         break;
                     case "trump":
                         Tempo.Temporisation(4);
-                        SonCommand.Trump(cmd);
+                        SonCommand.Trump(cmd.event);
                         break;
                     case "trumpcomp":
                         if (FindAdmin(cmd.event, cmd.event.getMember())) {
                             Tempo.Temporisation(4);
-                            if (!isPlayed()) new ThreadSon(cmd,"trump.mp3").start();
+                            if (!isPlayed()) new ThreadSon(cmd.event,"trump.mp3").start();
                             else queueSon.add("trump.mp3");
                         }
                         else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
@@ -79,7 +77,7 @@ class HandleSonCommand {
                     case "trumpcomp2":
                         if (FindAdmin(cmd.event, cmd.event.getMember())) {
                             Tempo.Temporisation(4);
-                            if (!isPlayed()) new ThreadSon(cmd,"trump2.mp3").start();
+                            if (!isPlayed()) new ThreadSon(cmd.event,"trump2.mp3").start();
                             else queueSon.add("trump2.mp3");
                         }
                         else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
@@ -87,7 +85,7 @@ class HandleSonCommand {
                     case "trumpcomp3":
                         if (FindAdmin(cmd.event, cmd.event.getMember())) {
                             Tempo.Temporisation(4);
-                            if (!isPlayed()) new ThreadSon(cmd,"trump3.mp3").start();
+                            if (!isPlayed()) new ThreadSon(cmd.event,"trump3.mp3").start();
                             else queueSon.add("trump3.mp3");
                         }
                         else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();

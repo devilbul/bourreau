@@ -34,9 +34,7 @@ public class BasedCommand extends SimpleCommand {
             if (FindAdmin(event, event.getMember())) {
                 EmbedBuilder news = new EmbedBuilder();
 
-                news.addField("=> modification des commandes de son", "   - refonte du système, fixant tous les bugs\n- maintenant, si un son est en cours de lecture et " +
-                        "qu'une nouvelle commande son est exécutée, la première commande est interrompu, laissant place à la nouvelle.", false);
-                news.addField("=> ajout commande about", "   affiche quelques informations du bot.", false);
+                news.addField("=> amélioration mise à jour influence riven", "      ", false);
 
                 news.addField("=> mise à jour de la commande help", "", false);
 

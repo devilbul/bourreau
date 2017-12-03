@@ -223,7 +223,7 @@ public class AdminCommand extends SimpleCommand {
                 botjson.put("clientID", "290883090140758017");
 
                 if (commande.contains(" ") && !recupString(commande).equals("null")) {
-                    FileWriter file = new FileWriter(System.getProperty("user.dir") + File.separator + "config" + File.separator + "bot.json");
+                    FileWriter file = new FileWriter(System.getProperty("user.dir") + File.separator + "res" + File.separator + "config" + File.separator + "bot.json");
 
                     botjson.put("game", recupString(commande));
                     file.write(botjson.toString());

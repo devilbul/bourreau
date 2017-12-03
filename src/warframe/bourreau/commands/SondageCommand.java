@@ -27,8 +27,8 @@ public class SondageCommand extends SimpleCommand {
     public static void Sondage(MessageReceivedEvent event) {
         try {
             if (event.getMessage().getContent().contains(" ")) {
-                String adresseSondage = System.getProperty("user.dir") + File.separator + "sondage" + File.separator + "sondage.json";
-                String adresseVote = System.getProperty("user.dir") + File.separator + "sondage" + File.separator + "vote.json";
+                String adresseSondage = System.getProperty("user.dir") + File.separator + "res" + File.separator + "res" + File.separator + "sondage" + File.separator + "sondage.json";
+                String adresseVote = System.getProperty("user.dir") + File.separator + "res" + File.separator + "sondage" + File.separator + "vote.json";
                 String rawCommande = recupString(event.getMessage().getContent().toLowerCase());
                 String commande = rawCommande.replaceFirst(" ", "@").split("@")[0];
 
@@ -85,7 +85,7 @@ public class SondageCommand extends SimpleCommand {
     private static void AfficheSondage(MessageReceivedEvent event, String adresseSondage) {
         try {
             if (new File(adresseSondage).exists()) {
-                String sondage = new String(Files.readAllBytes(Paths.get("sondage" + File.separator + "sondage.json")));
+                String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
                 JSONObject sondageJson = new JSONObject(sondage);
 
                 if (sondageJson.toString().contains("reponses")) {
@@ -123,10 +123,8 @@ public class SondageCommand extends SimpleCommand {
             if (new File(adresseSondage).exists() && new File(adresseVote).exists()) {
                 if (new File(adresseSondage).exists())
                     if (new File(adresseSondage).delete())
-
                         if (new File(adresseVote).exists())
                             if (new File(adresseVote).delete())
-
                                 event.getTextChannel().sendMessage("sondage supprimé.").queue();
             } else
                 event.getTextChannel().sendMessage("aucun sondage en cours.").queue();
@@ -186,8 +184,8 @@ public class SondageCommand extends SimpleCommand {
                     String[] reponses = rawReponses.split(" / ");
 
                     if (reponses.length>1) {
-                        String sondage = new String(Files.readAllBytes(Paths.get("sondage" + File.separator + "sondage.json")));
-                        String vote = new String(Files.readAllBytes(Paths.get("sondage" + File.separator + "vote.json")));
+                        String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+                        String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
                         JSONObject sondageJson = new JSONObject(sondage);
                         JSONObject voteJson = new JSONObject(vote);
 
@@ -246,11 +244,11 @@ public class SondageCommand extends SimpleCommand {
     private static void ResultatSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
         try {
             if (new File(adresseSondage).exists() && new File(adresseVote).exists()) {
-                String sondage = new String(Files.readAllBytes(Paths.get("sondage" + File.separator + "sondage.json")));
+                String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
                 JSONObject sondageJson = new JSONObject(sondage);
 
                 if (sondageJson.toString().contains("reponses")) {
-                    String vote = new String(Files.readAllBytes(Paths.get("sondage" + File.separator + "vote.json")));
+                    String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
                     JSONObject voteJson = new JSONObject(vote);
                     JSONObject reponsesJson = sondageJson.getJSONObject("reponses");
                     EmbedBuilder resultat = new EmbedBuilder();
@@ -301,14 +299,14 @@ public class SondageCommand extends SimpleCommand {
     private static void VoteSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
         try {
             if (new File(adresseSondage).exists() && new File(adresseVote).exists()) {
-                String sondage = new String(Files.readAllBytes(Paths.get("sondage" + File.separator + "sondage.json")));
+                String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
                 JSONObject sondageJson = new JSONObject(sondage);
 
                 if (sondageJson.toString().contains("reponses")) {
                     String commande = recupString(event.getMessage().getContent().toLowerCase());
 
                     if (commande.contains(" ")) {
-                        String vote = new String(Files.readAllBytes(Paths.get("sondage" + File.separator + "vote.json")));
+                        String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
                         JSONObject reponsesJson = sondageJson.getJSONObject("reponses");
                         JSONObject voteJson = new JSONObject(vote);
                         JSONObject voteFaitJson = new JSONObject();

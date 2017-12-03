@@ -4,6 +4,9 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import warframe.bourreau.util.Command;
 
 import java.awt.*;
@@ -55,9 +58,12 @@ public class RivenCommand extends SimpleCommand {
                     case "traite":
                         Traite(event);
                         break;
+                    case "parse":
+                        Parse(event);
+                        break;
                     default:
                         MessageBuilder message = new MessageBuilder();
-                        String[] commandeRiven = {"calcul", "defi", "influence", "info", "nom", "stat"};
+                        String[] commandeRiven = {"calcul", "defi", "influence", "info", "nom", "stat", "parse"};
 
                         event.getTextChannel().sendMessage(CompareCommande(commande, commandeRiven)).queue();
                         event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.").queue();
@@ -99,7 +105,7 @@ public class RivenCommand extends SimpleCommand {
     private static void Defi(MessageReceivedEvent event) {
         try {
             String commande = recupString(event.getMessage().getContent().toLowerCase());
-            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
             EmbedBuilder defi = new EmbedBuilder();
 
@@ -200,7 +206,7 @@ public class RivenCommand extends SimpleCommand {
 
             if (commande.contains(" ")) {
                 String cherche = recupString(commande);
-                String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
+                String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
                 JSONObject rivenJson = new JSONObject(riven);
 
                 if (FindRivenJsonInfluenceTransforme(cherche) != null) {
@@ -252,7 +258,7 @@ public class RivenCommand extends SimpleCommand {
     private static void Info(MessageReceivedEvent event) {
         try {
             String commande = recupString(event.getMessage().getContent().toLowerCase());
-            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
             EmbedBuilder info = new EmbedBuilder();
             String polarity = "";
@@ -359,7 +365,7 @@ public class RivenCommand extends SimpleCommand {
             String commande = recupString(event.getMessage().getContent().toLowerCase());
 
             if (commande.contains(" ")) {
-                String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
+                String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
                 JSONObject rivenJson = new JSONObject(riven);
                 EmbedBuilder nom = new EmbedBuilder();
                 String cherche = recupString(commande);
@@ -436,7 +442,7 @@ public class RivenCommand extends SimpleCommand {
     private static void Stat(MessageReceivedEvent event) {
         try {
             String commande = recupString(event.getMessage().getContent().toLowerCase());
-            String riven = new String(Files.readAllBytes(Paths.get("info" + File.separator + sortie)));
+            String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
             EmbedBuilder stat = new EmbedBuilder();
 
@@ -541,12 +547,12 @@ public class RivenCommand extends SimpleCommand {
     private static void Traite(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
-                String adresse = new String(Files.readAllBytes(Paths.get("info" + File.separator + "RivenMods.json")));
-                String adresseSortie = System.getProperty("user.dir") + File.separator + "info" + File.separator + "RivenMods.json";
-                String adressePrimary = System.getProperty("user.dir") + File.separator + "input" + File.separator + "riven_primary.txt";
-                String adresseMelee = System.getProperty("user.dir") + File.separator + "input" + File.separator + "riven_melee.txt";
-                String adresseSecondary = System.getProperty("user.dir") + File.separator + "input" + File.separator + "riven_secondary.txt";
-                String adresseShotgun = System.getProperty("user.dir") + File.separator + "input" + File.separator + "riven_shotgun.txt";
+                String adresse = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "RivenMods.json")));
+                String adresseSortie = System.getProperty("user.dir") + File.separator + "res" + File.separator + "info" + File.separator + "RivenMods.json";
+                String adressePrimary = System.getProperty("user.dir") + File.separator + "res" + File.separator + "input" + File.separator + "riven_primary.txt";
+                String adresseMelee = System.getProperty("user.dir") + File.separator + "res" + File.separator + "input" + File.separator + "riven_melee.txt";
+                String adresseSecondary = System.getProperty("user.dir") + File.separator + "res" + File.separator + "input" + File.separator + "riven_secondary.txt";
+                String adresseShotgun = System.getProperty("user.dir") + File.separator + "res" + File.separator + "input" + File.separator + "riven_shotgun.txt";
                 FileWriter file = new FileWriter(adresseSortie);
                 JSONObject rivenJson = new JSONObject(adresse);
                 Scanner scanner;
@@ -622,34 +628,60 @@ public class RivenCommand extends SimpleCommand {
         }
     }
 
-    private static void Traite2(MessageReceivedEvent event) {
+    private static void Parse(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
-                String commande = recupString(event.getMessage().getContent().toLowerCase());
-                JSONObject rivenJson = new JSONObject();
+            String url = "https://semlar.com/rivencalc";
+            Document doc = Jsoup.connect(url).get();
+            Element scriptRiven = doc.select("script").last();
 
-                if (commande.contains(" ")) {
-                    String str = recupString(commande);
+            String adresse = System.getProperty("user.dir") + File.separator + "res" + File.separator + "output" + File.separator + "riven.html";
+            String adresseJson = System.getProperty("user.dir") + File.separator + "res" + File.separator + "output" + File.separator + "riven.json";
+            FileWriter file = new FileWriter(adresse);
+            FileWriter fileJson = new FileWriter(adresseJson);
 
-                    if (Traitement()) {
-                        rivenJson.put("current version", str);
-                        rivenJson.put("date", new SimpleDateFormat("dd/MM/yyyy").format(new Date(Instant.now().toEpochMilli())));
-                        rivenJson.put("heure", new SimpleDateFormat("HH:mm:ss").format(new Date(Instant.now().toEpochMilli())));
+            file.write(scriptRiven.toString());
+            file.flush();
+            file.close();
 
-                        event.getTextChannel().sendMessage("Traitement effectué par rapport à l'update " + str).queue();
-                    }
+            File fileRead = new File(adresse);
+            Scanner scan = new Scanner(fileRead);
+            boolean isCopying = true;
+            boolean isCom = false;
+            String nextLine;
+            String previous = "";
+
+            scan.nextLine();
+            scan.nextLine();
+            fileJson.write("{");
+
+            while (scan.hasNextLine() && isCopying) {
+                nextLine = scan.nextLine();
+
+                if (nextLine.contains("var RivenTypeOrder")) isCopying = false;
+
+                if (nextLine.contains("/*")) isCom = true;
+
+
+                if (isCopying && !isCom) {
+                    if (nextLine.contains("]") && previous.contains("},"))
+                        fileJson.write("\n{}\n" + nextLine);
+                    else if (!nextLine.contains("//"))
+                        fileJson.write("\n" + nextLine);
                 }
-                else {
-                    if(Traitement()) {
-                        rivenJson.put("date", new SimpleDateFormat("dd/MM/yyyy").format(new Date(Instant.now().toEpochMilli())));
-                        rivenJson.put("heure", new SimpleDateFormat("HH:mm:ss").format(new Date(Instant.now().toEpochMilli())));
 
-                        event.getTextChannel().sendMessage("Traitement effectué.").queue();
-                    }
-                }
+                if (nextLine.contains("*/")) isCom = false;
+
+                previous = nextLine;
             }
-            else
-                event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
+
+            scan.close();
+
+            fileJson.flush();
+            fileJson.close();
+
+            if (new File(adresse).exists()) {
+                new File(adresse).delete();
+            }
         }
         catch (Exception e) {
             afficheErreur(event, e);

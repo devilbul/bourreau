@@ -40,7 +40,7 @@ public class InfoCommand extends SimpleCommand {
     @Command(name="alliance")
     public static void Alliance(MessageReceivedEvent event) {
         try {
-            String info = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Alliance.json")));
+            String info = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
             JSONObject allianceJson = new JSONObject(info);
             EmbedBuilder alliance = new EmbedBuilder();
             String nomAlliance = allianceJson.getJSONObject("infos").getString("nomAlliance");
@@ -135,8 +135,8 @@ public class InfoCommand extends SimpleCommand {
     @Command(name="clan")
     public static void ListClan(MessageReceivedEvent event) {
         try {
-            String clanString = "";
-            String alliance = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Alliance.json")));
+            StringBuilder clanString = new StringBuilder();
+            String alliance = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
             JSONObject allianceJson = new JSONObject(alliance);
             JSONObject clanJson = allianceJson.getJSONObject("clans");
             EmbedBuilder clan = new EmbedBuilder();
@@ -144,11 +144,11 @@ public class InfoCommand extends SimpleCommand {
             int nbClan = clanJson.length();
 
             for (int i=0; i<nbClan; i++)
-                clanString += clanJson.names().get(i) + "\n";
+                clanString.append(clanJson.names().get(i)).append("\n");
 
             clan.setTitle("**__Alliance :__** " + nomAlliance, "http://wfraid.teamfr.net/");
             clan.setThumbnail("http://i.imgur.com/BUkD1OV.png");
-            clan.addField("__liste des " + nbClan + " clans :__", clanString, false);
+            clan.addField("__liste des " + nbClan + " clans :__", clanString.toString(), false);
             clan.setColor(new Color(13, 237, 255));
             clan.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
@@ -164,9 +164,9 @@ public class InfoCommand extends SimpleCommand {
     public static void ListLeader(MessageReceivedEvent event) {
         try {
             String commande = event.getMessage().getContent();
-            String leader = "";
-            String clan = "";
-            String alliance = new String(Files.readAllBytes(Paths.get("info" + File.separator + "Alliance.json")));
+            StringBuilder leader = new StringBuilder();
+            StringBuilder clan = new StringBuilder();
+            String alliance = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
             JSONObject allianceJson = new JSONObject(alliance);
             JSONObject clanJson = allianceJson.getJSONObject("clans");
             EmbedBuilder lead = new EmbedBuilder();
@@ -174,28 +174,28 @@ public class InfoCommand extends SimpleCommand {
             int nbClan = clanJson.length();
 
             if (commande.contains(" ")) {
-                clan = recupString(commande).toLowerCase();
+                clan = new StringBuilder(recupString(commande).toLowerCase());
 
                 for (int i=0; i<nbClan; i++) {
-                    if(clanJson.names().getString(i).toLowerCase().equals(clan.toLowerCase())) {
+                    if(clanJson.names().getString(i).toLowerCase().equals(clan.toString().toLowerCase())) {
                         JSONArray leaders = clanJson.getJSONObject(clanJson.names().getString(i)).getJSONArray("leaders");
 
                         for (int j=0; j<leaders.length(); j++)
-                            leader += leaders.getString(j) + "\n";
+                            leader.append(leaders.getString(j)).append("\n");
                     }
                 }
 
                 lead.setTitle("**__Alliance :__** " + nomAlliance, "http://wfraid.teamfr.net/");
-                lead.setDescription(clan);
-                if (clanJson.names().toString().toLowerCase().contains(clan) && clanJson.getJSONObject(FindClanKey(clanJson.names(),clan.toLowerCase())).getString("logoUrl").isEmpty())
+                lead.setDescription(clan.toString());
+                if (clanJson.names().toString().toLowerCase().contains(clan.toString()) && clanJson.getJSONObject(FindClanKey(clanJson.names(), clan.toString().toLowerCase())).getString("logoUrl").isEmpty())
                     lead.setThumbnail("http://i.imgur.com/BUkD1OV.png");
                 else
-                    lead.setThumbnail(clanJson.getJSONObject(FindClanKey(clanJson.names(),clan.toLowerCase())).getString("logoUrl"));
-                lead.addField("Warlord(s) :", leader, false);
+                    lead.setThumbnail(clanJson.getJSONObject(FindClanKey(clanJson.names(), clan.toString().toLowerCase())).getString("logoUrl"));
+                lead.addField("Warlord(s) :", leader.toString(), false);
                 lead.setColor(new Color(13, 237, 255));
                 lead.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
-                if (!leader.equals(""))
+                if (!leader.toString().equals(""))
                     event.getTextChannel().sendMessage(lead.build()).queue();
                 else
                     event.getTextChannel().sendMessage("ce clan ne fait pas parti de l'alliance ou il est mal écrit.").queue();
@@ -206,19 +206,19 @@ public class InfoCommand extends SimpleCommand {
 
                     for (int j=0; j<leaders.length(); j++) {
                         if (j !=leaders.length()-1)
-                            leader += leaders.getString(j) + " / ";
+                            leader.append(leaders.getString(j)).append(" / ");
                         else if (j == leaders.length()-1)
-                            leader += leaders.getString(j) + "\n";
+                            leader.append(leaders.getString(j)).append("\n");
                     }
 
-                    clan += clanJson.names().get(i) + " :     \n";
+                    clan.append(clanJson.names().get(i)).append(" :     \n");
                 }
 
                 lead.setTitle("**__Alliance :__** " + nomAlliance, "http://wfraid.teamfr.net/");
                 lead.setThumbnail("http://i.imgur.com/BUkD1OV.png");
                 lead.setDescription(nbClan + " clans");
-                lead.addField("Clans : ", clan, true);
-                lead.addField("Warlods : ", leader, true);
+                lead.addField("Clans : ", clan.toString(), true);
+                lead.addField("Warlods : ", leader.toString(), true);
                 lead.setColor(new Color(13, 237, 255));
                 lead.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
@@ -310,7 +310,7 @@ public class InfoCommand extends SimpleCommand {
     }
 
     @Command(name="ts")
-    public static void Ts (MessageReceivedEvent event) {
+    public static void Ts(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("mine.ts-devil.eu:8334").queue();
         }

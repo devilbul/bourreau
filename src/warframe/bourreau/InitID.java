@@ -172,7 +172,7 @@ public class InitID {
         InitHashMap();
         InitQueue();
 
-        serveurID = jda.getGuildsByName("French Connection", true).get(0).getId();
-        //serveurID = jda.getGuildsByName("serveur test", true).get(0).getId();
+        //serveurID = jda.getGuildsByName("French Connection", true).get(0).getId();
+        serveurID = jda.getGuildsByName("serveur test", true).get(0).getId();
     }
 }
