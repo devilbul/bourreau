@@ -2,23 +2,31 @@ package warframe.bourreau.commands;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.Permission;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+import org.json.JSONObject;
 import warframe.bourreau.util.Command;
+import warframe.bourreau.util.WaitingSound;
 
 import java.awt.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
-import static warframe.bourreau.InitID.*;
+import static warframe.bourreau.Bourreau.getJDA;
+import static warframe.bourreau.Init.*;
 import static warframe.bourreau.Bourreau.botVersion;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.messsage.Message.MessageAbout;
+import static warframe.bourreau.messsage.MessageOnEvent.MessagePremierConnection;
 import static warframe.bourreau.util.Find.FindAdmin;
 import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThing;
+import static warframe.bourreau.util.Find.FindCommand;
 
 public class BasedCommand extends SimpleCommand {
 
@@ -32,11 +40,14 @@ public class BasedCommand extends SimpleCommand {
     public static void AfficheUpdateBot(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
+                String configTextChannel = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configTextChannel.json")));
+                JSONObject configTextChannelJson = new JSONObject(configTextChannel);
+                String textChannelID = configTextChannelJson.getJSONObject("textChannels").getJSONObject(event.getGuild().getId()).getJSONObject("textChannels").getJSONObject("botSpam").getString("idTextChannel");
                 EmbedBuilder news = new EmbedBuilder();
 
-                news.addField("=> amélioration mise à jour influence riven", "      ", false);
+                news.addField("=> amélioration mise à jour influence riven", "._.", false);
 
-                news.addField("=> mise à jour de la commande help", "", false);
+                news.addField("=> mise à jour de la commande help", "._.", false);
 
                 news.setTitle("Patch Note " + botVersion + " :", null);
                 news.setDescription("ajout avec la dernière mise à jour");
@@ -44,7 +55,7 @@ public class BasedCommand extends SimpleCommand {
                 news.setColor(new Color(17, 204, 17));
                 news.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
-                event.getJDA().getTextChannelById(botSpamID).sendMessage(news.build()).complete().pin().complete();
+                event.getJDA().getTextChannelById(textChannelID).sendMessage(news.build()).complete().pin().complete();
             } else
                 MessageNoThing(event);
         }
@@ -100,19 +111,30 @@ public class BasedCommand extends SimpleCommand {
                         destinataire = event.getMessage().getMentionedUsers().get(0);
 
                     if (destinataire != null) {
+                        String configTextChannel = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configTextChannel.json")));
+                        JSONObject configTextChannelJson = new JSONObject(configTextChannel);
+                        String textChannelID = configTextChannelJson.getJSONObject("textChannels").getJSONObject(event.getGuild().getId()).getJSONObject("textChannels").getJSONObject("accueil").getString("idTextChannel");
+
                         messageMP.append(destinataire);
                         messageMP.append(", votre présentation n'est pas correctement.");
                         messageMP.append("\nVeuillez refaire votre présentation dans le salon textuel ");
-                        messageMP.append(event.getJDA().getTextChannelById(accueilID));
+                        messageMP.append(event.getJDA().getTextChannelById(textChannelID));
                         messageMP.append("\nA bientôt, peut-être.\n");
                         messageMP.append(event.getJDA().getSelfUser());
                         destinataire.openPrivateChannel().complete().sendMessage(messageMP.build()).queue();
                     }
                 }
                 else {
-                    Role tenno = event.getGuild().getRoleById(tennoID);
+                    String configEmotes = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configEmote.json")));
+                    String configRoles = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configRole.json")));
+                    JSONObject configEmotesJson = new JSONObject(configEmotes);
+                    JSONObject configRolesJson = new JSONObject(configRoles);
+                    String roleID = configRolesJson.getJSONObject("roles").getJSONObject(event.getGuild().getId()).getJSONObject("roles").getJSONObject("tenno").getString("idRole");
+                    String emoteID = configEmotesJson.getJSONObject("emotes").getJSONObject("default").getString("idEmote");
+                    String serverID = configEmotesJson.getJSONObject("emotes").getJSONObject("default").getString("idServer");
+                    Role tenno = event.getGuild().getRoleById(roleID);
 
-                    event.getTextChannel().addReactionById(event.getMessage().getId(), event.getGuild().getEmoteById(bourreauID)).queue();
+                    event.getTextChannel().addReactionById(event.getMessage().getId(), event.getJDA().getGuildById(serverID).getEmoteById(emoteID)).queue();
                     event.getGuild().getController().addRolesToMember(event.getMember(), tenno).queue();
                     //event.getTextChannel().sendMessage("Merci de ta présentation, et Bienvenue sur le discord de l'Alliance **French Connection** !").queue();
                     Information(event);
@@ -128,6 +150,21 @@ public class BasedCommand extends SimpleCommand {
     @Command(name="test")
     public static void Test(MessageReceivedEvent event) {
         try {
+            /*for (Guild guild : getJDA().getGuilds()) {
+                System.out.println("-----------------------------------------------------");
+                System.out.println(guild.getName());
+                System.out.println(guild.getId());
+            }
+            System.out.println("-----------------------------------------------------");
+
+            for (WaitingSound aQueueSon : queueSon) {
+                System.out.println(aQueueSon.getEvent().getGuild().getId());
+                System.out.println(aQueueSon.getCommandeSon());
+                System.out.println(aQueueSon.getIdDemandeur());
+            }
+
+            System.out.println("-----------------------------------------------------");*/
+            //event.getTextChannel().sendMessage(MessagePremierConnection()).queue();
 
         }
         catch (Exception e) {

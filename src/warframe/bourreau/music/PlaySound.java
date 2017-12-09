@@ -5,7 +5,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.io.File;
 
-import static warframe.bourreau.InitID.*;
+import static warframe.bourreau.Init.*;
 import static warframe.bourreau.util.Find.FindUserMention;
 import static warframe.bourreau.util.Find.FindUserVC;
 
@@ -16,12 +16,12 @@ public class PlaySound {
             if (channel == null)
                 event.getTextChannel().sendMessage("Client non conneté à un salon vocal.").queue();
             else {
-                if (!audioManager.isConnected())
-                    audioManager.openAudioConnection(channel);
+                if (!audioManagers.get(event.getGuild().getId()).isConnected())
+                    audioManagers.get(event.getGuild().getId()).openAudioConnection(channel);
 
                 System.out.println(adresse);
 
-                manager.loadTrack(event.getTextChannel(), adresse);
+                managers.get(event.getGuild().getId()).loadTrack(event.getTextChannel(), adresse);
             }
         }
         catch(Exception e) {
@@ -29,7 +29,7 @@ public class PlaySound {
         }
     }
 
-    public static void playSound(MessageReceivedEvent event, String file, float volume) {
+    public static void playSound(MessageReceivedEvent event, String file) {
         String adresse = System.getProperty("user.dir") + File.separator + "res" + File.separator + "music" + File.separator + file;
         VoiceChannel channel = FindUserVC(event);
 

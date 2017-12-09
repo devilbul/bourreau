@@ -1,9 +1,11 @@
 package warframe.bourreau.util;
 
-import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.entities.impl.GuildImpl;
 import net.dv8tion.jda.core.entities.impl.MemberImpl;
+import net.dv8tion.jda.core.events.Event;
+import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import org.json.JSONArray;
@@ -15,8 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static warframe.bourreau.InitID.*;
-import static warframe.bourreau.Bourreau.getJda;
 import static warframe.bourreau.riven.TxtToJson.sortie;
 import static warframe.bourreau.util.Transforme.TransformeInfluence;
 
@@ -27,12 +27,11 @@ public class Find {
         Member member = new MemberImpl((GuildImpl) event.getGuild(), user);
         VoiceChannel channel = null;
 
-        for (int i=0; i<event.getGuild().getVoiceChannels().size(); i++) {
+        for (int i=0; i<event.getGuild().getVoiceChannels().size(); i++)
             if (event.getGuild().getVoiceChannels().get(i).getMembers().contains(member)) {
                 channel = event.getGuild().getVoiceChannels().get(i);
                 break;
             }
-        }
 
         return channel;
     }
@@ -57,14 +56,12 @@ public class Find {
             String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
-            for (Object name : rivenJson.names()) {
-                for (int i=0; i<rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item").names().length(); i++) {
+            for (Object name : rivenJson.names())
+                for (int i=0; i<rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item").names().length(); i++)
                     if (cherche.equals(rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item").names().get(i)))
                         return Double.parseDouble(rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item")
                                 .getJSONArray(String.valueOf(rivenJson.getJSONObject(String.valueOf(name))
                                         .getJSONObject("item").names().get(i))).getString(1));
-                }
-            }
 
             return 0.0;
         } catch (IOException e) {
@@ -78,14 +75,12 @@ public class Find {
             String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
-            for (Object name : rivenJson.names()) {
-                for (int i=0; i<rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item").names().length(); i++) {
+            for (Object name : rivenJson.names())
+                for (int i=0; i<rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item").names().length(); i++)
                     if (cherche.equals(rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item").names().get(i)))
                         return TransformeInfluence(rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item")
                                 .getJSONArray(String.valueOf(rivenJson.getJSONObject(String.valueOf(name))
                                         .getJSONObject("item").names().get(i))).getString(1));
-                }
-            }
 
             return null;
         } catch (IOException e) {
@@ -99,12 +94,10 @@ public class Find {
             String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
 
-            for (Object name : rivenJson.names()) {
-                for (int i=0; i<rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item").names().length(); i++) {
+            for (Object name : rivenJson.names())
+                for (int i=0; i<rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item").names().length(); i++)
                     if (cherche.equals(rivenJson.getJSONObject(String.valueOf(name)).getJSONObject("item").names().get(i)))
                         return name.toString();
-                }
-            }
 
             return null;
         } catch (IOException e) {
@@ -114,41 +107,91 @@ public class Find {
     }
 
     public static boolean FindAdmin(MessageReceivedEvent event, Member user) {
-        Role admin = event.getGuild().getRoleById(adminID);
+        try {
+            String configRoles = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configRole.json")));
+            JSONObject configRolesJson = new JSONObject(configRoles);
+            String roleID = configRolesJson.getJSONObject("roles").getJSONObject(event.getGuild().getId()).getJSONObject("roles").getJSONObject("admin").getString("idRole");
 
-        return event.getGuild().getMembersWithRoles(admin).contains(user);
+            if (!roleID.isEmpty()) {
+                Role admin = event.getGuild().getRoleById(roleID);
+
+                return event.getGuild().getMembersWithRoles(admin).contains(user);
+            }
+
+            return false;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean FindModo(MessageReceivedEvent event, Member user) {
-        Role modo = event.getGuild().getRoleById(modoID);
+        try {
+            String configRoles = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configRole.json")));
+            JSONObject configRolesJson = new JSONObject(configRoles);
+            String roleID = configRolesJson.getJSONObject("roles").getJSONObject(event.getGuild().getId()).getJSONObject("roles").getJSONObject("modo").getString("idRole");
 
-        return event.getGuild().getMembersWithRoles(modo).contains(user);
+            if (!roleID.isEmpty()) {
+                Role modo = event.getGuild().getRoleById(roleID);
+
+                return event.getGuild().getMembersWithRoles(modo).contains(user);
+            }
+
+            return false;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean FindAdminPrive(PrivateMessageReceivedEvent event, User user) {
-        boolean trouve = false;
+        try {
+            String configRoles = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configRole.json")));
+            JSONObject configRolesJson = new JSONObject(configRoles);
+            String roleID;
+            Role admin;
 
-        Role admin = event.getJDA().getGuilds().get(0).getRoleById(adminID);
+            for (Guild guild : event.getJDA().getGuilds()) {
+                roleID = configRolesJson.getJSONObject("roles").getJSONObject(guild.getId()).getJSONObject("roles").getJSONObject("admin").getString("idRole");
+                admin = event.getJDA().getGuildById(guild.getId()).getRoleById(roleID);
 
-        for (int i=0; i< event.getJDA().getGuilds().get(0).getMembersWithRoles(admin).size(); i++) {
-            if (event.getJDA().getGuilds().get(0).getMembersWithRoles(admin).get(i).getUser().equals(user))
-                trouve = true;
+                for (int i=0; i < guild.getMembersWithRoles(admin).size(); i++)
+                    if (guild.getMembersWithRoles(admin).get(i).equals(user))
+                        return true;
+            }
+
+            return false;
         }
-
-        return trouve;
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean FindModoPrive(PrivateMessageReceivedEvent event, User user) {
-        boolean trouve = false;
+        try {
+            String configRoles = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configRole.json")));
+            JSONObject configRolesJson = new JSONObject(configRoles);
+            String roleID;
+            Role modo;
 
-        Role admin = event.getJDA().getGuilds().get(0).getRoleById(modoID);
+            for (Guild guild : event.getJDA().getGuilds()) {
+                roleID = configRolesJson.getJSONObject("roles").getJSONObject(guild.getId()).getJSONObject("roles").getJSONObject("modo").getString("idRole");
+                modo = event.getJDA().getGuildById(guild.getId()).getRoleById(roleID);
 
-        for (int i=0; i< event.getJDA().getGuilds().get(0).getMembersWithRoles(admin).size(); i++) {
-            if (event.getJDA().getGuilds().get(0).getMembersWithRoles(admin).get(i).getUser().equals(user))
-                trouve = true;
+                for (int i=0; i < guild.getMembersWithRoles(modo).size(); i++)
+                    if (guild.getMembersWithRoles(modo).get(i).equals(user))
+                        return true;
+            }
+
+            return false;
         }
-
-        return trouve;
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean FindList(String[] list, String element) {
@@ -214,24 +257,6 @@ public class Find {
         return trouve;
     }
 
-    public static Emote FindEmote(JDA jda, String emoteName) {
-        for (int i=0; i<jda.getGuilds().get(0).getEmotes().size(); i++){
-            if (jda.getGuilds().get(0).getEmotes().get(i).getName().equals(emoteName))
-                 return jda.getGuilds().get(0).getEmotes().get(i);
-        }
-
-        return null;
-    }
-
-    public static String FindBucher(JDA jda) {
-        for (int i=0; i<jda.getVoiceChannels().size() ; i++) {
-            if (jda.getVoiceChannels().get(i).getName().contains("Bucher"))
-                return jda.getVoiceChannels().get(i).getId();
-        }
-
-        return null;
-    }
-
     public static boolean FindRole(MessageReceivedEvent event, Role role) {
         Member user = event.getMember();
         List<Member> list = event.getGuild().getMembersWithRoles(role);
@@ -262,12 +287,59 @@ public class Find {
         return false;
     }
 
-    public static boolean FindRolePrive(PrivateMessageReceivedEvent event, Role role) {
-        for (int i=0; i<getJda().getGuildById(serveurID).getMemberById(event.getAuthor().getId()).getRoles().size(); i++) {
-            if (getJda().getGuildById(serveurID).getMemberById(event.getAuthor().getId()).getRoles().get(i).equals(role))
+    /*public static boolean FindRolePrive(PrivateMessageReceivedEvent event, Role role) {
+        for (int i=0; i<getJDA().getGuildById(serveurID).getMemberById(event.getAuthor().getId()).getRoles().size(); i++) {
+            if (getJDA().getGuildById(serveurID).getMemberById(event.getAuthor().getId()).getRoles().get(i).equals(role))
                 return true;
         }
 
         return false;
+    }*/
+
+    private static boolean FindUser(Guild guild, User cible) {
+        for (Member user : guild.getMembers())
+            if (user.getUser().equals(cible))
+                return true;
+        return false;
+    }
+
+    public static boolean FindUserToServers(PrivateMessageReceivedEvent event) {
+        User auteur = event.getAuthor();
+
+        for (Guild guild : event.getJDA().getGuilds())
+            if (FindUser(guild, auteur))
+                if (guild.getMember(auteur).getRoles().size() > 0)
+                    return true;
+        return false;
+    }
+
+    public static boolean FindCommand(MessageReceivedEvent event, String commande) {
+        try {
+            String configCommand = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configCommand.json")));
+            JSONObject configCommandJson = new JSONObject(configCommand);
+
+            if (FindJsonKey(configCommandJson.getJSONObject("commandes"), event.getGuild().getId())) {
+                JSONArray listeCommandeJson = configCommandJson.getJSONObject("commandes").getJSONObject(event.getGuild().getId()).getJSONArray("commandes");
+
+                for (int i = 0; i < listeCommandeJson.length(); i++)
+                    if (listeCommandeJson.getString(i).equals(commande))
+                        return true;
+            }
+
+            return false;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static Role FindAdminRole(GuildJoinEvent event) {
+        for (Role role : event.getGuild().getRoles())
+            for (Permission permission : role.getPermissions())
+                if (permission.equals(Permission.ADMINISTRATOR))
+                    return role;
+
+        return null;
     }
 }

@@ -21,7 +21,7 @@ import java.util.Scanner;
 
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.parser.RivenParser.*;
-import static warframe.bourreau.riven.TxtToJson.Traitement;
+import static warframe.bourreau.riven.JsonToTxt.Traitement;
 import static warframe.bourreau.riven.TxtToJson.sortie;
 import static warframe.bourreau.util.Find.*;
 import static warframe.bourreau.util.Levenshtein.CompareCommande;
@@ -58,15 +58,15 @@ public class RivenCommand extends SimpleCommand {
                     case "traite":
                         Traite(event);
                         break;
-                    case "parse":
-                        Parse(event);
+                    case "update":
+                        Update(event);
                         break;
                     default:
                         MessageBuilder message = new MessageBuilder();
                         String[] commandeRiven = {"calcul", "defi", "influence", "info", "nom", "stat", "parse"};
 
                         event.getTextChannel().sendMessage(CompareCommande(commande, commandeRiven)).queue();
-                        event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.").queue();
+                        event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes.").queue();
 
                         message.append("You know nothing, ");
                         message.append(event.getAuthor());
@@ -628,7 +628,7 @@ public class RivenCommand extends SimpleCommand {
         }
     }
 
-    private static void Parse(MessageReceivedEvent event) {
+    private static void ParseHTML(MessageReceivedEvent event) {
         try {
             String url = "https://semlar.com/rivencalc";
             Document doc = Jsoup.connect(url).get();
@@ -638,17 +638,16 @@ public class RivenCommand extends SimpleCommand {
             String adresseJson = System.getProperty("user.dir") + File.separator + "res" + File.separator + "output" + File.separator + "riven.json";
             FileWriter file = new FileWriter(adresse);
             FileWriter fileJson = new FileWriter(adresseJson);
-
-            file.write(scriptRiven.toString());
-            file.flush();
-            file.close();
-
             File fileRead = new File(adresse);
             Scanner scan = new Scanner(fileRead);
             boolean isCopying = true;
             boolean isCom = false;
             String nextLine;
             String previous = "";
+
+            file.write(scriptRiven.toString());
+            file.flush();
+            file.close();
 
             scan.nextLine();
             scan.nextLine();
@@ -660,7 +659,6 @@ public class RivenCommand extends SimpleCommand {
                 if (nextLine.contains("var RivenTypeOrder")) isCopying = false;
 
                 if (nextLine.contains("/*")) isCom = true;
-
 
                 if (isCopying && !isCom) {
                     if (nextLine.contains("]") && previous.contains("},"))
@@ -679,9 +677,26 @@ public class RivenCommand extends SimpleCommand {
             fileJson.flush();
             fileJson.close();
 
-            if (new File(adresse).exists()) {
+            if (new File(adresse).exists())
                 new File(adresse).delete();
-            }
+        }
+        catch (Exception e) {
+            afficheErreur(event, e);
+            saveErreur(event, e);
+        }
+    }
+
+    private static void Update(MessageReceivedEvent event) {
+        try {
+            String adresse = System.getProperty("user.dir") + File.separator + "res" + File.separator + "output" + File.separator + "riven.json";
+
+            ParseHTML(event);
+            Traitement();
+
+            if (new File(adresse).exists())
+                new File(adresse).delete();
+
+            Traite(event);
         }
         catch (Exception e) {
             afficheErreur(event, e);

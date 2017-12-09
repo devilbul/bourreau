@@ -2,18 +2,17 @@ package warframe.bourreau.commands;
 
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.managers.AudioManager;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import warframe.bourreau.parser.CommandParser;
 import warframe.bourreau.thread.ThreadSon;
 import warframe.bourreau.util.Command;
+import warframe.bourreau.util.WaitingSound;
 
-import static warframe.bourreau.InitID.manager;
-import static warframe.bourreau.InitID.queueSon;
+import static warframe.bourreau.Init.audioManagers;
+import static warframe.bourreau.Init.queueSon;
 import static warframe.bourreau.erreur.erreurGestion.afficheErreur;
 import static warframe.bourreau.erreur.erreurGestion.saveErreur;
 import static warframe.bourreau.thread.ThreadSon.isPlayed;
@@ -27,8 +26,7 @@ public class SonCommand extends SimpleCommand {
     @Command(name="leave")
     public static void Leave(MessageReceivedEvent event) {
         try {
-            AudioManager manager = event.getGuild().getAudioManager();
-            manager.closeAudioConnection();
+            audioManagers.get(event.getGuild().getId()).closeAudioConnection();
         }
         catch (Exception e) {
             afficheErreur(event, e);
@@ -45,7 +43,7 @@ public class SonCommand extends SimpleCommand {
             fichier = "alea" + File.separator + choix + ".wav";
 
             if (!isPlayed()) new ThreadSon(event, fichier).start();
-            else queueSon.add(fichier);
+            else queueSon.add(new WaitingSound(event, fichier));
         }
         catch (Exception e) {
             afficheErreur(event, e);
@@ -76,7 +74,7 @@ public class SonCommand extends SimpleCommand {
                             String[] commandeRiven = {"list", "nowplaying", "skip", "reset", "stop", "pause"};
 
                             event.getTextChannel().sendMessage(CompareCommande(commande, commandeRiven)).queue();
-                            event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.").queue();
+                            event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes.").queue();
 
                             message.append("You know nothing, ");
                             message.append(event.getAuthor());
@@ -110,8 +108,8 @@ public class SonCommand extends SimpleCommand {
             queue.append("Playlist :");
 
             if (queueSon.size() > 0)
-                for (String aQueueSon : queueSon)
-                    queue.append("\n   • ").append(aQueueSon);
+                for (WaitingSound aQueueSon : queueSon)
+                    queue.append("\n   • ").append(aQueueSon.getCommandeSon());
             else
                 queue.append("\n   pas de son en attente.");
 

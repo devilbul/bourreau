@@ -10,11 +10,12 @@ import warframe.bourreau.util.Command;
 import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
-import static warframe.bourreau.InitID.*;
 import static warframe.bourreau.commands.BasedCommand.Information;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.Find.FindAdmin;
@@ -29,9 +30,12 @@ public class AdminCommand extends SimpleCommand {
         try {
             if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
                 if (event.getMessage().toString().contains("@")) {
+                    String configRoles = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configRole.json")));
+                    JSONObject configRolesJson = new JSONObject(configRoles);
+                    String roleID = configRolesJson.getJSONObject("roles").getJSONObject(event.getGuild().getId()).getJSONObject("roles").getJSONObject("tenno").getString("idRole");
                     User newTenno = event.getMessage().getMentionedUsers().get(0);
 
-                    event.getGuild().getController().addRolesToMember(event.getGuild().getMemberById(newTenno.getId()), event.getGuild().getRoleById(tennoID)).complete();
+                    event.getGuild().getController().addRolesToMember(event.getGuild().getMemberById(newTenno.getId()), event.getGuild().getRoleById(roleID)).complete();
                     Information(event);
 
                     event.getTextChannel().sendMessage("nouveau Tenno, " + newTenno.getName()).queue();
@@ -52,12 +56,18 @@ public class AdminCommand extends SimpleCommand {
     public static void AuBucher(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
+                String configRoles = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configRole.json")));
+                String configVoiceChannel = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configVoiceChannel.json")));
+                JSONObject configRolesJson = new JSONObject(configRoles);
+                JSONObject configvoiceChannelJson = new JSONObject(configVoiceChannel);
+                String roleID = configRolesJson.getJSONObject("roles").getJSONObject(event.getGuild().getId()).getJSONObject("roles").getJSONObject("bucher").getString("idRole");
+                String voiceChannelID = configvoiceChannelJson.getJSONObject("voiceChannels").getJSONObject(event.getGuild().getId()).getJSONObject("voiceChannels").getJSONObject("bucher").getString("idVoiceChannel");
                 String id = recupID(event.getMessage().getMentionedUsers().toString());
 
                 if (event.getMessage().toString().contains("@")) {
                     if (FindUserVC(event) != null) {
-                        event.getGuild().getController().moveVoiceMember(event.getGuild().getMemberById(id), event.getJDA().getVoiceChannelById(bucherID)).queue();
-                        event.getGuild().getController().addRolesToMember(event.getGuild().getMemberById(id), event.getGuild().getRoleById(heretiqueID)).queue();
+                        event.getGuild().getController().moveVoiceMember(event.getGuild().getMemberById(id), event.getJDA().getVoiceChannelById(voiceChannelID)).queue();
+                        event.getGuild().getController().addRolesToMember(event.getGuild().getMemberById(id), event.getGuild().getRoleById(roleID)).queue();
                         event.getTextChannel().sendMessage("Hérétique ,au bucher !").queue();
                     }
                     else

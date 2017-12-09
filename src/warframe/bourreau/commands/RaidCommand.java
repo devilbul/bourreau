@@ -3,6 +3,7 @@ package warframe.bourreau.commands;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
+import warframe.bourreau.util.Command;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
-import static warframe.bourreau.InitID.raidsID;
 import static warframe.bourreau.erreur.erreurGestion.*;
 import static warframe.bourreau.util.DateHeure.GiveDate;
 import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThingRaid;
@@ -19,7 +19,11 @@ public class RaidCommand extends SimpleCommand {
 
     public static void AffichePresent(MessageReceivedEvent event) {
         try {
-            if (event.getTextChannel().getId().equals(raidsID)) {
+            String configTextChannel = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configTextChannel.json")));
+            JSONObject configTextChannelJson = new JSONObject(configTextChannel);
+            String textChannelID = configTextChannelJson.getJSONObject("textChannels").getJSONObject(event.getGuild().getId()).getJSONObject("textChannels").getJSONObject("raids").getString("idTextChannel");
+
+            if (event.getTextChannel().getId().equals(textChannelID)) {
                 String raid = new String(Files.readAllBytes(Paths.get("raid" + File.separator + "raid_du_" + GiveDate() + ".json")));
                 JSONObject raidJson = new JSONObject(raid);
 
@@ -51,8 +55,12 @@ public class RaidCommand extends SimpleCommand {
     public static void Cancel(MessageReceivedEvent event) {
         try {
             String adresseRaid = System.getProperty("user.dir") + File.separator + "raid" + File.separator + "raid_du_" + GiveDate() + ".json";
+            String configTextChannel = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configTextChannel.json")));
+            JSONObject configTextChannelJson = new JSONObject(configTextChannel);
+            String textChannelID = configTextChannelJson.getJSONObject("textChannels").getJSONObject(event.getGuild().getId()).getJSONObject("textChannels").getJSONObject("raids").getString("idTextChannel");
+
             if (new File(adresseRaid).exists()) {
-                if (event.getTextChannel().getId().equals(raidsID)) {
+                if (event.getTextChannel().getId().equals(textChannelID)) {
                     String raid = new String(Files.readAllBytes(Paths.get("raid" + File.separator + "raid_du_" + GiveDate() + ".json")));
                     JSONObject raidJson = new JSONObject(raid);
 
@@ -86,8 +94,12 @@ public class RaidCommand extends SimpleCommand {
     public static void Present(MessageReceivedEvent event) {
         try {
             String adresseRaid = System.getProperty("user.dir") + File.separator + "raid" + File.separator + "raid_du_" + GiveDate() + ".json";
+            String configTextChannel = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configTextChannel.json")));
+            JSONObject configTextChannelJson = new JSONObject(configTextChannel);
+            String textChannelID = configTextChannelJson.getJSONObject("textChannels").getJSONObject(event.getGuild().getId()).getJSONObject("textChannels").getJSONObject("raids").getString("idTextChannel");
+
             if (new File(adresseRaid).exists()) {
-                if (event.getTextChannel().getId().equals(raidsID)) {
+                if (event.getTextChannel().getId().equals(textChannelID)) {
                     String raid = new String(Files.readAllBytes(Paths.get("raid" + File.separator + "raid_du_" + GiveDate() + ".json")));
                     JSONObject raidJson = new JSONObject(raid);
 

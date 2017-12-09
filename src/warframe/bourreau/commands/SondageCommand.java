@@ -27,18 +27,18 @@ public class SondageCommand extends SimpleCommand {
     public static void Sondage(MessageReceivedEvent event) {
         try {
             if (event.getMessage().getContent().contains(" ")) {
-                String adresseSondage = System.getProperty("user.dir") + File.separator + "res" + File.separator + "res" + File.separator + "sondage" + File.separator + "sondage.json";
+                String adresseSondage = System.getProperty("user.dir") + File.separator + "res" + File.separator + "sondage" + File.separator + "sondage.json";
                 String adresseVote = System.getProperty("user.dir") + File.separator + "res" + File.separator + "sondage" + File.separator + "vote.json";
                 String rawCommande = recupString(event.getMessage().getContent().toLowerCase());
                 String commande = rawCommande.replaceFirst(" ", "@").split("@")[0];
 
                 switch (commande) {
                     case "affiche":
-                        AfficheSondage(event, adresseSondage);
+                        AfficheSondage(event);
                         break;
                     case "reponses":
                         if (ReponsesSondage(event, adresseSondage, adresseVote))
-                            AfficheSondage(event, adresseSondage);
+                            AfficheSondage(event);
                         break;
                     case "clear":
                         ClearSondage(event, adresseSondage, adresseVote);
@@ -47,17 +47,17 @@ public class SondageCommand extends SimpleCommand {
                         CreateSondage(event, adresseSondage, adresseVote);
                         break;
                     case "resultat":
-                        ResultatSondage(event, adresseSondage, adresseVote);
+                        ResultatSondage(event);
                         break;
                     case "vote":
-                        VoteSondage(event, adresseSondage, adresseVote);
+                        VoteSondage(event, adresseVote);
                         break;
                     default:
                         MessageBuilder message = new MessageBuilder();
                         String[] commandeSondage = {"affiche", "clear", "create", "resultat", "vote"};
 
                         event.getTextChannel().sendMessage(CompareCommande(commande, commandeSondage)).queue();
-                        event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.").queue();
+                        event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes.").queue();
 
                         message.append("You know nothing, ");
                         message.append(event.getAuthor());
@@ -82,24 +82,24 @@ public class SondageCommand extends SimpleCommand {
         }
     }
 
-    private static void AfficheSondage(MessageReceivedEvent event, String adresseSondage) {
+    private static void AfficheSondage(MessageReceivedEvent event) {
         try {
-            if (new File(adresseSondage).exists()) {
-                String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
-                JSONObject sondageJson = new JSONObject(sondage);
+            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+            JSONObject sondageJson = new JSONObject(sondage);
 
-                if (sondageJson.toString().contains("reponses")) {
+            if (sondageJson.names().toString().contains(event.getGuild().getId())) {
+                if (sondageJson.getJSONObject(event.getGuild().getId()).toString().contains("reponses")) {
                     EmbedBuilder sondageDisplay = new EmbedBuilder();
-                    JSONObject reponsesJson = sondageJson.getJSONObject("reponses");
+                    JSONObject reponsesJson = sondageJson.getJSONObject(event.getGuild().getId()).getJSONObject("reponses");
                     String reponses = "";
 
                     for (int i = 0; i < reponsesJson.getInt("nb"); i++)
                         reponses += reponsesJson.getString("reponse" + (i + 1)) + "\n";
 
                     sondageDisplay.setTitle("Sondage en cours :", null);
-                    sondageDisplay.setDescription("fait par : " + sondageJson.getString("createur"));
+                    sondageDisplay.setDescription("fait par : " + sondageJson.getJSONObject(event.getGuild().getId()).getString("createur"));
                     sondageDisplay.setThumbnail("http://wivtunisia.com/wp-content/uploads/2014/10/survey-icon-green1.png");
-                    sondageDisplay.addField(sondageJson.getString("question"), reponses, false);
+                    sondageDisplay.addField(sondageJson.getJSONObject(event.getGuild().getId()).getString("question"), reponses, false);
                     sondageDisplay.addField("Pour voter :", "!sondage vote <choix>\navec <choix> doit être parmis la liste ci-dessus", false);
                     sondageDisplay.setColor(new Color(147, 117, 0));
                     sondageDisplay.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
@@ -120,13 +120,27 @@ public class SondageCommand extends SimpleCommand {
 
     private static void ClearSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
         try {
-            if (new File(adresseSondage).exists() && new File(adresseVote).exists()) {
-                if (new File(adresseSondage).exists())
-                    if (new File(adresseSondage).delete())
-                        if (new File(adresseVote).exists())
-                            if (new File(adresseVote).delete())
-                                event.getTextChannel().sendMessage("sondage supprimé.").queue();
-            } else
+            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+            String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
+            JSONObject sondageJson = new JSONObject(sondage);
+            JSONObject voteJson = new JSONObject(vote);
+            FileWriter fileSondage = new FileWriter(adresseSondage);
+            FileWriter fileVote = new FileWriter(adresseVote);
+
+            if (sondageJson.names().toString().contains(event.getGuild().getId())) {
+                sondageJson.remove(event.getGuild().getId());
+                voteJson.remove(event.getGuild().getId());
+
+                fileSondage.write(sondageJson.toString());
+                fileSondage.flush();
+                fileSondage.close();
+                fileVote.write(voteJson.toString());
+                fileVote.flush();
+                fileVote.close();
+
+                event.getTextChannel().sendMessage("sondage supprimé.").queue();
+            }
+            else
                 event.getTextChannel().sendMessage("aucun sondage en cours.").queue();
         }
         catch (Exception e) {
@@ -137,25 +151,30 @@ public class SondageCommand extends SimpleCommand {
 
     private static void CreateSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
         try {
-            if (!(new File(adresseSondage).exists())) {
+            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+            JSONObject sondageJson = new JSONObject(sondage);
+
+            if (!sondageJson.names().toString().contains(event.getGuild().getId())) {
                 String commande = recupString(event.getMessage().getContent());
 
                 if (commande.contains(" ")) {
                     String question = recupString(commande);
+                    String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
                     JSONObject sondageJSON = new JSONObject();
-                    JSONObject voteJSON = new JSONObject();
+                    JSONObject voteJSON = new JSONObject(vote);
                     FileWriter fileSondage = new FileWriter(adresseSondage);
                     FileWriter fileVote = new FileWriter(adresseVote);
 
                     sondageJSON.put("createur", event.getAuthor().getName());
                     sondageJSON.put("createurID", event.getAuthor().getId());
                     sondageJSON.put("question", question);
-                    voteJSON.put("nbVote", 0);
+                    sondageJson.put(event.getGuild().getId(), sondageJSON);
+                    voteJSON.put(event.getGuild().getId(), new JSONObject().put("nbVote", 0));
 
                     event.getTextChannel().sendMessage("sondage créé").queue();
                     event.getTextChannel().sendMessage("tapez **__!sondage reponses__**, suivi des diverses réponses souhaitées.").queue();
 
-                    fileSondage.write(sondageJSON.toString());
+                    fileSondage.write(sondageJson.toString());
                     fileSondage.flush();
                     fileSondage.close();
                     fileVote.write(voteJSON.toString());
@@ -176,32 +195,33 @@ public class SondageCommand extends SimpleCommand {
 
     private static boolean ReponsesSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
         try {
-            if (new File(adresseSondage).exists()) {
+            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+            JSONObject sondageJson = new JSONObject(sondage);
+
+            if (sondageJson.names().toString().contains(event.getGuild().getId())) {
                 String commande = recupString(event.getMessage().getContent());
 
                 if( commande.contains(" ")) {
                     String rawReponses = recupString(commande);
                     String[] reponses = rawReponses.split(" / ");
 
-                    if (reponses.length>1) {
-                        String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+                    if (reponses.length > 1) {
                         String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
-                        JSONObject sondageJson = new JSONObject(sondage);
                         JSONObject voteJson = new JSONObject(vote);
 
-                        if (!sondageJson.toString().contains("reponses")) {
+                        if (!sondageJson.getJSONObject(event.getGuild().getId()).toString().contains("reponses")) {
                             JSONObject reponsesJson = new JSONObject();
                             FileWriter fileSondage = new FileWriter(adresseSondage);
                             FileWriter fileVote = new FileWriter(adresseVote);
 
                             for (int i = 0; i < reponses.length; i++) {
                                 reponsesJson.put("reponse"+(i+1), reponses[i]);
-                                voteJson.put("nbReponse"+(i+1), 0);
+                                voteJson.getJSONObject(event.getGuild().getId()).put("nbReponse"+(i+1), 0);
                             }
 
                             reponsesJson.put("nb", reponses.length);
 
-                            sondageJson.put("reponses", reponsesJson);
+                            sondageJson.getJSONObject(event.getGuild().getId()).put("reponses", reponsesJson);
 
                             event.getTextChannel().sendMessage("les réponses sont enregistrées.").queue();
 
@@ -241,19 +261,19 @@ public class SondageCommand extends SimpleCommand {
         }
     }
 
-    private static void ResultatSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
+    private static void ResultatSondage(MessageReceivedEvent event) {
         try {
-            if (new File(adresseSondage).exists() && new File(adresseVote).exists()) {
-                String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
-                JSONObject sondageJson = new JSONObject(sondage);
+            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+            JSONObject sondageJson = new JSONObject(sondage);
 
+            if (sondageJson.names().toString().contains(event.getGuild().getId())) {
                 if (sondageJson.toString().contains("reponses")) {
                     String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
                     JSONObject voteJson = new JSONObject(vote);
-                    JSONObject reponsesJson = sondageJson.getJSONObject("reponses");
+                    JSONObject reponsesJson = sondageJson.getJSONObject(event.getGuild().getId()).getJSONObject("reponses");
                     EmbedBuilder resultat = new EmbedBuilder();
                     String reponses = "";
-                    int nbReponse = sondageJson.getJSONObject("reponses").getInt("nb");
+                    int nbReponse = sondageJson.getJSONObject(event.getGuild().getId()).getJSONObject("reponses").getInt("nb");
                     double[] stats = new double[nbReponse];
 
                     for (int i = 0; i < reponsesJson.getInt("nb"); i++)
@@ -261,19 +281,19 @@ public class SondageCommand extends SimpleCommand {
 
                     resultat.setTitle("Résultat sondage en cours :", null);
                     resultat.setThumbnail("http://wivtunisia.com/wp-content/uploads/2014/10/survey-icon-green1.png");
-                    resultat.setDescription("fait par : " + sondageJson.getString("createur"));
-                    resultat.addField(sondageJson.getString("question"), reponses, false);
+                    resultat.setDescription("fait par : " + sondageJson.getJSONObject(event.getGuild().getId()).getString("createur"));
+                    resultat.addField(sondageJson.getJSONObject(event.getGuild().getId()).getString("question"), reponses, false);
                     resultat.addField("__résultat :__ ", "", false);
 
-                    for(int i=0; i<sondageJson.getJSONObject("reponses").getInt("nb"); i++) {
+                    for(int i=0; i<sondageJson.getJSONObject(event.getGuild().getId()).getJSONObject("reponses").getInt("nb"); i++) {
                         resultat.addField("nombre de vote pour **__" + reponsesJson.getString("reponse" + (i + 1)) + " :__**",
-                                String.valueOf(voteJson.getInt("nbReponse" + (i + 1))), true);
+                                String.valueOf(voteJson.getJSONObject(event.getGuild().getId()).getInt("nbReponse" + (i + 1))), true);
                     }
 
                     resultat.addField("__statistique :__", "", false);
 
                     for (int i = 0; i < nbReponse; i++) {
-                        stats[i] = (voteJson.getInt("nbReponse" + (i + 1)) / (voteJson.getInt("nbVote") * 1.0)) * 100;
+                        stats[i] = (voteJson.getJSONObject(event.getGuild().getId()).getInt("nbReponse" + (i + 1)) / (voteJson.getJSONObject(event.getGuild().getId()).getInt("nbVote") * 1.0)) * 100;
                         resultat.addField("vote pour **__" + reponsesJson.getString("reponse" + (i + 1)) + " :__**",
                                 String.valueOf(stats[i]) + "%", true);
                     }
@@ -296,18 +316,18 @@ public class SondageCommand extends SimpleCommand {
         }
     }
 
-    private static void VoteSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
+    private static void VoteSondage(MessageReceivedEvent event, String adresseVote) {
         try {
-            if (new File(adresseSondage).exists() && new File(adresseVote).exists()) {
-                String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
-                JSONObject sondageJson = new JSONObject(sondage);
+            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+            JSONObject sondageJson = new JSONObject(sondage);
 
-                if (sondageJson.toString().contains("reponses")) {
+            if (sondageJson.names().toString().contains(event.getGuild().getId())) {
+                if (sondageJson.getJSONObject(event.getGuild().getId()).toString().contains("reponses")) {
                     String commande = recupString(event.getMessage().getContent().toLowerCase());
 
                     if (commande.contains(" ")) {
                         String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
-                        JSONObject reponsesJson = sondageJson.getJSONObject("reponses");
+                        JSONObject reponsesJson = sondageJson.getJSONObject(event.getGuild().getId()).getJSONObject("reponses");
                         JSONObject voteJson = new JSONObject(vote);
                         JSONObject voteFaitJson = new JSONObject();
                         String[] reponsesList = new String[reponsesJson.getInt("nb")];
@@ -317,20 +337,20 @@ public class SondageCommand extends SimpleCommand {
                         for (int i=0; i<reponsesJson.getInt("nb"); i++)
                             reponsesList[i] = reponsesJson.getString("reponse"+(i+1));
 
-                        if (!FindVotant(auteur, voteJson)) {
+                        if (!FindVotant(auteur, voteJson.getJSONObject(event.getGuild().getId()))) {
                             if (FindList(reponsesList, reponse)) {
                                 FileWriter file = new FileWriter(adresseVote);
-                                int nbVote = voteJson.getInt("nbVote") + 1;
+                                int nbVote = voteJson.getJSONObject(event.getGuild().getId()).getInt("nbVote") + 1;
                                 int reponseFaite = FindReponse(reponsesList, reponse) + 1;
 
                                 voteFaitJson.put("auteur", event.getAuthor().getName());
                                 voteFaitJson.put("auteurID", event.getAuthor().getId());
                                 voteFaitJson.put("reponses", reponse);
 
-                                voteJson.put("nbReponse" + reponseFaite, voteJson.getInt("nbReponse" + reponseFaite) + 1);
+                                voteJson.getJSONObject(event.getGuild().getId()).put("nbReponse" + reponseFaite, voteJson.getJSONObject(event.getGuild().getId()).getInt("nbReponse" + reponseFaite) + 1);
 
-                                voteJson.put("nbVote", nbVote);
-                                voteJson.put("vote" + nbVote, voteFaitJson);
+                                voteJson.getJSONObject(event.getGuild().getId()).put("nbVote", nbVote);
+                                voteJson.getJSONObject(event.getGuild().getId()).put("vote" + nbVote, voteFaitJson);
 
                                 event.getTextChannel().sendMessage("a voté.").queue();
 

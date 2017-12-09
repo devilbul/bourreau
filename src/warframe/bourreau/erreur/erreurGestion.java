@@ -22,17 +22,16 @@ public class erreurGestion {
         message.setDescription("commande : " + event.getMessage().getContent());
         message.setThumbnail("http://forgedesheros.fr/wp-content/uploads/2014/08/warning.png");
         message.setColor(new Color(178, 10, 22));
-        message.addField("erreur :", e.getMessage(), false);
-        message.addField("cause :", String.valueOf(e.getCause()), false);
-        message.addField("localize :", e.getLocalizedMessage(), false);
+        message.addField("erreur :", "" + e.getMessage(), false);
+        message.addField("cause :", "" + String.valueOf(e.getCause()), false);
+        message.addField("localize :", "" + e.getLocalizedMessage(), false);
 
-        event.getGuild().getTextChannelsByName("admin_perso", true).get(0).sendMessage(message.build()).queue();
+        event.getJDA().getGuildById("290707408416931840").getTextChannelById("299634425786925057").sendMessage(message.build()).queue();
         event.getTextChannel().sendMessage("Une erreur est survenue.").queue();
     }
 
     public static void saveErreur(MessageReceivedEvent event, Exception e) {
-        try {
-            String erreur = new String(Files.readAllBytes(Paths.get("res" + File.separator + "erreur" + File.separator + "Erreur.json")));
+        try {String erreur = new String(Files.readAllBytes(Paths.get("res" + File.separator + "erreur" + File.separator + "Erreur.json")));
             String idErreur = new String(Files.readAllBytes(Paths.get("res" + File.separator + "erreur" + File.separator + "IdErreur.json")));
             String adresseErreur = System.getProperty("user.dir") + File.separator + "res" + File.separator + "erreur" + File.separator + "Erreur.json";
             String adresseIdErreur = System.getProperty("user.dir") + File.separator + "res" + File.separator + "erreur" + File.separator + "IdErreur.json";
@@ -70,7 +69,7 @@ public class erreurGestion {
             file.close();
             fileId.close();
 
-            event.getGuild().getTextChannelsByName("admin_perso", true).get(0).sendMessage("rapport ajouté à la bdd").queue();
+            event.getJDA().getGuildById("290707408416931840").getTextChannelById("299634425786925057").sendMessage("rapport ajouté à la bdd").queue();
         }
         catch (IOException ioe) {
             ioe.printStackTrace();

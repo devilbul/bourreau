@@ -14,15 +14,12 @@ public class HandleCommandPrivate {
 
             if (safe) {
                 switch (cmd.invoke) {
-                    case "candidate":
+                    /*case "candidate":
                         CandidatCommand.Candidate(cmd.event);
                         break;
                     case "claim":
                         ClaimCommand.Claim(cmd.event);
-                        break;
-                    case "regle":
-                        RegleCommand.ReglementPrive(cmd.event);
-                        break;
+                        break;*/
                     case "help":
                         HelpCommand.HelpPrivate(cmd.event);
                         break;
@@ -37,7 +34,7 @@ public class HandleCommandPrivate {
         } else {
             MessageBuilder message = new MessageBuilder();
 
-            cmd.event.getAuthor().openPrivateChannel().complete().sendMessage("Commande inconnue. !help pour lister les commandes (sur un salon textuel ou en message privé). \nPS : apprends à écrire.").queue();
+            cmd.event.getAuthor().openPrivateChannel().complete().sendMessage("Commande inconnue. !help pour lister les commandes (sur un salon textuel ou en message privé).").queue();
 
             message.append("You know nothing, ");
             message.append(cmd.event.getAuthor());

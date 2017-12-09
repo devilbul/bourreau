@@ -103,8 +103,7 @@ public class HelpCommand extends SimpleCommand {
                     default:
                         MessageBuilder message = new MessageBuilder();
 
-                        event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes  (sur un salon textuel ou en message privé). \nPS : apprends à écrire.").queue();
-
+                        event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes  (sur un salon textuel ou en message privé).").queue();
                         message.append("You know nothing, ");
                         message.append(event.getAuthor());
 
@@ -223,7 +222,7 @@ public class HelpCommand extends SimpleCommand {
                 default:
                     MessageBuilder message = new MessageBuilder();
 
-                    message.append("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.");
+                    message.append("Commande inconnue. !help pour lister les commandes.");
                     message.append("You know nothing, ");
                     message.append(event.getAuthor());
 

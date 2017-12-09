@@ -19,9 +19,4 @@ public class RegleCommand extends SimpleCommand {
             saveErreur(event, e);
         }
     }
-
-    @Command(name="regle")
-    public static void ReglementPrive(PrivateMessageReceivedEvent event) {
-            MessageReglementPrive(event);
-    }
 }

@@ -18,7 +18,7 @@ public class LanceTimer {
         calendar.set(Calendar.SECOND, 0);
         Date time = calendar.getTime();
         Timer timer = new Timer();
-        timer.schedule(new RaidTimer(jda), time, VINGT_QUATRE_HEURES);
+        //timer.schedule(new RaidTimer(jda), time, VINGT_QUATRE_HEURES);
     }
 
     public static void LanceRaidTimer2(JDA jda) {
@@ -26,6 +26,6 @@ public class LanceTimer {
         GregorianCalendar gc = new GregorianCalendar();
         gc.add(Calendar.HOUR, 24);
 
-        timer.scheduleAtFixedRate(new RaidTimer(jda), gc.getTime(), VINGT_QUATRE_HEURES);
+        //timer.scheduleAtFixedRate(new RaidTimer(jda), gc.getTime(), VINGT_QUATRE_HEURES);
     }
 }

@@ -3,10 +3,14 @@ package warframe.bourreau.commands;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import org.json.JSONObject;
 import warframe.bourreau.util.Command;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import static net.dv8tion.jda.core.Permission.*;
-import static warframe.bourreau.InitID.clanID;
 import static warframe.bourreau.erreur.erreurGestion.afficheErreur;
 import static warframe.bourreau.erreur.erreurGestion.saveErreur;
 import static warframe.bourreau.util.Find.FindAdmin;
@@ -18,6 +22,10 @@ public class SalonCommand extends SimpleCommand {
     public static void CreateSalonClan(MessageReceivedEvent event) {
         try {
             if (FindAdmin(event, event.getMember())) {
+                String configCategory = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configCategory.json")));
+                JSONObject configCategoryJson = new JSONObject(configCategory);
+                String categoryID = configCategoryJson.getJSONObject("categories").getJSONObject(event.getGuild().getId()).getJSONObject("categories").getJSONObject("clan").getString("idCategory");
+
                 String commande = event.getMessage().getContent();
 
                 if (commande.contains(" ")) {
@@ -44,13 +52,13 @@ public class SalonCommand extends SimpleCommand {
 
                         if (event.getGuild().getTextChannelsByName(clan.toLowerCase().replace(" ", "_"), true).size() == 0) {
                             newTC = event.getGuild().getController().createTextChannel(clan.toLowerCase().replace(" ", "_")).complete();
-                            newTC.getManager().setParent(event.getGuild().getCategoryById(clanID)).queue();
+                            newTC.getManager().setParent(event.getGuild().getCategoryById(categoryID)).queue();
                         } else
                             newTC = event.getGuild().getTextChannelsByName(clan.replace(" ", "_"), true).get(0);
 
                         if (event.getGuild().getVoiceChannelsByName(clan, true).size() == 0) {
                             newVC = event.getGuild().getController().createVoiceChannel(clan).complete();
-                            newVC.getManager().setParent(event.getGuild().getCategoryById(clanID)).queue();
+                            newVC.getManager().setParent(event.getGuild().getCategoryById(categoryID)).queue();
                         } else
                             newVC = event.getGuild().getVoiceChannelsByName(clan, true).get(0);
 

@@ -42,10 +42,10 @@ public class ErreurCommand extends SimpleCommand {
                         break;
                     default:
                         MessageBuilder message = new MessageBuilder();
-                        String[] commandeErreur = {"liste", "detail","delete"};
+                        String[] commandeErreur = {"liste", "detail", "delete", "purge"};
 
                         event.getTextChannel().sendMessage(CompareCommande(commande, commandeErreur)).queue();
-                        event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes. \nPS : apprends à écrire.").queue();
+                        event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes.").queue();
 
                         message.append("You know nothing, ");
                         message.append(event.getAuthor());

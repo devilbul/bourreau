@@ -5,7 +5,7 @@ import warframe.bourreau.commands.AdminCommand;
 import warframe.bourreau.commands.SonCommand;
 import warframe.bourreau.util.Tempo;
 
-import static warframe.bourreau.InitID.manager;
+import static warframe.bourreau.Init.managers;
 import static warframe.bourreau.music.PlaySound.playSoundMention;
 import static warframe.bourreau.util.Find.FindAdmin;
 
@@ -20,7 +20,7 @@ public class ThreadAuBucher extends Thread {
             Tempo.Temporisation(7000);
 
             while (isPlayed) { System.out.print(""); }
-            manager.getPlayer(event.getGuild()).getAudioPlayer().stopTrack();
+            managers.get(event.getGuild().getId()).getPlayer(event.getGuild()).getAudioPlayer().stopTrack();
             AdminCommand.AuBucher(event);
             SonCommand.Leave(event);
         }

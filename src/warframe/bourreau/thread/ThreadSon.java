@@ -4,10 +4,10 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import warframe.bourreau.commands.SonCommand;
 import warframe.bourreau.util.Tempo;
 
-import static warframe.bourreau.InitID.manager;
-import static warframe.bourreau.InitID.queueSon;
-import static warframe.bourreau.Bourreau.DEFAULT_VOLUME;
+import static warframe.bourreau.Init.managers;
+import static warframe.bourreau.Init.queueSon;
 import static warframe.bourreau.music.PlaySound.playSound;
+import static warframe.bourreau.util.Find.FindUserVC;
 
 public class ThreadSon extends Thread {
     private MessageReceivedEvent event;
@@ -16,16 +16,24 @@ public class ThreadSon extends Thread {
 
     public void run() {
         setPlayed(true);
-        playSound(event, sound, DEFAULT_VOLUME);
+        playSound(event, sound);
         Tempo.Temporisation(4);
 
         while (isPlayed) { System.out.print(""); }
-        manager.getPlayer(event.getGuild()).getAudioPlayer().stopTrack();
+        managers.get(event.getGuild().getId()).getPlayer(event.getGuild()).getAudioPlayer().stopTrack();
         SonCommand.Leave(event);
-        queueSon.remove(0);
 
         if (!queueSon.isEmpty())
-            new ThreadSon(event, queueSon.get(0)).start();
+            queueSon.remove(0);
+
+        if (!queueSon.isEmpty())
+            if (FindUserVC(queueSon.get(0).getEvent()) == null)
+                queueSon.remove(0);
+
+        if (!queueSon.isEmpty())
+            new ThreadSon(queueSon.get(0).getEvent(), queueSon.get(0).getCommandeSon()).start();
+        else
+            setPlayed(false);
     }
 
     public ThreadSon(MessageReceivedEvent event, String sound) { this.event = event; this.sound = sound; }

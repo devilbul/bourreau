@@ -87,12 +87,14 @@ public class TxtToJson {
                     jsonActuel = CHALLENGE;
                     complicationActuel = line.split("- ")[1];
                     complicationJson = new JSONObject();
-                } else if (line.contains("-") && jsonActuel == 5) {
+                }
+                else if (line.contains("-") && jsonActuel == 5) {
                     challengeJson.put(complicationActuel,complicationJson);
                     jsonActuel = CHALLENGE;
                     complicationActuel = line.split("- ")[1];
                     complicationJson = new JSONObject();
-                } else if (line.contains("complications:"))
+                }
+                else if (line.contains("complications:"))
                     jsonActuel = COMLPICATION;
                 else if (line.contains("- upgrade:")) {
                     upgradesJson.put(upgradeJson);
@@ -107,7 +109,8 @@ public class TxtToJson {
                                     new JSONArray()
                                             .put(line.split(",")[1].substring(1))
                                             .put(line.split(":")[1].substring(1)));
-                    } else if (jsonActuel == INFO) {
+                    }
+                    else if (jsonActuel == INFO) {
                         if (!line.contains("riven mod]") && line.contains(":")) {
                             if (line.contains("polarities:")) {
                                 infoJson.put(line.split(":")[0],
@@ -115,7 +118,8 @@ public class TxtToJson {
                                                 .put(line.split(": ")[1].split(" ")[0])
                                                 .put(line.split(": ")[1].split(" ")[1])
                                                 .put(line.split(": ")[1].split(" ")[2]));
-                            } else if (line.contains("attenuation:") && line.contains("number of buffs")) {
+                            }
+                            else if (line.contains("attenuation:") && line.contains("number of buffs")) {
                                 infoJson.put(line.split(":")[0],
                                         new JSONArray()
                                                 .put(line.split(": ")[1].split(", ")[0])
@@ -124,7 +128,8 @@ public class TxtToJson {
                                                 .put(line.split(": ")[1].split(", ")[3])
                                                 .put(line.split(": ")[1].split(", ")[4])
                                                 .put(line.split(": ")[1].split(", ")[5]));
-                            } else if (line.contains("fusion limit range:"))
+                            }
+                            else if (line.contains("fusion limit range:"))
                                 infoJson.put(line.split(":")[0], line.split(": ")[1].split("-")[0]);
                             else if (line.contains("number of curses:") || line.contains("number of buffs:"))
                                 infoJson.put(line.split(":")[0],
@@ -132,7 +137,8 @@ public class TxtToJson {
                                                 .put(line.split(": ")[1].split("-")[0])
                                                 .put(line.split(": ")[1].split("-")[1]));
                         }
-                    } else if (jsonActuel == COMLPICATION) {
+                    }
+                    else if (jsonActuel == COMLPICATION) {
                         if (!line.contains("complications:")) {
                             if (line.contains("%"))
                                 complicationJson.put(line.split(":")[0].substring(3),line.split(": ")[1]);
@@ -142,7 +148,8 @@ public class TxtToJson {
                                                 .put(line.split(" [(]")[1].split(":")[0],line.split(": ")[1].split(",")[0])
                                                 .put(line.split(", ")[1].split(" ")[0],line.split(", ")[1].split(" ")[1].split("[)]")[0]));
                         }
-                    } else if (jsonActuel == UPGRADE) {
+                    }
+                    else if (jsonActuel == UPGRADE) {
                         String str;
                         String lineSave = line;
                         if (line.replace(":",":$").split(":")[1].length() > 1) {
@@ -175,7 +182,8 @@ public class TxtToJson {
             scanner.close();
 
             return true;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
             return false;
         }
@@ -204,7 +212,8 @@ public class TxtToJson {
             rivenJsonFile.close();
 
             return true;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
             return false;
         }

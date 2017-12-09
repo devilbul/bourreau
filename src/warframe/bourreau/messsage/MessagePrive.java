@@ -1,19 +1,8 @@
 package warframe.bourreau.messsage;
 
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
-
-import java.util.List;
-
-import static warframe.bourreau.InitID.*;
-import static warframe.bourreau.Bourreau.*;
-
 public class MessagePrive {
 
-    private static void EnvoiMessage(Member destinataire, Message message) { destinataire.getUser().openPrivateChannel().complete().sendMessage(message).queue(); }
+    /*private static void EnvoiMessage(Member destinataire, Message message) { destinataire.getUser().openPrivateChannel().complete().sendMessage(message).queue(); }
 
     public static void MessageReclamationAdmin(PrivateMessageReceivedEvent event) {
         Role admin = getJda().getGuildById(serveurID).getRoleById(adminID);
@@ -41,5 +30,5 @@ public class MessagePrive {
             if (!aListAdmin.getUser().equals(event.getJDA().getSelfUser()))
                 EnvoiMessage(aListAdmin, reclamation.build());
         }
-    }
+    }*/
 }
