@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class EmbedModoList {
 
-    public static MessageEmbed MessageListeCommandeModo() {
+    public static MessageEmbed messageListeCommandeModo() {
         EmbedBuilder help = new EmbedBuilder();
 
         help.addField("**Modo :**",

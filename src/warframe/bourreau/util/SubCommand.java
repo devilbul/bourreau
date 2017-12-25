@@ -7,7 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(value=ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Command {
+public @interface SubCommand {
     String name();
-    boolean subCommand();
 }

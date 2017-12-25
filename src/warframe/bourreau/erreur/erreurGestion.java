@@ -19,14 +19,14 @@ public class erreurGestion {
         EmbedBuilder message = new EmbedBuilder();
 
         message.setTitle("Rapport d'erreur :", null);
-        message.setDescription("commande : " + event.getMessage().getContent());
+        message.setDescription("commande : " + event.getMessage().getContentDisplay());
         message.setThumbnail("http://forgedesheros.fr/wp-content/uploads/2014/08/warning.png");
         message.setColor(new Color(178, 10, 22));
         message.addField("erreur :", "" + e.getMessage(), false);
         message.addField("cause :", "" + String.valueOf(e.getCause()), false);
         message.addField("localize :", "" + e.getLocalizedMessage(), false);
 
-        event.getJDA().getGuildById("290707408416931840").getTextChannelById("299634425786925057").sendMessage(message.build()).queue();
+        event.getJDA().getGuildById("298503533777387530").getTextChannelById("392019799397367818").sendMessage(message.build()).queue();
         event.getTextChannel().sendMessage("Une erreur est survenue.").queue();
     }
 
@@ -49,12 +49,12 @@ public class erreurGestion {
             for (int i=0; i<e.getStackTrace().length; i++)
                 StackTrace += e.getStackTrace()[i] + "\n";
 
-            newErreurJson.put("date", GiveDate());
-            newErreurJson.put("heure", GiveHeure());
+            newErreurJson.put("date", giveDate());
+            newErreurJson.put("heure", giveHeure());
             newErreurJson.put("text channel", event.getMessage().getTextChannel().getName());
             newErreurJson.put("auteur commande (name)", event.getAuthor().getName());
             newErreurJson.put("auteur commande (id)", event.getAuthor().getId());
-            newErreurJson.put("commande", event.getMessage().getContent());
+            newErreurJson.put("commande", event.getMessage().getContentDisplay());
             newErreurJson.put("message erreur", e.getMessage());
             newErreurJson.put("cause", e.getCause());
             newErreurJson.put("localize", e.getLocalizedMessage());
@@ -62,14 +62,12 @@ public class erreurGestion {
 
             erreurJson.put("erreur " + String.valueOf(ID), newErreurJson);
 
-            file.write(erreurJson.toString());
-            fileId.write(newIdErreurJson.toString());
+            file.write(erreurJson.toString(3));
+            fileId.write(newIdErreurJson.toString(3));
             file.flush();
             fileId.flush();
             file.close();
             fileId.close();
-
-            event.getJDA().getGuildById("290707408416931840").getTextChannelById("299634425786925057").sendMessage("rapport ajouté à la bdd").queue();
         }
         catch (IOException ioe) {
             ioe.printStackTrace();

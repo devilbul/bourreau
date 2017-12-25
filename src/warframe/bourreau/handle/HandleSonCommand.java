@@ -3,14 +3,12 @@ package warframe.bourreau.handle;
 import warframe.bourreau.commands.SimpleCommand;
 import warframe.bourreau.commands.SonCommand;
 import warframe.bourreau.parser.CommandParser;
-import warframe.bourreau.thread.ThreadSon;
 import warframe.bourreau.util.Tempo;
 import warframe.bourreau.util.WaitingSound;
 
 import static warframe.bourreau.Init.queueSon;
 import static warframe.bourreau.Bourreau.commands;
 import static warframe.bourreau.thread.ThreadSon.isPlayed;
-import static warframe.bourreau.util.Find.FindAdmin;
 
 class HandleSonCommand {
 
@@ -21,78 +19,52 @@ class HandleSonCommand {
 
             if (!isPlayed())
                     queueSon.add(new WaitingSound(cmd.event, "first"));
+                    Tempo.temporisation(4);
 
             if (safe) {
                 switch (cmd.invoke) {
+                    case "acdc":
+                        SonCommand.adcd(cmd.event);
+                        break;
                     case "ah":
-                        Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd.event,"ah.mp3").start();
-                        else queueSon.add(new WaitingSound(cmd.event, "ah.mp3"));
+                        
+                        SonCommand.ah(cmd.event);
                         break;
                     case "bucher":
-                        Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd.event,"bucher.mp4").start();
-                        else queueSon.add(new WaitingSound(cmd.event,"bucher.mp4"));
+                        SonCommand.bucher(cmd.event);
                         break;
                     case "gg":
-                        Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd.event,"gg.mp3").start();
-                        else queueSon.add(new WaitingSound(cmd.event,"gg.mp3"));
+                        SonCommand.gg(cmd.event);
                         break;
                     case "gogole":
-                        Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd.event,"gogole.mp3").start();
-                        else queueSon.add(new WaitingSound(cmd.event,"gogole.mp3"));
+                        SonCommand.gogole(cmd.event);
                         break;
                     case "nah":
-                        Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd.event,"nah.ogg").start();
-                        else queueSon.add(new WaitingSound(cmd.event,"nah.ogg"));
+                        SonCommand.nah(cmd.event);
                         break;
                     case "leave":
-                        SonCommand.Leave(cmd.event);
+                        SonCommand.leave(cmd.event);
                         break;
                     case "pigeon":
-                        Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd.event,"pigeon.wav").start();
-                        else queueSon.add(new WaitingSound(cmd.event,"pigeon.wav"));
+                        SonCommand.pigeon(cmd.event);
                         break;
                     case "son":
-                        Tempo.Temporisation(4);
-                        SonCommand.Son(cmd.event);
+                        SonCommand.son(cmd.event);
                         break;
                     case "souffrir":
-                        Tempo.Temporisation(4);
-                        if (!isPlayed()) new ThreadSon(cmd.event,"souffrir.wav").start();
-                        else queueSon.add(new WaitingSound(cmd.event,"souffrir.wav"));
+                        SonCommand.souffrir(cmd.event);
                         break;
                     case "trump":
-                        Tempo.Temporisation(4);
-                        SonCommand.Trump(cmd.event);
+                        SonCommand.trump(cmd.event);
                         break;
                     case "trumpcomp":
-                        if (FindAdmin(cmd.event, cmd.event.getMember())) {
-                            Tempo.Temporisation(4);
-                            if (!isPlayed()) new ThreadSon(cmd.event,"trump.mp3").start();
-                            else queueSon.add(new WaitingSound(cmd.event,"trump.mp3"));
-                        }
-                        else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
+                        SonCommand.trumpcomp(cmd.event);
                         break;
                     case "trumpcomp2":
-                        if (FindAdmin(cmd.event, cmd.event.getMember())) {
-                            Tempo.Temporisation(4);
-                            if (!isPlayed()) new ThreadSon(cmd.event,"trump2.mp3").start();
-                            else queueSon.add(new WaitingSound(cmd.event,"trump2.mp3"));
-                        }
-                        else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
+                        SonCommand.trumpcomp2(cmd.event);
                         break;
                     case "trumpcomp3":
-                        if (FindAdmin(cmd.event, cmd.event.getMember())) {
-                            Tempo.Temporisation(4);
-                            if (!isPlayed()) new ThreadSon(cmd.event,"trump3.mp3").start();
-                            else queueSon.add(new WaitingSound(cmd.event,"trump3.mp3"));
-                        }
-                        else cmd.event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
+                        SonCommand.trumpcomp3(cmd.event);
                         break;
                     default:
                         cmd.event.getTextChannel().sendMessage("NOPE").queue();

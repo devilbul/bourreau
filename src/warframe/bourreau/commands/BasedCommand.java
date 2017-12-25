@@ -2,13 +2,11 @@ package warframe.bourreau.commands;
 
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import org.json.JSONObject;
 import warframe.bourreau.util.Command;
-import warframe.bourreau.util.WaitingSound;
 
 import java.awt.*;
 import java.io.File;
@@ -18,35 +16,33 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
-import static warframe.bourreau.Bourreau.getJDA;
-import static warframe.bourreau.Init.*;
 import static warframe.bourreau.Bourreau.botVersion;
 import static warframe.bourreau.erreur.erreurGestion.*;
-import static warframe.bourreau.messsage.Message.MessageAbout;
-import static warframe.bourreau.messsage.MessageOnEvent.MessagePremierConnection;
-import static warframe.bourreau.util.Find.FindAdmin;
-import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThing;
-import static warframe.bourreau.util.Find.FindCommand;
+import static warframe.bourreau.messsage.Message.messageAbout;
+import static warframe.bourreau.messsage.MessageOnEvent.messageNoThing;
+import static warframe.bourreau.util.Find.*;
 
 public class BasedCommand extends SimpleCommand {
 
-    @Command(name="about")
-    public static void AboutBot(MessageReceivedEvent event) { event.getTextChannel().sendMessage(MessageAbout()).queue(); }
+    @Command(name="about", subCommand=false)
+    public static void aboutBot(MessageReceivedEvent event) { event.getTextChannel().sendMessage(messageAbout()).queue(); }
 
-    @Command(name="about")
-    public static void AboutBotPrivate(PrivateMessageReceivedEvent event) { event.getAuthor().openPrivateChannel().complete().sendMessage(MessageAbout()).queue(); }
+    @Command(name="about", subCommand=false)
+    public static void aboutBotPrivate(PrivateMessageReceivedEvent event) { event.getAuthor().openPrivateChannel().complete().sendMessage(messageAbout()).queue(); }
 
-    @Command(name="botnews")
-    public static void AfficheUpdateBot(MessageReceivedEvent event) {
+    @Command(name="botnews", subCommand=false)
+    public static void afficheUpdateBot(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
+            if (findAdmin(event, event.getMember())) {
                 String configTextChannel = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configTextChannel.json")));
                 JSONObject configTextChannelJson = new JSONObject(configTextChannel);
                 String textChannelID = configTextChannelJson.getJSONObject("textChannels").getJSONObject(event.getGuild().getId()).getJSONObject("textChannels").getJSONObject("botSpam").getString("idTextChannel");
                 EmbedBuilder news = new EmbedBuilder();
 
                 news.addField("=> amélioration mise à jour influence riven", "._.", false);
-
+                news.addField("=> amélioration commandes son", "._.", false);
+                news.addField("=> mise en place des commandes de config du bot", "._.", false);
+                news.addField("=> changement des fichiers de config", "._.", false);
                 news.addField("=> mise à jour de la commande help", "._.", false);
 
                 news.setTitle("Patch Note " + botVersion + " :", null);
@@ -56,8 +52,9 @@ public class BasedCommand extends SimpleCommand {
                 news.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
 
                 event.getJDA().getTextChannelById(textChannelID).sendMessage(news.build()).complete().pin().complete();
-            } else
-                MessageNoThing(event);
+            }
+            else
+                messageNoThing(event);
         }
         catch (Exception e) {
             afficheErreur(event, e);
@@ -65,7 +62,7 @@ public class BasedCommand extends SimpleCommand {
         }
     }
 
-    static void Information(MessageReceivedEvent event) {
+    static void information(MessageReceivedEvent event) {
         try {
             User destinataire = null;
             MessageBuilder messageMP = new MessageBuilder();
@@ -95,14 +92,14 @@ public class BasedCommand extends SimpleCommand {
         }
     }
 
-    public static void Presentation(MessageReceivedEvent event) {
+    public static void presentation(MessageReceivedEvent event) {
         try {
-            if (event.getMessage().getContent().toLowerCase().contains("présentation") || event.getMessage().getContent().toLowerCase().contains("presentation")
-                    || event.getMessage().getContent().toLowerCase().contains("présente") || event.getMessage().getContent().toLowerCase().contains("presente")) {
+            if (event.getMessage().getContentDisplay().toLowerCase().contains("présentation") || event.getMessage().getContentDisplay().toLowerCase().contains("presentation")
+                    || event.getMessage().getContentDisplay().toLowerCase().contains("présente") || event.getMessage().getContentDisplay().toLowerCase().contains("presente")) {
 
-                if (event.getMessage().getContent().toLowerCase().equals("présente") || event.getMessage().getContent().toLowerCase().equals("présentation")
-                        || event.getMessage().getContent().toLowerCase().equals("présentation") || event.getMessage().getContent().toLowerCase().equals("presentation")
-                        || event.getMessage().getContent().length() < 30) {
+                if (event.getMessage().getContentDisplay().toLowerCase().equals("présente") || event.getMessage().getContentDisplay().toLowerCase().equals("présentation")
+                        || event.getMessage().getContentDisplay().toLowerCase().equals("présentation") || event.getMessage().getContentDisplay().toLowerCase().equals("presentation")
+                        || event.getMessage().getContentDisplay().length() < 30) {
                     User destinataire = null;
                     MessageBuilder messageMP = new MessageBuilder();
 
@@ -137,7 +134,7 @@ public class BasedCommand extends SimpleCommand {
                     event.getTextChannel().addReactionById(event.getMessage().getId(), event.getJDA().getGuildById(serverID).getEmoteById(emoteID)).queue();
                     event.getGuild().getController().addRolesToMember(event.getMember(), tenno).queue();
                     //event.getTextChannel().sendMessage("Merci de ta présentation, et Bienvenue sur le discord de l'Alliance **French Connection** !").queue();
-                    Information(event);
+                    information(event);
                 }
             }
         }
@@ -147,24 +144,12 @@ public class BasedCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="test")
-    public static void Test(MessageReceivedEvent event) {
+    @Command(name="test", subCommand=false)
+    public static void test(MessageReceivedEvent event) {
         try {
-            /*for (Guild guild : getJDA().getGuilds()) {
-                System.out.println("-----------------------------------------------------");
-                System.out.println(guild.getName());
-                System.out.println(guild.getId());
-            }
-            System.out.println("-----------------------------------------------------");
 
-            for (WaitingSound aQueueSon : queueSon) {
-                System.out.println(aQueueSon.getEvent().getGuild().getId());
-                System.out.println(aQueueSon.getCommandeSon());
-                System.out.println(aQueueSon.getIdDemandeur());
-            }
 
-            System.out.println("-----------------------------------------------------");*/
-            //event.getTextChannel().sendMessage(MessagePremierConnection()).queue();
+
 
         }
         catch (Exception e) {

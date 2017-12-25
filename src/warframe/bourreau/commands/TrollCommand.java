@@ -11,16 +11,16 @@ import java.nio.file.Paths;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static warframe.bourreau.erreur.erreurGestion.*;
-import static warframe.bourreau.util.Find.FindUserVC;
+import static warframe.bourreau.util.Find.findUserVC;
 
 public class TrollCommand extends SimpleCommand {
 
-    public static void FDP(MessageReceivedEvent event) {
+    public static void fdp(MessageReceivedEvent event) {
 
     }
 
-    @Command(name="pute")
-    public static void Pute(MessageReceivedEvent event) {
+    @Command(name="pute", subCommand=false)
+    public static void pute(MessageReceivedEvent event) {
         try {
             String configEmotes = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configEmote.json")));
             JSONObject configEmotesJson = new JSONObject(configEmotes);
@@ -66,12 +66,12 @@ public class TrollCommand extends SimpleCommand {
         }
     }
 
-    public static void Rekt(MessageReceivedEvent event) {
+    public static void rekt(MessageReceivedEvent event) {
 
     }
 
-    @Command(name="rip")
-    public static void RIP(MessageReceivedEvent event) {
+    @Command(name="rip", subCommand=false)
+    public static void rip(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("#JeSuisBourreau !").queue();
         }
@@ -81,8 +81,8 @@ public class TrollCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="segpa")
-    public static void Segpta(MessageReceivedEvent event) {
+    @Command(name="segpa", subCommand=false)
+    public static void segpta(MessageReceivedEvent event) {
         try {
             String configEmotes = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configEmote.json")));
             JSONObject configEmotesJson = new JSONObject(configEmotes);
@@ -128,8 +128,8 @@ public class TrollCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="tg")
-    public static void Tg(MessageReceivedEvent event) {
+    @Command(name="tg", subCommand=false)
+    public static void tg(MessageReceivedEvent event) {
         try {
             MessageBuilder message = new MessageBuilder();
 
@@ -138,7 +138,7 @@ public class TrollCommand extends SimpleCommand {
 
             event.getTextChannel().sendMessage(message.build()).queue();
 
-            if (FindUserVC(event) != null && !event.getAuthor().equals(event.getGuild().getOwner().getUser()))
+            if (findUserVC(event) != null && !event.getAuthor().equals(event.getGuild().getOwner().getUser()))
                 event.getGuild().getController().setMute(event.getMember(), true).submit();
         }
         catch (Exception e) {

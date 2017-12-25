@@ -8,7 +8,7 @@ import warframe.bourreau.util.Command;
 public class ClaimCommand extends SimpleCommand {
 
     /*@Command(name="claim")
-    public static void Claim(PrivateMessageReceivedEvent event) {
+    public static void claim(PrivateMessageReceivedEvent event) {
         MessageReclamationAdmin(event);
         event.getAuthor().openPrivateChannel().complete().sendMessage("les administrateurs ont été prévenue de votre réclamation !").queue();
     }*/

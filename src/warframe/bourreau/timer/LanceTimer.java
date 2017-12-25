@@ -11,7 +11,7 @@ import static warframe.bourreau.Bourreau.VINGT_QUATRE_HEURES;
 
 public class LanceTimer {
 
-    public static void LanceRaidTimer(JDA jda) {
+    public static void lanceRaidTimer(JDA jda) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 8);
         calendar.set(Calendar.MINUTE, 0);
@@ -21,7 +21,7 @@ public class LanceTimer {
         //timer.schedule(new RaidTimer(jda), time, VINGT_QUATRE_HEURES);
     }
 
-    public static void LanceRaidTimer2(JDA jda) {
+    public static void lanceRaidTimer2(JDA jda) {
         Timer timer = new Timer();
         GregorianCalendar gc = new GregorianCalendar();
         gc.add(Calendar.HOUR, 24);

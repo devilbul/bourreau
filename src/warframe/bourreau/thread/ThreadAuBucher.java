@@ -7,22 +7,22 @@ import warframe.bourreau.util.Tempo;
 
 import static warframe.bourreau.Init.managers;
 import static warframe.bourreau.music.PlaySound.playSoundMention;
-import static warframe.bourreau.util.Find.FindAdmin;
+import static warframe.bourreau.util.Find.findAdmin;
 
 public class ThreadAuBucher extends Thread {
     private MessageReceivedEvent event;
     private static boolean isPlayed = true;
 
     public void run() {
-        if (FindAdmin(event, event.getMember())) {
+        if (findAdmin(event, event.getMember())) {
             setPlayedBucher(true);
             playSoundMention(event);
-            Tempo.Temporisation(7000);
+            Tempo.temporisation(7000);
 
             while (isPlayed) { System.out.print(""); }
             managers.get(event.getGuild().getId()).getPlayer(event.getGuild()).getAudioPlayer().stopTrack();
-            AdminCommand.AuBucher(event);
-            SonCommand.Leave(event);
+            AdminCommand.auBucher(event);
+            SonCommand.leave(event);
         }
     }
 

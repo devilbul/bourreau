@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class EmbedRaidHelp {
 
-    public static MessageEmbed MessageHelpRaid(String help) {
+    public static MessageEmbed messageHelpRaid(String help) {
         EmbedBuilder helpMessage = new EmbedBuilder();
 
         switch (help) {

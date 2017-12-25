@@ -5,6 +5,7 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
 import warframe.bourreau.util.Command;
+import warframe.bourreau.util.SubCommand;
 
 import java.awt.*;
 import java.io.File;
@@ -13,38 +14,36 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static warframe.bourreau.util.Find.FindAdmin;
-import static warframe.bourreau.util.Find.FindJsonKey;
-import static warframe.bourreau.util.Find.FindModo;
-import static warframe.bourreau.util.Levenshtein.CompareCommande;
+import static warframe.bourreau.Bourreau.subCommands;
+import static warframe.bourreau.util.Find.*;
+import static warframe.bourreau.util.Levenshtein.compareCommande;
 import static warframe.bourreau.util.Recup.recupString;
 
 public class ErreurCommand extends SimpleCommand {
 
-    @Command(name="erreur")
-    public static void Erreur(MessageReceivedEvent event) {
-            if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
-                String rawCommande = recupString(event.getMessage().getContent().toLowerCase());
+    @Command(name="erreur", subCommand=true)
+    public static void erreur(MessageReceivedEvent event) {
+            if (findAdmin(event, event.getMember()) || findModo(event, event.getMember())) {
+                String rawCommande = recupString(event.getMessage().getContentDisplay().toLowerCase());
                 String commande = rawCommande.replaceFirst(" ", "@").split("@")[0];
 
                 switch (commande) {
-                    case "liste":
-                        ListErreur(event);
+                    case "list":
+                        listErreur(event);
                         break;
                     case "detail":
-                        DetailErreur(event);
+                        detailErreur(event);
                         break;
                     case "delete":
-                        DeleteErreur(event);
+                        deleteErreur(event);
                         break;
                     case "purge":
-                        PurgeErreur(event);
+                        purgeErreur(event);
                         break;
                     default:
                         MessageBuilder message = new MessageBuilder();
-                        String[] commandeErreur = {"liste", "detail", "delete", "purge"};
 
-                        event.getTextChannel().sendMessage(CompareCommande(commande, commandeErreur)).queue();
+                        event.getTextChannel().sendMessage(compareCommande(commande, subCommands.get("erreur").toArray())).queue();
                         event.getTextChannel().sendMessage("Commande inconnue. !help pour lister les commandes.").queue();
 
                         message.append("You know nothing, ");
@@ -58,9 +57,10 @@ public class ErreurCommand extends SimpleCommand {
                 event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
     }
 
-    private static void ListErreur(MessageReceivedEvent event) {
+    @SubCommand(name="list")
+    private static void listErreur(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
+            if (findAdmin(event, event.getMember())) {
                 String erreur = new String(Files.readAllBytes(Paths.get("res" + File.separator + "erreur" + File.separator + "Erreur.json")));
                 JSONObject erreurJson = new JSONObject(erreur);
                 EmbedBuilder message = new EmbedBuilder();
@@ -92,17 +92,18 @@ public class ErreurCommand extends SimpleCommand {
         }
     }
 
-    private static void DetailErreur(MessageReceivedEvent event) {
+    @SubCommand(name="detail")
+    private static void detailErreur(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
-                String commande = recupString(event.getMessage().getContent().toLowerCase());
+            if (findAdmin(event, event.getMember())) {
+                String commande = recupString(event.getMessage().getContentDisplay().toLowerCase());
 
                 if (commande.contains(" ")) {
                     String erreurID = "erreur " + recupString(commande);
                     String erreur = new String(Files.readAllBytes(Paths.get("res" + File.separator + "erreur" + File.separator + "Erreur.json")));
                     JSONObject erreurJson = new JSONObject(erreur);
 
-                    if (FindJsonKey(erreurJson, erreurID)) {
+                    if (findJsonKey(erreurJson, erreurID)) {
                         EmbedBuilder message = new EmbedBuilder();
 
                         message.setTitle("Detail erreur :", null);
@@ -113,7 +114,9 @@ public class ErreurCommand extends SimpleCommand {
                         message.addField("date :", erreurJson.getJSONObject(erreurID).getString("date") + " " + erreurJson.getJSONObject(erreurID).getString("heure"), false);
                         message.addField("auteur", erreurJson.getJSONObject(erreurID).getString("auteur commande (name)"), false);
                         message.addField("text channel", erreurJson.getJSONObject(erreurID).getString("text channel"), false);
-                        message.addField("message erreur", erreurJson.getJSONObject(erreurID).getString("message erreur"), false);
+
+                        if (findValueObjectList(erreurJson.getJSONObject(erreurID).names().toList(), "message erreur"))
+                            message.addField("message erreur", erreurJson.getJSONObject(erreurID).getString("message erreur"), false);
 
                         event.getTextChannel().sendMessage(message.build()).queue();
                     }
@@ -131,23 +134,24 @@ public class ErreurCommand extends SimpleCommand {
         }
     }
 
-    private static void DeleteErreur(MessageReceivedEvent event) {
+    @SubCommand(name="delete")
+    private static void deleteErreur(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
-                String commande = recupString(event.getMessage().getContent().toLowerCase());
+            if (findAdmin(event, event.getMember())) {
+                String commande = recupString(event.getMessage().getContentDisplay().toLowerCase());
 
                 if (commande.contains(" ")) {
                     String erreurID = "erreur " + recupString(commande);
                     String erreur = new String(Files.readAllBytes(Paths.get("res" + File.separator + "erreur" + File.separator + "Erreur.json")));
                     JSONObject erreurJson = new JSONObject(erreur);
 
-                    if (FindJsonKey(erreurJson, erreurID)) {
+                    if (findJsonKey(erreurJson, erreurID)) {
                         String adresseErreur = System.getProperty("user.dir") + File.separator + "res" + File.separator + "erreur" + File.separator + "Erreur.json";
                         FileWriter file = new FileWriter(adresseErreur);
 
                         erreurJson.remove(erreurID);
 
-                        file.write(erreurJson.toString());
+                        file.write(erreurJson.toString(3));
                         file.flush();
                         file.close();
 
@@ -167,14 +171,15 @@ public class ErreurCommand extends SimpleCommand {
         }
     }
 
-    private static void PurgeErreur(MessageReceivedEvent event) {
+    @SubCommand(name="purge")
+    private static void purgeErreur(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
+            if (findAdmin(event, event.getMember())) {
                 JSONObject erreurJson = new JSONObject();
                 String adresseErreur = System.getProperty("user.dir") + File.separator + "res" + File.separator + "erreur" + File.separator + "Erreur.json";
                 FileWriter file = new FileWriter(adresseErreur);
 
-                file.write(erreurJson.toString());
+                file.write(erreurJson.toString(3));
                 file.flush();
                 file.close();
 

@@ -15,32 +15,32 @@ import java.time.Instant;
 import java.util.Date;
 
 import static warframe.bourreau.erreur.erreurGestion.*;
-import static warframe.bourreau.parser.TimeParser.ParseSecToTime;
-import static warframe.bourreau.parser.TimeParser.ParseTimeToSec;
+import static warframe.bourreau.parser.TimeParser.parseSecToTime;
+import static warframe.bourreau.parser.TimeParser.parseTimeToSec;
 import static warframe.bourreau.util.Recup.recupPseudo;
 import static warframe.bourreau.util.Recup.recupString;
 import static warframe.bourreau.util.urlReadJson.readAll;
 
 public class wfRaidAPI {
 
-    public static void RaidStat(MessageReceivedEvent event) {
+    public static void raidStat(MessageReceivedEvent event) {
         try {
             String user;
             String urlApi = "https://api.trials.wf/api/player/pc/";
             String urlSite = "https://trials.wf/player/?user=";
 
-            if (event.getMessage().getContent().contains(" ")) {
-                user = recupPseudo(event.getMessage().getContent());
+            if (event.getMessage().getContentDisplay().contains(" ")) {
+                user = recupPseudo(event.getMessage().getContentDisplay());
                 urlApi += user + "/completed";
                 urlSite += user;
 
-                TraiteRaidStat(event, user, urlApi, urlSite);
+                traiteRaidStat(event, user, urlApi, urlSite);
             } else {
                 user = event.getAuthor().getName();
                 urlApi += user + "/completed";
                 urlSite += user;
 
-                TraiteRaidStat(event, user, urlApi, urlSite);
+                traiteRaidStat(event, user, urlApi, urlSite);
             }
         }
         catch (Exception e) {
@@ -49,24 +49,24 @@ public class wfRaidAPI {
         }
     }
 
-    public static void RaidStatDetails(MessageReceivedEvent event) {
+    public static void raidStatDetails(MessageReceivedEvent event) {
         try {
             String user;
             String urlApi = "https://api.trials.wf/api/player/pc/";
             String urlSite = "https://trials.wf/player/?user=";
 
-            if (recupString(event.getMessage().getContent()).contains(" ")) {
-                user = recupPseudo(recupString(event.getMessage().getContent()));
+            if (recupString(event.getMessage().getContentDisplay()).contains(" ")) {
+                user = recupPseudo(recupString(event.getMessage().getContentDisplay()));
                 urlApi += user + "/completed";
                 urlSite += user;
 
-                TraiteRaidStatDetail(event, user, urlApi, urlSite);
+                traiteRaidStatDetail(event, user, urlApi, urlSite);
             } else {
                 user = event.getAuthor().getName();
                 urlApi += user + "/completed";
                 urlSite += user;
 
-                TraiteRaidStatDetail(event, user, urlApi, urlSite);
+                traiteRaidStatDetail(event, user, urlApi, urlSite);
             }
         }
         catch (Exception e) {
@@ -75,7 +75,7 @@ public class wfRaidAPI {
         }
     }
 
-    private static void TraiteRaidStat(MessageReceivedEvent event, String user, String urlApi, String urlSite) {
+    private static void traiteRaidStat(MessageReceivedEvent event, String user, String urlApi, String urlSite) {
         try (InputStream is = new URL(urlApi).openStream()) {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
@@ -92,12 +92,12 @@ public class wfRaidAPI {
                 for (int i=0; i<nbRaid; i++) {
                     if(raidJson.getJSONObject(i).getString("objective").equals("VICTORY")) {
                         nbRaidCompleted++;
-                        sumTime += ParseTimeToSec(raidJson.getJSONObject(i).getString("time"));
+                        sumTime += parseTimeToSec(raidJson.getJSONObject(i).getString("time"));
                     }
 
-                    if(ParseTimeToSec(raidJson.getJSONObject(i).getString("time")) < bestTime
+                    if(parseTimeToSec(raidJson.getJSONObject(i).getString("time")) < bestTime
                             && raidJson.getJSONObject(i).getString("objective").equals("VICTORY"))
-                        bestTime = ParseTimeToSec(raidJson.getJSONObject(i).getString("time"));
+                        bestTime = parseTimeToSec(raidJson.getJSONObject(i).getString("time"));
                 }
 
                 clearRate = (float) (nbRaidCompleted)/ (float) (nbRaid);
@@ -106,8 +106,8 @@ public class wfRaidAPI {
                 statRaid.setThumbnail("https://vignette3.wikia.nocookie.net/warframe/images/e/e3/Arcane_Energize_160.png/revision/latest?cb=20151102150026");
                 statRaid.addField("**__Tous raids confondus :__**", "**raid réussi :** " + nbRaidCompleted + " / " + nbRaid +
                                 "\n**pourcentage de réussite :** " + (int) (clearRate * 10000)/100.0 + "%" +
-                                "\n**meilleur temps :** " + ParseSecToTime(bestTime) +
-                                "\n**temps moyen :** " + ParseSecToTime(sumTime / nbRaidCompleted)
+                                "\n**meilleur temps :** " + parseSecToTime(bestTime) +
+                                "\n**temps moyen :** " + parseSecToTime(sumTime / nbRaidCompleted)
                         ,false);
                 statRaid.addField("pour plus de details,", "tapez : **__!raid detail " + user + "__**", false);
                 statRaid.setColor(new Color(100, 100, 100));
@@ -123,7 +123,7 @@ public class wfRaidAPI {
         }
     }
 
-    private static void TraiteRaidStatDetail(MessageReceivedEvent event, String user, String urlApi, String urlSite) {
+    private static void traiteRaidStatDetail(MessageReceivedEvent event, String user, String urlApi, String urlSite) {
         try (InputStream is = new URL(urlApi).openStream()) {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
@@ -160,12 +160,12 @@ public class wfRaidAPI {
                             nbRaidLoR++;
                             if(raidJson.getJSONObject(i).getString("objective").equals("VICTORY")) {
                                 nbRaidLoRCompleted++;
-                                sumTimeLoR += ParseTimeToSec(raidJson.getJSONObject(i).getString("time"));
+                                sumTimeLoR += parseTimeToSec(raidJson.getJSONObject(i).getString("time"));
                             }
 
-                            if(ParseTimeToSec(raidJson.getJSONObject(i).getString("time")) < bestTimeLoR
+                            if(parseTimeToSec(raidJson.getJSONObject(i).getString("time")) < bestTimeLoR
                                     && raidJson.getJSONObject(i).getString("objective").equals("VICTORY"))
-                                bestTimeLoR = ParseTimeToSec(raidJson.getJSONObject(i).getString("time"));
+                                bestTimeLoR = parseTimeToSec(raidJson.getJSONObject(i).getString("time"));
 
                             break;
                         case "lornm":
@@ -173,12 +173,12 @@ public class wfRaidAPI {
 
                             if(raidJson.getJSONObject(i).getString("objective").equals("VICTORY")) {
                                 nbRaidLoRNMCompleted++;
-                                sumTimeLoRNM += ParseTimeToSec(raidJson.getJSONObject(i).getString("time"));
+                                sumTimeLoRNM += parseTimeToSec(raidJson.getJSONObject(i).getString("time"));
                             }
 
-                            if(ParseTimeToSec(raidJson.getJSONObject(i).getString("time")) < bestTimeLoRNM
+                            if(parseTimeToSec(raidJson.getJSONObject(i).getString("time")) < bestTimeLoRNM
                                     && raidJson.getJSONObject(i).getString("objective").equals("VICTORY"))
-                                bestTimeLoRNM = ParseTimeToSec(raidJson.getJSONObject(i).getString("time"));
+                                bestTimeLoRNM = parseTimeToSec(raidJson.getJSONObject(i).getString("time"));
 
                             break;
                         case "jv":
@@ -186,12 +186,12 @@ public class wfRaidAPI {
 
                             if(raidJson.getJSONObject(i).getString("objective").equals("VICTORY")) {
                                 nbRaidJVCompleted++;
-                                sumTimeJV += ParseTimeToSec(raidJson.getJSONObject(i).getString("time"));
+                                sumTimeJV += parseTimeToSec(raidJson.getJSONObject(i).getString("time"));
                             }
 
-                            if(ParseTimeToSec(raidJson.getJSONObject(i).getString("time")) < bestTimeJV
+                            if(parseTimeToSec(raidJson.getJSONObject(i).getString("time")) < bestTimeJV
                                     && raidJson.getJSONObject(i).getString("objective").equals("VICTORY"))
-                                bestTimeJV = ParseTimeToSec(raidJson.getJSONObject(i).getString("time"));
+                                bestTimeJV = parseTimeToSec(raidJson.getJSONObject(i).getString("time"));
 
                             break;
                     }
@@ -210,8 +210,8 @@ public class wfRaidAPI {
                 if (nbRaidLoRCompleted != 0)
                     statRaid.addField("__Le Droit de Rétribution :__", "**raid réussi :** " + nbRaidLoRCompleted + " / " + nbRaidLoR +
                                     "\n**pourcentage de réussite :** " + (int) (clearRateLoR * 10000)/100.0 + "%" +
-                                    "\n**meilleur temps :** " + ParseSecToTime(bestTimeLoR) +
-                                    "\n**temps moyen :** " + ParseSecToTime(sumTimeLoR / nbRaidLoRCompleted)
+                                    "\n**meilleur temps :** " + parseSecToTime(bestTimeLoR) +
+                                    "\n**temps moyen :** " + parseSecToTime(sumTimeLoR / nbRaidLoRCompleted)
                             ,false);
                 else
                     statRaid.addField("__Le Droit de Rétribution :__", "**raid réussi :** 0 /  0 \n**pourcentage de réussite :** 0%**meilleur temps :** 00:00" +
@@ -220,8 +220,8 @@ public class wfRaidAPI {
                 if (nbRaidLoRNMCompleted != 0)
                     statRaid.addField("__Le Droit de Rétribution (Cauchemar) :__", "**raid réussi :** " + nbRaidLoRNMCompleted + " / " + nbRaidLoRNM +
                                     "\n**pourcentage de réussite :** " + (int) (clearRateLoRNM * 10000)/100.0 + "%" +
-                                    "\n**meilleur temps :** " + ParseSecToTime(bestTimeLoRNM) +
-                                    "\n**temps moyen :** " + ParseSecToTime(sumTimeLoRNM / nbRaidLoRNMCompleted)
+                                    "\n**meilleur temps :** " + parseSecToTime(bestTimeLoRNM) +
+                                    "\n**temps moyen :** " + parseSecToTime(sumTimeLoRNM / nbRaidLoRNMCompleted)
                             ,false);
                 else
                     statRaid.addField("__Le Droit de Rétribution (Cauchemar :__", "**raid réussi :** 0 /  0 \n**pourcentage de réussite :** 0%\n**meilleur temps :** 00:00" +
@@ -230,8 +230,8 @@ public class wfRaidAPI {
                 if (nbRaidJVCompleted != 0)
                     statRaid.addField("__Le Verdict de Jordas :__", "**raid réussi :** " + nbRaidJVCompleted + " / " + nbRaidJV +
                                     "\n**pourcentage de réussite :** " + (int) (clearRateJV * 10000)/100.0 + "%" +
-                                    "\n**meilleur temps :** " + ParseSecToTime(bestTimeJV) +
-                                    "\n**temps moyen :** " + ParseSecToTime(sumTimeJV / nbRaidJVCompleted)
+                                    "\n**meilleur temps :** " + parseSecToTime(bestTimeJV) +
+                                    "\n**temps moyen :** " + parseSecToTime(sumTimeJV / nbRaidJVCompleted)
                             ,false);
                 else
                     statRaid.addField("__Le Verdict de Jordas :__", "**raid réussi :** 0 /  0 \n**pourcentage de réussite :** 0%\n**meilleur temps :** 00:00" +

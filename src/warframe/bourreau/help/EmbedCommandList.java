@@ -10,10 +10,10 @@ import java.util.Date;
 
 public class EmbedCommandList {
 
-    public static MessageEmbed MessageListeCommande(boolean admin, boolean modo) {
+    public static MessageEmbed messageListeCommande(boolean admin, boolean modo) {
         EmbedBuilder help = new EmbedBuilder();
 
-        /*help.addField("**Son :**" ,
+        help.addField("**Son :**" ,
                 "•  !ah" +
                         "\n•  !bucher" +
                         "\n•  !gg" +
@@ -22,7 +22,7 @@ public class EmbedCommandList {
                         "\n•  !pigeon" +
                         "\n•  !souffrir" +
                         "\n•  !trump",
-                true);*/
+                true);
         help.addField("**Information :**",
                 "•  !alerts" +
                         "\n•  !alliance" +

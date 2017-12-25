@@ -15,21 +15,20 @@ import java.time.Instant;
 import java.util.Date;
 
 import static warframe.bourreau.api.warframeAPI.*;
-import static warframe.bourreau.api.warframeAPI.Invasion;
 import static warframe.bourreau.api.wfRaidAPI.*;
 import static warframe.bourreau.erreur.erreurGestion.*;
-import static warframe.bourreau.util.Find.FindClanKey;
+import static warframe.bourreau.util.Find.findClanKey;
 import static warframe.bourreau.util.Recup.recupString;
 
 public class InfoCommand extends SimpleCommand {
 
-    @Command(name="alerts")
-    public static void Alerts(MessageReceivedEvent event) {
+    @Command(name="alerts", subCommand=false)
+    public static void alerts(MessageReceivedEvent event) {
         try {
-            String commande = event.getMessage().getContent().toLowerCase();
+            String commande = event.getMessage().getContentDisplay().toLowerCase();
 
-            if (commande.contains(" ") && recupString(commande).equals("interest")) AlertWithInterest(event);
-            else Alert(event);
+            if (commande.contains(" ") && recupString(commande).equals("interest")) alertWithInterest(event);
+            else alert(event);
         }
         catch (Exception e) {
             afficheErreur(event, e);
@@ -37,8 +36,8 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="alliance")
-    public static void Alliance(MessageReceivedEvent event) {
+    @Command(name="alliance", subCommand=false)
+    public static void alliance(MessageReceivedEvent event) {
         try {
             String info = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
             JSONObject allianceJson = new JSONObject(info);
@@ -63,8 +62,8 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="discordwf")
-    public static void DiscordWarframe(MessageReceivedEvent event) {
+    @Command(name="discordwf", subCommand=false)
+    public static void discordWarframe(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("https://discord.gg/K4GbEUe").queue();
         }
@@ -74,10 +73,10 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="goals")
-    public static void Goals(MessageReceivedEvent event) {
+    @Command(name="goals", subCommand=false)
+    public static void goals(MessageReceivedEvent event) {
         try {
-            Goal(event);
+            goal(event);
         }
         catch (Exception e) {
             afficheErreur(event, e);
@@ -85,8 +84,8 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="idee")
-    public static void Idee(MessageReceivedEvent event) {
+    @Command(name="idee", subCommand=false)
+    public static void idee(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("https://docs.google.com/document/d/1kb-sIRzCQlau5JL2q2WZRFlUy94JKWLF8p4xvfRXJFU/edit?usp=sharing").queue();
         }
@@ -96,8 +95,8 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="info")
-    public static void Info(MessageReceivedEvent event) {
+    @Command(name="info", subCommand=false)
+    public static void info(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("https://deathsnacks.com/wf").queue();
         }
@@ -107,13 +106,13 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="invasions")
-    public static void Invasions(MessageReceivedEvent event) {
+    @Command(name="invasions", subCommand=false)
+    public static void invasions(MessageReceivedEvent event) {
         try {
-            String commande = event.getMessage().getContent().toLowerCase();
+            String commande = event.getMessage().getContentDisplay().toLowerCase();
 
-            if (commande.contains(" ") && recupString(commande).equals("interest")) InvasionWithInterest(event);
-            else Invasion(event);
+            if (commande.contains(" ") && recupString(commande).equals("interest")) invasionWithInterest(event);
+            else invasion(event);
         }
         catch (Exception e) {
             afficheErreur(event, e);
@@ -121,8 +120,8 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="invite")
-    public static void InvitationServeur(MessageReceivedEvent event) {
+    @Command(name="invite", subCommand=false)
+    public static void invitationServeur(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("https://discord.me/frenchco").queue();
         }
@@ -132,8 +131,8 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="clan")
-    public static void ListClan(MessageReceivedEvent event) {
+    @Command(name="clan", subCommand=false)
+    public static void listClan(MessageReceivedEvent event) {
         try {
             StringBuilder clanString = new StringBuilder();
             String alliance = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
@@ -160,10 +159,10 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="lead")
-    public static void ListLeader(MessageReceivedEvent event) {
+    @Command(name="lead", subCommand=false)
+    public static void listLeader(MessageReceivedEvent event) {
         try {
-            String commande = event.getMessage().getContent();
+            String commande = event.getMessage().getContentDisplay();
             StringBuilder leader = new StringBuilder();
             StringBuilder clan = new StringBuilder();
             String alliance = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
@@ -187,10 +186,10 @@ public class InfoCommand extends SimpleCommand {
 
                 lead.setTitle("**__Alliance :__** " + nomAlliance, "http://wfraid.teamfr.net/");
                 lead.setDescription(clan.toString());
-                if (clanJson.names().toString().toLowerCase().contains(clan.toString()) && clanJson.getJSONObject(FindClanKey(clanJson.names(), clan.toString().toLowerCase())).getString("logoUrl").isEmpty())
+                if (clanJson.names().toString().toLowerCase().contains(clan.toString()) && clanJson.getJSONObject(findClanKey(clanJson.names(), clan.toString().toLowerCase())).getString("logoUrl").isEmpty())
                     lead.setThumbnail("http://i.imgur.com/BUkD1OV.png");
                 else
-                    lead.setThumbnail(clanJson.getJSONObject(FindClanKey(clanJson.names(), clan.toString().toLowerCase())).getString("logoUrl"));
+                    lead.setThumbnail(clanJson.getJSONObject(findClanKey(clanJson.names(), clan.toString().toLowerCase())).getString("logoUrl"));
                 lead.addField("Warlord(s) :", leader.toString(), false);
                 lead.setColor(new Color(13, 237, 255));
                 lead.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), "http://i.imgur.com/BUkD1OV.png");
@@ -231,8 +230,8 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="proges")
-    public static void Progression(MessageReceivedEvent event) {
+    @Command(name="proges", subCommand=false)
+    public static void progression(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("Voici ma progression : \nhttps://trello.com/b/JEEkreCv").queue();
         }
@@ -242,10 +241,10 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="pvp")
-    public static void PvpChallenge(MessageReceivedEvent event) {
+    @Command(name="pvp", subCommand=false)
+    public static void pvpChallenges(MessageReceivedEvent event) {
         try {
-            PVPChallenge(event);
+            pvpChallenge(event);
         }
         catch (Exception e) {
             afficheErreur(event, e);
@@ -253,11 +252,11 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="raid")
-    public static void Raid(MessageReceivedEvent event) {
+    @Command(name="raid", subCommand=false)
+    public static void raid(MessageReceivedEvent event) {
         try {
-            if (event.getMessage().getContent().contains("detail")) RaidStatDetails(event);
-            else RaidStat(event);
+            if (event.getMessage().getContentDisplay().contains("detail")) raidStatDetails(event);
+            else raidStat(event);
         }
         catch (Exception e) {
             afficheErreur(event, e);
@@ -265,8 +264,8 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="site")
-    public static void Site(MessageReceivedEvent event) {
+    @Command(name="site", subCommand=false)
+    public static void site(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("http://wfraid.teamfr.net/").queue();
         }
@@ -276,10 +275,10 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="sortie")
-    public static void Sorties(MessageReceivedEvent event) {
+    @Command(name="sortie", subCommand=false)
+    public static void sorties(MessageReceivedEvent event) {
         try {
-            Sortie(event);
+            sortie(event);
         }
         catch (Exception e) {
             afficheErreur(event, e);
@@ -287,8 +286,8 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="steam")
-    public static void Steam(MessageReceivedEvent event) {
+    @Command(name="steam", subCommand=false)
+    public static void steam(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("http://steamcommunity.com/groups/wfraid").queue();
         }
@@ -298,10 +297,10 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="syndicat")
-    public static void Syndicats(MessageReceivedEvent event) {
+    @Command(name="syndicat", subCommand=false)
+    public static void syndicats(MessageReceivedEvent event) {
         try {
-            Syndicat(event);
+            syndicat(event);
         }
         catch (Exception e) {
             afficheErreur(event, e);
@@ -309,8 +308,8 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="ts")
-    public static void Ts(MessageReceivedEvent event) {
+    @Command(name="ts", subCommand=false)
+    public static void ts(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("mine.ts-devil.eu:8334").queue();
         }
@@ -320,8 +319,8 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="up")
-    public static void Upcoming(MessageReceivedEvent event) {
+    @Command(name="up", subCommand=false)
+    public static void upcoming(MessageReceivedEvent event) {
         try {
             event.getTextChannel().sendMessage("https://warframe.wikia.com/wiki/Upcoming_Features").queue();
         }
@@ -331,10 +330,10 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="updates")
-    public static void UpdateHotfix(MessageReceivedEvent event) {
+    @Command(name="updates", subCommand=false)
+    public static void updateHotfix(MessageReceivedEvent event) {
         try {
-            Updates(event);
+            updates(event);
         }
         catch (Exception e) {
                 afficheErreur(event, e);
@@ -342,10 +341,10 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="baro")
-    public static void VoidTraders(MessageReceivedEvent event) {
+    @Command(name="baro", subCommand=false)
+    public static void voidTraders(MessageReceivedEvent event) {
         try {
-            Baro(event);
+            baro(event);
         }
         catch (Exception e) {
             afficheErreur(event, e);
@@ -353,10 +352,10 @@ public class InfoCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="void")
-    public static void Void(MessageReceivedEvent event) {
+    @Command(name="void", subCommand=false)
+    public static void voiD(MessageReceivedEvent event) {
         try {
-            VoidFissure(event);
+            voidFissure(event);
         }
         catch (Exception e) {
             afficheErreur(event, e);

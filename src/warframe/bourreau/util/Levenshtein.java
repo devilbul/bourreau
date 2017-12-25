@@ -22,7 +22,7 @@ public class Levenshtein {
         return costs[b.length()];
     }
 
-    public static String CompareCommande(String str, Object[] obj) {
+    public static String compareCommande(String str, Object[] obj) {
         String commandeProche;
         int invariant = 1000;
         int indice = -1;

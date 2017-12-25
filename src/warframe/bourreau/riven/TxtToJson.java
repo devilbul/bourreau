@@ -17,15 +17,15 @@ public class TxtToJson {
     private static String adresse = System.getProperty("user.dir") + File.separator + "res" + File.separator + "input" + File.separator + origine;
     private static String adresseSortie = System.getProperty("user.dir") + File.separator + "res" + File.separator + "info" + File.separator + sortie;
 
-    public static boolean Traitement() {
-        if (TransformeTxtToJson())
-            if (DeleteBlankObjet())
+    public static boolean traitement() {
+        if (transformeTxtToJson())
+            if (deleteBlankObjet())
                 return true;
 
         return false;
     }
 
-    private static boolean TransformeTxtToJson() {
+    private static boolean transformeTxtToJson() {
         try {
             Scanner scanner = new Scanner(new File(adresse));
             FileWriter rivenJsonFile = new FileWriter(adresseSortie);
@@ -151,12 +151,11 @@ public class TxtToJson {
                     }
                     else if (jsonActuel == UPGRADE) {
                         String str;
-                        String lineSave = line;
                         if (line.replace(":",":$").split(":")[1].length() > 1) {
-                            if (lineSave.split(":")[1].contains(" "))
-                                str = lineSave.split(":")[1].substring(1);
+                            if (line.split(":")[1].contains(" "))
+                                str = line.split(":")[1].substring(1);
                             else
-                                str = lineSave.split(":")[1];
+                                str = line.split(":")[1];
 
                             upgradeJson.put(line.split(":")[0].substring(3),str);
                         }
@@ -175,7 +174,7 @@ public class TxtToJson {
                 rivenJson.put(rivenActuel, rivenTypeJson);
             }
 
-            rivenJsonFile.write(rivenJson.toString());
+            rivenJsonFile.write(rivenJson.toString(3));
             rivenJsonFile.flush();
             rivenJsonFile.close();
 
@@ -189,7 +188,7 @@ public class TxtToJson {
         }
     }
 
-    private static boolean DeleteBlankObjet()  {
+    private static boolean deleteBlankObjet()  {
         try {
             String riven = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + sortie)));
             JSONObject rivenJson = new JSONObject(riven);
@@ -207,7 +206,7 @@ public class TxtToJson {
                 }
             }
 
-            rivenJsonFile.write(rivenJson.toString());
+            rivenJsonFile.write(rivenJson.toString(3));
             rivenJsonFile.flush();
             rivenJsonFile.close();
 

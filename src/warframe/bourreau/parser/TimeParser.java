@@ -2,7 +2,7 @@ package warframe.bourreau.parser;
 
 public class TimeParser {
 
-    public static long ParseTimeToSec(String time) {
+    public static long parseTimeToSec(String time) {
         long sec;
 
         long hour = Long.valueOf(time.split(":")[0]);
@@ -14,7 +14,7 @@ public class TimeParser {
         return sec;
     }
 
-    public static String ParseSecToTime(long sec) {
+    public static String parseSecToTime(long sec) {
         String time = "";
         int hh;
         int mm;

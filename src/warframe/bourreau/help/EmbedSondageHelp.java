@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class EmbedSondageHelp {
 
-    public static MessageEmbed MessageHelpSondage(String help) {
+    public static MessageEmbed messageHelpSondage(String help) {
         EmbedBuilder helpMessage = new EmbedBuilder();
 
         helpMessage.addField("__Aide pour__ :   " + help, "\n\nles réponses peuvent être des phrases \nil faut bien respecter la syntaxe" +

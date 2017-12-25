@@ -6,8 +6,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import java.io.File;
 
 import static warframe.bourreau.Init.*;
-import static warframe.bourreau.util.Find.FindUserMention;
-import static warframe.bourreau.util.Find.FindUserVC;
+import static warframe.bourreau.util.Find.findUserMention;
+import static warframe.bourreau.util.Find.findUserVC;
 
 public class PlaySound {
 
@@ -31,7 +31,7 @@ public class PlaySound {
 
     public static void playSound(MessageReceivedEvent event, String file) {
         String adresse = System.getProperty("user.dir") + File.separator + "res" + File.separator + "music" + File.separator + file;
-        VoiceChannel channel = FindUserVC(event);
+        VoiceChannel channel = findUserVC(event);
 
         play(event, adresse, channel);
     }
@@ -39,7 +39,7 @@ public class PlaySound {
     public static void playSoundMention(MessageReceivedEvent event) {
         String file = "bucher.mp4";
         String adresse = System.getProperty("user.dir") + File.separator + "res" + File.separator + "music" + File.separator + file;
-        VoiceChannel channel = FindUserMention(event);
+        VoiceChannel channel = findUserMention(event);
 
         play(event, adresse, channel);
     }

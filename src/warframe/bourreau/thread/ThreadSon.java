@@ -7,7 +7,7 @@ import warframe.bourreau.util.Tempo;
 import static warframe.bourreau.Init.managers;
 import static warframe.bourreau.Init.queueSon;
 import static warframe.bourreau.music.PlaySound.playSound;
-import static warframe.bourreau.util.Find.FindUserVC;
+import static warframe.bourreau.util.Find.findUserVC;
 
 public class ThreadSon extends Thread {
     private MessageReceivedEvent event;
@@ -17,17 +17,17 @@ public class ThreadSon extends Thread {
     public void run() {
         setPlayed(true);
         playSound(event, sound);
-        Tempo.Temporisation(4);
+        Tempo.temporisation(4);
 
         while (isPlayed) { System.out.print(""); }
         managers.get(event.getGuild().getId()).getPlayer(event.getGuild()).getAudioPlayer().stopTrack();
-        SonCommand.Leave(event);
+        SonCommand.leave(event);
 
         if (!queueSon.isEmpty())
             queueSon.remove(0);
 
         if (!queueSon.isEmpty())
-            if (FindUserVC(queueSon.get(0).getEvent()) == null)
+            if (findUserVC(queueSon.get(0).getEvent()) == null)
                 queueSon.remove(0);
 
         if (!queueSon.isEmpty())

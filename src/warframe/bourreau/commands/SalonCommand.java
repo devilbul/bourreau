@@ -13,20 +13,20 @@ import java.nio.file.Paths;
 import static net.dv8tion.jda.core.Permission.*;
 import static warframe.bourreau.erreur.erreurGestion.afficheErreur;
 import static warframe.bourreau.erreur.erreurGestion.saveErreur;
-import static warframe.bourreau.util.Find.FindAdmin;
+import static warframe.bourreau.util.Find.findAdmin;
 import static warframe.bourreau.util.Recup.recupString;
 
 public class SalonCommand extends SimpleCommand {
 
-    @Command(name="createsalonclan")
-    public static void CreateSalonClan(MessageReceivedEvent event) {
+    @Command(name="createsalonclan", subCommand=false)
+    public static void createSalonClan(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
+            if (findAdmin(event, event.getMember())) {
                 String configCategory = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configCategory.json")));
                 JSONObject configCategoryJson = new JSONObject(configCategory);
                 String categoryID = configCategoryJson.getJSONObject("categories").getJSONObject(event.getGuild().getId()).getJSONObject("categories").getJSONObject("clan").getString("idCategory");
 
-                String commande = event.getMessage().getContent();
+                String commande = event.getMessage().getContentDisplay();
 
                 if (commande.contains(" ")) {
                     String clan = recupString(commande);
@@ -87,11 +87,11 @@ public class SalonCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="deletesalonclan")
-    public static void DeleteSalonClan(MessageReceivedEvent event) {
+    @Command(name="deletesalonclan", subCommand=false)
+    public static void deleteSalonClan(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
-                String commande = event.getMessage().getContent();
+            if (findAdmin(event, event.getMember())) {
+                String commande = event.getMessage().getContentDisplay();
 
                 if (commande.contains(" ")) {
                     String clan = recupString(commande);

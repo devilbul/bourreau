@@ -16,19 +16,17 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 
-import static warframe.bourreau.commands.BasedCommand.Information;
+import static warframe.bourreau.commands.BasedCommand.information;
 import static warframe.bourreau.erreur.erreurGestion.*;
-import static warframe.bourreau.util.Find.FindAdmin;
-import static warframe.bourreau.util.Find.FindModo;
-import static warframe.bourreau.util.Find.FindUserVC;
+import static warframe.bourreau.util.Find.*;
 import static warframe.bourreau.util.Recup.*;
 
 public class AdminCommand extends SimpleCommand {
 
-    @Command(name="tenno")
-    public static void AddUserToTenno(MessageReceivedEvent event) {
+    @Command(name="tenno", subCommand=false)
+    public static void addUserToTenno(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
+            if (findAdmin(event, event.getMember()) || findModo(event, event.getMember())) {
                 if (event.getMessage().toString().contains("@")) {
                     String configRoles = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configRole.json")));
                     JSONObject configRolesJson = new JSONObject(configRoles);
@@ -36,7 +34,7 @@ public class AdminCommand extends SimpleCommand {
                     User newTenno = event.getMessage().getMentionedUsers().get(0);
 
                     event.getGuild().getController().addRolesToMember(event.getGuild().getMemberById(newTenno.getId()), event.getGuild().getRoleById(roleID)).complete();
-                    Information(event);
+                    information(event);
 
                     event.getTextChannel().sendMessage("nouveau Tenno, " + newTenno.getName()).queue();
                 }
@@ -52,10 +50,10 @@ public class AdminCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="aubucher")
-    public static void AuBucher(MessageReceivedEvent event) {
+    @Command(name="aubucher", subCommand=false)
+    public static void auBucher(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
+            if (findAdmin(event, event.getMember()) || findModo(event, event.getMember())) {
                 String configRoles = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configRole.json")));
                 String configVoiceChannel = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configVoiceChannel.json")));
                 JSONObject configRolesJson = new JSONObject(configRoles);
@@ -65,7 +63,7 @@ public class AdminCommand extends SimpleCommand {
                 String id = recupID(event.getMessage().getMentionedUsers().toString());
 
                 if (event.getMessage().toString().contains("@")) {
-                    if (FindUserVC(event) != null) {
+                    if (findUserVC(event) != null) {
                         event.getGuild().getController().moveVoiceMember(event.getGuild().getMemberById(id), event.getJDA().getVoiceChannelById(voiceChannelID)).queue();
                         event.getGuild().getController().addRolesToMember(event.getGuild().getMemberById(id), event.getGuild().getRoleById(roleID)).queue();
                         event.getTextChannel().sendMessage("Hérétique ,au bucher !").queue();
@@ -85,15 +83,15 @@ public class AdminCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="ban")
-    public static void Ban(MessageReceivedEvent event) {
+    @Command(name="ban", subCommand=false)
+    public static void ban(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
+            if (findAdmin(event, event.getMember())) {
                 int dayBan = 7;
 
                 if (event.getMessage().toString().contains("@")) {
                     if (event.getMessage().getMentionedUsers().get(0).equals(event.getGuild().getOwner().getUser()))
-                        event.getTextChannel().sendMessage("Impossible !").queue();
+                        event.getTextChannel().sendMessage("Impossible, c'est le proprio des lieux.").queue();
                     else {
                         event.getGuild().getController().ban(recupID(event.getMessage().getMentionedUsers().toString()), dayBan).submit();
                         event.getTextChannel().sendMessage("client banni").queue();
@@ -111,25 +109,26 @@ public class AdminCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="deafen")
-    public static void Deafen(MessageReceivedEvent event) {
+    @Command(name="deafen", subCommand=false)
+    public static void deafen(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
+            if (findAdmin(event, event.getMember()) || findModo(event, event.getMember())) {
                 String id = recupID(event.getMessage().getMentionedUsers().toString());
 
                 if (event.getMessage().toString().contains("@")) {
-                    if (FindUserVC(event) != null) {
-                        event.getGuild().getController().setDeafen(event.getGuild().getMemberById(id), true).submit();
-                        event.getTextChannel().sendMessage("client assourdi").queue();
-                    }
-                    else if (event.getMessage().getMentionedUsers().get(0).equals(event.getGuild().getOwner().getUser())) {
-                        event.getTextChannel().sendMessage("Impossible !").queue();
+                    if (!event.getGuild().getMemberById(id).isOwner()) {
+                        if (findUserVC(event) != null) {
+                            event.getGuild().getController().setDeafen(event.getGuild().getMemberById(id), true).submit();
+                            event.getTextChannel().sendMessage("client assourdi").queue();
+                        }
+                        else
+                            event.getTextChannel().sendMessage(event.getJDA().getUserById(id).getName() + " n'est pas dans un salon vocal.\nil n'a pas été assourdi.").queue();
                     }
                     else
-                        event.getTextChannel().sendMessage(event.getJDA().getUserById(id).getName() + " n'est pas dans un salon vocal.\nil n'a pas été assourdi.").queue();
+                        event.getTextChannel().sendMessage("Impossible, c'est le proprio des lieux.").queue();
                 }
                 else
-                    event.getTextChannel().sendMessage("pas de personne mentionnée").queue();
+                    event.getTextChannel().sendMessage("Pas de personne mentionnée.").queue();
             }
             else
                 event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
@@ -140,22 +139,24 @@ public class AdminCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="kick")
-    public static void Kick(MessageReceivedEvent event) {
+    @Command(name="kick", subCommand=false)
+    public static void kick(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
+            if (findAdmin(event, event.getMember()) || findModo(event, event.getMember())) {
                 String id = recupID(event.getMessage().getMentionedUsers().toString()) ;
 
                 if (event.getMessage().toString().contains("@")) {
-                    if (FindUserVC(event) != null) {
-                        event.getGuild().getController().kick(recupID(event.getMessage().getMentionedUsers().toString())).submit();
-                        event.getTextChannel().sendMessage("client kické").queue();
-                    }
-                    else if (event.getMessage().getMentionedUsers().get(0).equals(event.getGuild().getOwner().getUser())) {
-                        event.getTextChannel().sendMessage("Impossible !").queue();
+                    if (!event.getGuild().getMemberById(id).isOwner()) {
+                        if (findUserVC(event) != null) {
+                            event.getGuild().getController().kick(recupID(event.getMessage().getMentionedUsers().toString())).submit();
+                            event.getTextChannel().sendMessage("client kické").queue();
+                        } else if (event.getMessage().getMentionedUsers().get(0).equals(event.getGuild().getOwner().getUser())) {
+                            event.getTextChannel().sendMessage("Impossible !").queue();
+                        } else
+                            event.getTextChannel().sendMessage(event.getJDA().getUserById(id).getName() + " n'est pas dans un salon vocal.\nil n'a pas été kick.").queue();
                     }
                     else
-                        event.getTextChannel().sendMessage(event.getJDA().getUserById(id).getName() + " n'est pas dans un salon vocal.\nil n'a pas été kick.").queue();
+                        event.getTextChannel().sendMessage("Impossible, c'est le proprio des lieux.").queue();
                 }
                 else
                     event.getTextChannel().sendMessage("pas de personne mentionnée").queue();
@@ -169,22 +170,24 @@ public class AdminCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="mute")
-    public static void Mute(MessageReceivedEvent event) {
+    @Command(name="mute", subCommand=false)
+    public static void mute(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
+            if (findAdmin(event, event.getMember()) || findModo(event, event.getMember())) {
                 String id = recupID(event.getMessage().getMentionedUsers().toString()) ;
 
                 if (event.getMessage().toString().contains("@")) {
-                    if (FindUserVC(event) != null) {
-                        event.getGuild().getController().setMute(event.getGuild().getMemberById(id), true).submit();
-                        event.getTextChannel().sendMessage("client muté").queue();
-                    }
-                    else if (event.getMessage().getMentionedUsers().get(0).equals(event.getGuild().getOwner().getUser())) {
-                        event.getTextChannel().sendMessage("Impossible !").queue();
+                    if (!event.getGuild().getMemberById(id).isOwner()) {
+                        if (findUserVC(event) != null) {
+                            event.getGuild().getController().setMute(event.getGuild().getMemberById(id), true).submit();
+                            event.getTextChannel().sendMessage("client muté").queue();
+                        } else if (event.getMessage().getMentionedUsers().get(0).equals(event.getGuild().getOwner().getUser())) {
+                            event.getTextChannel().sendMessage("Impossible !").queue();
+                        } else
+                            event.getTextChannel().sendMessage(event.getJDA().getUserById(id).getName() + " n'est pas dans un salon vocal.\nil n'a pas été muté.").queue();
                     }
                     else
-                        event.getTextChannel().sendMessage(event.getJDA().getUserById(id).getName() + " n'est pas dans un salon vocal.\nil n'a pas été muté.").queue();
+                        event.getTextChannel().sendMessage("Impossible, c'est le proprio des lieux.").queue();
                 }
                 else
                     event.getTextChannel().sendMessage("pas de personne mentionnée").queue();
@@ -198,10 +201,10 @@ public class AdminCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="ping")
-    public static void Ping(MessageReceivedEvent event) {
+    @Command(name="ping", subCommand=false)
+    public static void ping(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
+            if (findAdmin(event, event.getMember())) {
                 EmbedBuilder ping = new EmbedBuilder();
 
                 ping.setTitle("Pong", null);
@@ -221,12 +224,12 @@ public class AdminCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="setgame")
-    public static void SetGame(MessageReceivedEvent event) {
+    @Command(name="setgame", subCommand=false)
+    public static void setGame(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
+            if (findAdminSupreme(event.getAuthor().getId())) {
                 JSONObject botjson = new JSONObject();
-                String commande = event.getMessage().getContent();
+                String commande = event.getMessage().getContentDisplay();
 
                 botjson.put("botToken", "MjkwODgzMDkwMTQwNzU4MDE3.C_NBKQ.8i9vV1lkESKaYs0IeXU7zZcpRrU");
                 botjson.put("botVersion", "1.0");
@@ -236,11 +239,11 @@ public class AdminCommand extends SimpleCommand {
                     FileWriter file = new FileWriter(System.getProperty("user.dir") + File.separator + "res" + File.separator + "config" + File.separator + "bot.json");
 
                     botjson.put("game", recupString(commande));
-                    file.write(botjson.toString());
+                    file.write(botjson.toString(3));
                     file.flush();
                     file.close();
 
-                    event.getJDA().getPresence().setGame(Game.of(recupString(commande)));
+                    event.getJDA().getPresence().setGame(Game.of(Game.GameType.STREAMING, recupString(commande), "https://trello.com/b/JEEkreCv/bot-discord-alliance"));
                     event.getTextChannel().sendMessage("jeu changé.").queue();
                 }
                 else
@@ -255,12 +258,12 @@ public class AdminCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="unban")
-    public static void UnBan(MessageReceivedEvent event) {
+    @Command(name="unban", subCommand=false)
+    public static void unBan(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
-                String commande = event.getMessage().getContent().toLowerCase();
-                String user = recupPseudo(event.getMessage().getContent().toLowerCase());
+            if (findAdmin(event, event.getMember())) {
+                String commande = event.getMessage().getContentDisplay().toLowerCase();
+                String user = recupPseudo(event.getMessage().getContentDisplay().toLowerCase());
 
                 if (commande.contains(" ")) {
                     event.getGuild().getController().unban(user).submit();
@@ -278,18 +281,25 @@ public class AdminCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="undeafen")
-    public static void UnDeafen(MessageReceivedEvent event) {
+    @Command(name="undeafen", subCommand=false)
+    public static void unDeafen(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
+            if (findAdmin(event, event.getMember()) || findModo(event, event.getMember())) {
                 String id = recupID(event.getMessage().getMentionedUsers().toString());
 
                 if (event.getMessage().toString().contains("@")) {
-                    event.getGuild().getController().setDeafen(event.getGuild().getMemberById(id), false).submit();
-                    event.getTextChannel().sendMessage("client désourdi").queue();
-                } else
+                    if (!event.getGuild().getMemberById(id).isOwner()) {
+
+                        event.getGuild().getController().setDeafen(event.getGuild().getMemberById(id), false).submit();
+                        event.getTextChannel().sendMessage("client désourdi").queue();
+                    }
+                    else
+                        event.getTextChannel().sendMessage("Impossible, c'est le proprio des lieux.").queue();
+                }
+                else
                     event.getTextChannel().sendMessage("pas de personne mentionnée").queue();
-            } else
+            }
+            else
                 event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
         }
         catch (Exception e) {
@@ -298,15 +308,19 @@ public class AdminCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="unmute")
-    public static void UnMute(MessageReceivedEvent event) {
+    @Command(name="unmute", subCommand=false)
+    public static void unMute(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember()) || FindModo(event, event.getMember())) {
+            if (findAdmin(event, event.getMember()) || findModo(event, event.getMember())) {
                 String id = recupID(event.getMessage().getMentionedUsers().toString());
 
                 if (event.getMessage().toString().contains("@")) {
-                    event.getGuild().getController().setMute(event.getGuild().getMemberById(id), false).submit();
-                    event.getTextChannel().sendMessage("client démuté").queue();
+                    if (!event.getGuild().getMemberById(id).isOwner()) {
+                        event.getGuild().getController().setMute(event.getGuild().getMemberById(id), false).submit();
+                        event.getTextChannel().sendMessage("client démuté").queue();
+                    }
+                    else
+                        event.getTextChannel().sendMessage("Impossible, c'est le proprio des lieux.").queue();
                 }
                 else
                     event.getTextChannel().sendMessage("pas de personne mentionnée").queue();

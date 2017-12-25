@@ -13,7 +13,7 @@ public class AudioListener extends AudioEventAdapter {
     private final BlockingQueue<AudioTrack> tracks = new LinkedBlockingQueue<AudioTrack>();
     private final MusicPlayer player;
 
-    public AudioListener(MusicPlayer player) {
+    AudioListener(MusicPlayer player) {
         this.player = player;
     }
 
@@ -25,7 +25,7 @@ public class AudioListener extends AudioEventAdapter {
         return tracks.size();
     }
 
-    public void nextTrack() {
+    void nextTrack() {
         if (tracks.isEmpty()) {
             if (player.getGuild().getAudioManager().getConnectedChannel() != null)
                 player.getGuild().getAudioManager().closeAudioConnection();

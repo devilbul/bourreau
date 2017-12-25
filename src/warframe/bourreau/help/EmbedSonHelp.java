@@ -10,10 +10,10 @@ import java.util.Date;
 
 public class EmbedSonHelp {
 
-    public static MessageEmbed MessageHelpSon(String help) {
+    public static MessageEmbed messageHelpSon(String help) {
         EmbedBuilder helpMessage = new EmbedBuilder();
 
-        /*switch (help) {
+        switch (help) {
             case "ah":
                 helpMessage.addField("__Aide pour__ :   " + help, "**syntaxe** :      !" + help + "\n**condition :**   être connecté sur un salon vocal\n**effet :**            le bot rejoint le salon vocal où est l'auteur, et joue le son", false);
                 break;
@@ -38,7 +38,7 @@ public class EmbedSonHelp {
             case "trump":
                 helpMessage.addField("__Aide pour__ :   " + help, "**syntaxe** :      !" + help + "\n**condition :**   être connecté sur un salon vocal\n**effet :**            le bot rejoint le salon vocal où est l'auteur, et joue le son", false);
                 break;
-        }*/
+        }
 
         helpMessage.addField("__Aide pour__ :   " + help, "**syntaxe** :      !" + help + "\n**condition :**   être connecté sur un salon vocal\n**effet :**            le bot rejoint le salon vocal où est l'auteur, et joue le son", false);
 

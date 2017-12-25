@@ -5,7 +5,7 @@ import java.util.Calendar;
 
 public class DateHeure {
 
-    public static String GiveDate() {
+    public static String giveDate() {
         String date;
         long timeInMillis = System.currentTimeMillis();
         Calendar cal1 = Calendar.getInstance();
@@ -17,7 +17,7 @@ public class DateHeure {
         return date;
     }
 
-    public static String GiveHeure() {
+    public static String giveHeure() {
         String heure;
         long timeInMillis = System.currentTimeMillis();
         Calendar cal1 = Calendar.getInstance();

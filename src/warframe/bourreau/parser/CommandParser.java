@@ -23,12 +23,12 @@ public class CommandParser {
 
         final String raw;
         final String beheaded;
-        public final String[] splitBeheaded;
+        final String[] splitBeheaded;
         public final String invoke;
         final String[] args;
         public final MessageReceivedEvent event;
 
-        public CommandContainer(String rw, String beheaded, String[] splitBeheaded, String invoke, String[] args, MessageReceivedEvent event){
+        CommandContainer(String rw, String beheaded, String[] splitBeheaded, String invoke, String[] args, MessageReceivedEvent event){
             this.raw = rw;
             this.beheaded = beheaded;
             this.splitBeheaded = splitBeheaded;

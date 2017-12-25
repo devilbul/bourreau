@@ -2,20 +2,20 @@ package warframe.bourreau.parser;
 
 public class StringParser {
 
-    public static String ParseInsertSpace(String str) {
-        String res = String.valueOf(str.charAt(0));
+    public static String parseInsertSpace(String str) {
+        StringBuilder res = new StringBuilder(String.valueOf(str.charAt(0)));
 
         for (int i=1; i<str.length(); i++) {
-            if (SearchMajAlphabet(str.charAt(i)))
-                res += " " + String.valueOf(str.charAt(i));
+            if (searchMajAlphabet(str.charAt(i)))
+                res.append(" ").append(String.valueOf(str.charAt(i)));
             else
-                res += String.valueOf(str.charAt(i));
+                res.append(String.valueOf(str.charAt(i)));
         }
 
-        return res;
+        return res.toString();
     }
 
-    private static Boolean SearchMajAlphabet(Character ch) {
+    private static Boolean searchMajAlphabet(Character ch) {
         String alphabetMaj = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         for (int i=0; i<alphabetMaj.length(); i++) {

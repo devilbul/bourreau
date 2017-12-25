@@ -12,7 +12,7 @@ import static warframe.bourreau.Bourreau.botVersion;
 
 public class Message {
 
-    public static MessageEmbed MessageAbout() {
+    public static MessageEmbed messageAbout() {
         EmbedBuilder about = new EmbedBuilder();
 
         about.setTitle("A propos de Bourreau :", null);

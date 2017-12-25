@@ -16,55 +16,48 @@ import static warframe.bourreau.util.Recup.recupString;
 
 public class GestionCommand extends SimpleCommand {
 
-    @Command(name="addclan")
-    public static void AddClan(MessageReceivedEvent event) {
+    @Command(name="addclan", subCommand=false)
+    public static void addClan(MessageReceivedEvent event) {
                 try {
-                    if (FindAdmin(event, event.getMember())) {
-                        String commande = event.getMessage().getContent();
+                    if (findAdmin(event, event.getMember())) {
+                        String commande = event.getMessage().getContentDisplay();
 
                         if (commande.contains(" ")) {
-                            String[] newClan = recupString(event.getMessage().getContent()).replaceFirst("/", "@").split(" @ ");
+                            String[] newClan = recupString(event.getMessage().getContentDisplay()).replaceFirst("/", "@").split(" @ ");
                             String clan = newClan[0];
                             String[] leaders = newClan[1].replace("/", "@").split(" @ ");
 
-                            if (newClan.length >= 2) {
-                                String alliance = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
-                                JSONObject allianceJson = new JSONObject(alliance);
-                                JSONObject clanJson = allianceJson.getJSONObject("clans");
-                                JSONObject infoJson = allianceJson.getJSONObject("infos");
+                            String alliance = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
+                            JSONObject allianceJson = new JSONObject(alliance);
+                            JSONObject clanJson = allianceJson.getJSONObject("clans");
+                            JSONObject infoJson = allianceJson.getJSONObject("infos");
 
-                                if (!FindClan(clanJson.names(), clan)) {
-                                    String adresseAlliance = System.getProperty("user.dir") + File.separator + "res" + File.separator + "info" + File.separator + "Alliance.json";
-                                    FileWriter file = new FileWriter(adresseAlliance);
-                                    JSONObject newClanJson = new JSONObject();
-                                    JSONObject newAllianceJson = new JSONObject();
-                                    JSONArray leaderJson = new JSONArray();
+                            if (!findClan(clanJson.names(), clan)) {
+                                String adresseAlliance = System.getProperty("user.dir") + File.separator + "res" + File.separator + "info" + File.separator + "Alliance.json";
+                                FileWriter file = new FileWriter(adresseAlliance);
+                                JSONObject newClanJson = new JSONObject();
+                                JSONObject newAllianceJson = new JSONObject();
+                                JSONArray leaderJson = new JSONArray();
 
-                                    for (int i=0; i<leaders.length; i++)
-                                        leaderJson.put(i, leaders[i]);
+                                for (int i=0; i<leaders.length; i++)
+                                    leaderJson.put(i, leaders[i]);
 
-                                    newClanJson.put("leaders", leaderJson);
-                                    newClanJson.put("logoUrl", "");
-                                    clanJson.put(clan, newClanJson);
-                                    infoJson.put("nomAlliance", "French Connection");
-                                    infoJson.put("nbClan", clanJson.length());
-                                    newAllianceJson.put("infos", infoJson);
-                                    newAllianceJson.put("clans", clanJson);
+                                newClanJson.put("leaders", leaderJson);
+                                newClanJson.put("logoUrl", "");
+                                clanJson.put(clan, newClanJson);
+                                infoJson.put("nomAlliance", "French Connection");
+                                infoJson.put("nbClan", clanJson.length());
+                                newAllianceJson.put("infos", infoJson);
+                                newAllianceJson.put("clans", clanJson);
 
-                                    event.getTextChannel().sendMessage("clan ajouté.").queue();
+                                event.getTextChannel().sendMessage("clan ajouté.").queue();
 
-                                    file.write(newAllianceJson.toString());
-                                    file.flush();
-                                    file.close();
-                                }
-                                else
-                                    event.getTextChannel().sendMessage("le clan saisi est déjà dans l'alliance.").queue();
+                                file.write(newAllianceJson.toString(3));
+                                file.flush();
+                                file.close();
                             }
-                            else if (newClan.length ==1)
-                                event.getTextChannel().sendMessage("aucun leader saisi.").queue();
                             else
-                                event.getTextChannel().sendMessage("erreur de syntaxe, syntaxe :                        !addclan <nom du clan> <nom du leader>" +
-                                        "\nsi plusieurs leader, la syntaxe change :     !addclan <nom du clan> <leader1/leader2/.../leaderN>").queue();
+                                event.getTextChannel().sendMessage("le clan saisi est déjà dans l'alliance.").queue();
                         }
                         else
                             event.getTextChannel().sendMessage("aucun clan saisi.").queue();
@@ -78,25 +71,25 @@ public class GestionCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="removeclan")
-    public static void RemoveClan(MessageReceivedEvent event) {
+    @Command(name="removeclan", subCommand=false)
+    public static void removeClan(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
-                String commande = event.getMessage().getContent();
+            if (findAdmin(event, event.getMember())) {
+                String commande = event.getMessage().getContentDisplay();
 
                 if (commande.contains(" ")) {
-                    String clanLower = recupString(event.getMessage().getContent());
+                    String clanLower = recupString(event.getMessage().getContentDisplay());
                     String alliance = new String(Files.readAllBytes(Paths.get("res" + File.separator + "info" + File.separator + "Alliance.json")));
                     JSONObject allianceJson = new JSONObject(alliance);
                     JSONObject clanJson = allianceJson.getJSONObject("clans");
                     JSONObject infoJson = allianceJson.getJSONObject("infos");
 
-                    if (FindClanLower(clanJson.names(), clanLower) ){
+                    if (findClanLower(clanJson.names(), clanLower) ){
                         String adresseAlliance = System.getProperty("user.dir") + File.separator + "res" + File.separator + "info" + File.separator + "Alliance.json";
                         FileWriter file = new FileWriter(adresseAlliance);
                         JSONObject newAllianceJson = new JSONObject();
 
-                        clanJson.remove(FindClanKey(clanJson.names(),clanLower));
+                        clanJson.remove(findClanKey(clanJson.names(),clanLower));
 
                         infoJson.put("nomAlliance", "French Connection");
                         infoJson.put("nbClan", clanJson.length());
@@ -106,7 +99,7 @@ public class GestionCommand extends SimpleCommand {
 
                         event.getTextChannel().sendMessage("clan supprimé.").queue();
 
-                        file.write(newAllianceJson.toString());
+                        file.write(newAllianceJson.toString(3));
                         file.flush();
                         file.close();
                     }
@@ -125,14 +118,14 @@ public class GestionCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="addurl")
-    public static void AddLogoUrl(MessageReceivedEvent event) {
+    @Command(name="addurl", subCommand=false)
+    public static void addLogoUrl(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
-                String commande = event.getMessage().getContent();
+            if (findAdmin(event, event.getMember())) {
+                String commande = event.getMessage().getContentDisplay();
 
                 if (commande.contains(" ")) {
-                    String[] newClan = recupString(event.getMessage().getContent()).replaceFirst("/", "@").split(" @ ");
+                    String[] newClan = recupString(event.getMessage().getContentDisplay()).replaceFirst("/", "@").split(" @ ");
                     String clanSelect = newClan[0].toLowerCase();
                     String url = newClan[1];
 
@@ -142,30 +135,28 @@ public class GestionCommand extends SimpleCommand {
                         JSONObject clanJson = allianceJson.getJSONObject("clans");
                         JSONObject infosJson = allianceJson.getJSONObject("infos");
 
-                        if (FindClanLower(clanJson.names(), clanSelect)) {
+                        if (findClanLower(clanJson.names(), clanSelect)) {
                             String adresseAlliance = System.getProperty("user.dir") + File.separator + "res" + File.separator + "info" + File.separator + "Alliance.json";
                             FileWriter file = new FileWriter(adresseAlliance);
                             JSONObject newClanJson = new JSONObject();
                             JSONObject newAllianceJson = new JSONObject();
 
-                            newClanJson.put("leaders", clanJson.getJSONObject(FindClanKey(clanJson.names(),clanSelect)).getJSONArray("leaders"));
+                            newClanJson.put("leaders", clanJson.getJSONObject(findClanKey(clanJson.names(),clanSelect)).getJSONArray("leaders"));
                             newClanJson.put("logoUrl", url);
-                            clanJson.put(FindClanKey(clanJson.names(),clanSelect), newClanJson);
+                            clanJson.put(findClanKey(clanJson.names(),clanSelect), newClanJson);
 
                             newAllianceJson.put("clans", clanJson);
                             newAllianceJson.put("infos", infosJson);
 
                             event.getTextChannel().sendMessage("url ajouté.").queue();
 
-                            file.write(newAllianceJson.toString());
+                            file.write(newAllianceJson.toString(3));
                             file.flush();
                             file.close();
                         }
                         else
                             event.getTextChannel().sendMessage("le clan saisi n'est dans l'alliance, ou est mal orthographié.").queue();
                     }
-                    else if (newClan.length == 1)
-                        event.getTextChannel().sendMessage("aucun url saisi.").queue();
                     else
                         event.getTextChannel().sendMessage("erreur de syntaxe, syntaxe :                        !addclan <nom du clan> <url>").queue();
                 }

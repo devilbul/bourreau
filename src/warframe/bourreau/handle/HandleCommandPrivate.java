@@ -21,10 +21,10 @@ public class HandleCommandPrivate {
                         ClaimCommand.Claim(cmd.event);
                         break;*/
                     case "help":
-                        HelpCommand.HelpPrivate(cmd.event);
+                        HelpCommand.helpPrivate(cmd.event);
                         break;
                     case "about":
-                        BasedCommand.AboutBotPrivate(cmd.event);
+                        BasedCommand.aboutBotPrivate(cmd.event);
                         break;
                     default:
                         cmd.event.getAuthor().openPrivateChannel().complete().sendMessage("Commande à faire sur un salon textuel du serveur " + cmd.event.getJDA().getGuilds().get(0).getName() + "\nou commande inconnue !").complete();

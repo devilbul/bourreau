@@ -10,10 +10,10 @@ import java.util.Date;
 
 public class EmbedTrollHelp {
 
-    public static MessageEmbed MessageHelpTroll(String help) {
+    public static MessageEmbed messageHelpTroll(String help) {
         EmbedBuilder helpMessage = new EmbedBuilder();
 
-        /*switch (help) {
+        switch (help) {
             case "pute":
                 helpMessage.addField("__Aide pour__ :   " + help, "**syntaxe** :      !" + help + "\n**effet :**         à découvrir", false);
                 break;
@@ -26,7 +26,7 @@ public class EmbedTrollHelp {
             case "tg":
                 helpMessage.addField("__Aide pour__ :   " + help, "**syntaxe** :      !" + help + "\n**effet :**         à découvrir", false);
                 break;
-        }*/
+        }
 
         helpMessage.addField("__Aide pour__ :   " + help, "**syntaxe** :      !" + help + "\n**effet :**         à découvrir", false);
 

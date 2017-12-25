@@ -1,11 +1,11 @@
 package warframe.bourreau.parser;
 
-import static warframe.bourreau.util.Find.FindRivenJsonInfluenceCatgorie;
+import static warframe.bourreau.util.Find.findRivenJsonInfluenceCatgorie;
 
 public class RivenParser {
 
-    public static String ParserLowerToUpperCase(String arg) {
-        String res = "";
+    public static String parserLowerToUpperCase(String arg) {
+        StringBuilder res = new StringBuilder();
         String[] str;
 
         if (arg.contains(" "))
@@ -17,112 +17,112 @@ public class RivenParser {
 
         for (int i=0; i<str.length; i++) {
             if (str.length == 1)
-                res += String.valueOf(str[i].charAt(0)).toUpperCase() + str[i].substring(1);
-            else if (str.length > 1) {
+                res.append(String.valueOf(str[i].charAt(0)).toUpperCase()).append(str[i].substring(1));
+            else {
                 if (i == 0)
-                    res += String.valueOf(str[i].charAt(0)).toUpperCase() + str[i].substring(1);
+                    res.append(String.valueOf(str[i].charAt(0)).toUpperCase()).append(str[i].substring(1));
                 else
-                    res += "_" + String.valueOf(str[i].charAt(0)).toUpperCase() + str[i].substring(1);
+                    res.append("_").append(String.valueOf(str[i].charAt(0)).toUpperCase()).append(str[i].substring(1));
             }
         }
 
-        return res;
+        return res.toString();
     }
 
-    public static String ParserSpaceToUnderScore(String arg) {
-        String res = "";
+    public static String parserSpaceToUnderScore(String arg) {
+        StringBuilder res = new StringBuilder();
         String[] str;
 
         switch (arg) {
             case "flux rifle":
-                res = "fusil_a_flux";
+                res = new StringBuilder("fusil_a_flux");
                 break;
             case "twin gremlins":
-                res = "gremlins_jumeaux";
+                res = new StringBuilder("gremlins_jumeaux");
                 break;
             case "twin vipers":
-                res = "vipers_jumeaux";
+                res = new StringBuilder("vipers_jumeaux");
                 break;
             case "twin vipers wraith":
-                res = "vipers_jumeaux_wraith";
+                res = new StringBuilder("vipers_jumeaux_wraith");
                 break;
             case "ceramic dagger":
-                res = "dague_en_ceramique";
+                res = new StringBuilder("dague_en_ceramique");
                 break;
             case "dark dagger":
-                res = "dague_sombre";
+                res = new StringBuilder("dague_sombre");
                 break;
             case "dark sword":
-                res = "epee_sombre";
+                res = new StringBuilder("epee_sombre");
                 break;
             case "dual cleaver":
-                res = "double_hachoirs";
+                res = new StringBuilder("double_hachoirs");
                 break;
             case "dual ether":
-                res = "double_ether";
+                res = new StringBuilder("double_ether");
                 break;
             case "dual heat swords":
-                res = "double_epee";
+                res = new StringBuilder("double_epee");
                 break;
             case "dual ichor":
-                res = "double_ichor";
+                res = new StringBuilder("double_ichor");
                 break;
             case "dual kama":
-                res = "double_kama";
+                res = new StringBuilder("double_kama");
                 break;
             case "dual kama prime":
-                res = "double_kama_prime";
+                res = new StringBuilder("double_kama_prime");
                 break;
             case "dual skana":
-                res = "double_skana";
+                res = new StringBuilder("double_skana");
                 break;
             case "dual zoren":
-                res = "double_zoren";
+                res = new StringBuilder("double_zoren");
                 break;
             case "ether dagger":
-                res = "dagues_ether";
+                res = new StringBuilder("dagues_ether");
                 break;
             case "ether reaper":
-                res = "reaper_ether";
+                res = new StringBuilder("reaper_ether");
                 break;
             case "ether sword":
-                res = "epee_ether";
+                res = new StringBuilder("epee_ether");
                 break;
             case "heat dagger":
-                res = "dague_de_chaleur";
+                res = new StringBuilder("dague_de_chaleur");
                 break;
             case "heat sword":
-                res = "epee_de_chaleur";
+                res = new StringBuilder("epee_de_chaleur");
                 break;
             case "jaw sword":
-                res = "epee_jaw";
+                res = new StringBuilder("epee_jaw");
                 break;
             case "pangolin sword":
-                res = "epee_pangolin";
+                res = new StringBuilder("epee_pangolin");
                 break;
             case "plasma sword":
-                res = "epee_a_plasma";
+                res = new StringBuilder("epee_a_plasma");
                 break;
             case "silva & aegis":
-                res = "silva_et_aegis";
+                res = new StringBuilder("silva_et_aegis");
                 break;
             case "silva & aegis prime":
-                res = "silva_et_aegis_prime";
+                res = new StringBuilder("silva_et_aegis_prime");
                 break;
             case "deconstructor":
-                res = "deconstructeur";
+                res = new StringBuilder("deconstructeur");
                 break;
             case "deth machine rifle":
-                res = "fusil_machine_de_mort";
+                res = new StringBuilder("fusil_machine_de_mort");
                 break;
             case "laser rifle":
-                res = "fusil_laser";
+                res = new StringBuilder("fusil_laser");
                 break;
             case "prime laser rifle":
-                res = "fusil_laser_prime";
+                res = new StringBuilder("fusil_laser_prime");
                 break;
             case "burst laser":
-                res = "laser_a_rafale";
+                res = new StringBuilder("laser_a_rafale");
                 break;
             default:
                 if (arg.contains(" "))
@@ -134,23 +134,23 @@ public class RivenParser {
 
                 for (int i = 0; i < str.length; i++) {
                     if (str.length == 1)
-                        res += str[i];
-                    else if (str.length > 1) {
+                        res.append(str[i]);
+                    else {
                         if (i == 0)
-                            res += str[i];
+                            res.append(str[i]);
                         else
-                            res += "_" + str[i];
+                            res.append("_").append(str[i]);
                     }
                 }
                 break;
         }
 
-        return res;
+        return res.toString();
     }
 
-    public static String ParserCategorieBuilder(String cherche) {
+    public static String parserCategorieBuilder(String cherche) {
         String res = "";
-        String arg = FindRivenJsonInfluenceCatgorie(cherche);
+        String arg = findRivenJsonInfluenceCatgorie(cherche);
 
         if (cherche.equals("artax") || cherche.equals("burst laser")  || cherche.equals("deconstructor") || cherche.equals("deconstructor prime")
                 || cherche.equals("deth machine rifle") || cherche.equals("laser rifle") || cherche.equals("prime laser rifle")
@@ -182,7 +182,7 @@ public class RivenParser {
         return res;
     }
 
-    public static String ParserCategorie(String arg) {
+    public static String parserCategorie(String arg) {
         String res = "";
 
         switch (arg) {

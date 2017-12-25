@@ -13,9 +13,9 @@ import java.nio.file.Paths;
 
 import static warframe.bourreau.Bourreau.commands;
 import static warframe.bourreau.handle.HandleSonCommand.handleSonCommand;
-import static warframe.bourreau.util.Find.FindCommand;
-import static warframe.bourreau.util.Levenshtein.CompareCommande;
-import static warframe.bourreau.messsage.MessageOnEvent.MessageNoThing;
+import static warframe.bourreau.util.Find.findIndexStringArray;
+import static warframe.bourreau.util.Levenshtein.compareCommande;
+import static warframe.bourreau.messsage.MessageOnEvent.messageNoThing;
 
 public class HandleCommand {
 
@@ -24,233 +24,234 @@ public class HandleCommand {
             String configCommand = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configCommand.json")));
             JSONArray configCommandson = new JSONObject(configCommand).getJSONObject("commandes").getJSONObject(cmd.event.getGuild().getId()).getJSONArray("commandes");
 
-            if (commands.containsKey(cmd.invoke)) {
+            if (configCommandson.length() > 0 || cmd.invoke.equals("config")) {
                 boolean safe = SimpleCommand.called();
 
-                if (safe && (FindCommand(cmd.event, cmd.invoke) || cmd.invoke.equals("config"))) {
-                    switch (cmd.invoke) {
-                        // liste des commandes
-                        case "help":
-                            HelpCommand.Help(cmd.event);
-                            break;
+                if (findIndexStringArray(configCommandson, cmd.invoke) != -1 || cmd.invoke.equals("config")) {
+                        if (safe) {
+                        switch (cmd.invoke) {
+                            // liste des commandes
+                            case "help":
+                                HelpCommand.help(cmd.event);
+                                break;
 
-                        // commandes sons
-                        case "ah":
-                        case "bucher":
-                        case "gg":
-                        case "gogole":
-                        case "nah":
-                        case "pigeon":
-                        case "son":
-                        case "souffrir":
-                        case "leave":
-                        case "trump":
-                        case "trumpcomp":
-                        case "trumpcomp2":
-                        case "trumpcomp3":
-                            handleSonCommand(cmd);
-                            break;
+                            // commandes sons
+                            case "acdc":
+                            case "ah":
+                            case "bucher":
+                            case "gg":
+                            case "gogole":
+                            case "nah":
+                            case "pigeon":
+                            case "son":
+                            case "souffrir":
+                            case "leave":
+                            case "trump":
+                            case "trumpcomp":
+                            case "trumpcomp2":
+                            case "trumpcomp3":
+                                handleSonCommand(cmd);
+                                break;
 
-                        // commandes troll
-                        case "pute":
-                            TrollCommand.Pute(cmd.event);
-                            break;
-                        case "rip":
-                            TrollCommand.RIP(cmd.event);
-                            break;
-                        case "segpa":
-                            TrollCommand.Segpta(cmd.event);
-                            break;
-                        case "tg":
-                            TrollCommand.Tg(cmd.event);
-                            break;
+                            // commandes troll
+                            case "pute":
+                                TrollCommand.pute(cmd.event);
+                                break;
+                            case "rip":
+                                TrollCommand.rip(cmd.event);
+                                break;
+                            case "segpa":
+                                TrollCommand.segpta(cmd.event);
+                                break;
+                            case "tg":
+                                TrollCommand.tg(cmd.event);
+                                break;
 
-                        // commande info
-                        case "alerts":
-                            InfoCommand.Alerts(cmd.event);
-                            break;
-                        case "alliance":
-                            InfoCommand.Alliance(cmd.event);
-                            break;
-                        case "baro":
-                            InfoCommand.VoidTraders(cmd.event);
-                            break;
-                        case "clan":
-                            InfoCommand.ListClan(cmd.event);
-                            break;
-                        case "discordwf":
-                            InfoCommand.DiscordWarframe(cmd.event);
-                            break;
-                        case "goals":
-                            InfoCommand.Goals(cmd.event);
-                            break;
-                        case "idee":
-                            InfoCommand.Idee(cmd.event);
-                            break;
-                        case "info":
-                            InfoCommand.Info(cmd.event);
-                            break;
-                        case "invasions":
-                            InfoCommand.Invasions(cmd.event);
-                            break;
-                        case "invite":
-                            InfoCommand.InvitationServeur(cmd.event);
-                            break;
-                        case "lead":
-                            InfoCommand.ListLeader(cmd.event);
-                            break;
-                        case "progres":
-                            InfoCommand.Progression(cmd.event);
-                            break;
-                        case "pvp":
-                            InfoCommand.PvpChallenge(cmd.event);
-                            break;
-                        case "raid":
-                            InfoCommand.Raid(cmd.event);
-                            break;
-                        case "regle":
-                            RegleCommand.Reglement(cmd.event);
-                            break;
-                        case "site":
-                            InfoCommand.Site(cmd.event);
-                            break;
-                        case "sortie":
-                            InfoCommand.Sorties(cmd.event);
-                            break;
-                        case "steam":
-                            InfoCommand.Steam(cmd.event);
-                            break;
-                        case "syndicat":
-                            InfoCommand.Syndicats(cmd.event);
-                            break;
-                        case "ts":
-                            InfoCommand.Ts(cmd.event);
-                            break;
-                        case "up":
-                            InfoCommand.Upcoming(cmd.event);
-                            break;
-                        case "updates":
-                            InfoCommand.UpdateHotfix(cmd.event);
-                            break;
-                        case "void":
-                            InfoCommand.Void(cmd.event);
-                            break;
+                            // commande info
+                            case "alerts":
+                                InfoCommand.alerts(cmd.event);
+                                break;
+                            case "alliance":
+                                InfoCommand.alliance(cmd.event);
+                                break;
+                            case "baro":
+                                InfoCommand.voidTraders(cmd.event);
+                                break;
+                            case "clan":
+                                InfoCommand.listClan(cmd.event);
+                                break;
+                            case "discordwf":
+                                InfoCommand.discordWarframe(cmd.event);
+                                break;
+                            case "goals":
+                                InfoCommand.goals(cmd.event);
+                                break;
+                            case "idee":
+                                InfoCommand.idee(cmd.event);
+                                break;
+                            case "info":
+                                InfoCommand.info(cmd.event);
+                                break;
+                            case "invasions":
+                                InfoCommand.invasions(cmd.event);
+                                break;
+                            case "invite":
+                                InfoCommand.invitationServeur(cmd.event);
+                                break;
+                            case "lead":
+                                InfoCommand.listLeader(cmd.event);
+                                break;
+                            case "progres":
+                                InfoCommand.progression(cmd.event);
+                                break;
+                            case "pvp":
+                                InfoCommand.pvpChallenges(cmd.event);
+                                break;
+                            case "raid":
+                                InfoCommand.raid(cmd.event);
+                                break;
+                            case "regle":
+                                RegleCommand.reglement(cmd.event);
+                                break;
+                            case "site":
+                                InfoCommand.site(cmd.event);
+                                break;
+                            case "sortie":
+                                InfoCommand.sorties(cmd.event);
+                                break;
+                            case "steam":
+                                InfoCommand.steam(cmd.event);
+                                break;
+                            case "syndicat":
+                                InfoCommand.syndicats(cmd.event);
+                                break;
+                            case "ts":
+                                InfoCommand.ts(cmd.event);
+                                break;
+                            case "up":
+                                InfoCommand.upcoming(cmd.event);
+                                break;
+                            case "updates":
+                                InfoCommand.updateHotfix(cmd.event);
+                                break;
+                            case "void":
+                                InfoCommand.voiD(cmd.event);
+                                break;
 
-                        // commande riven
-                        case "riven":
-                            RivenCommand.Riven(cmd.event);
-                            break;
+                            // commande riven
+                            case "riven":
+                                RivenCommand.riven(cmd.event);
+                                break;
 
-                        // commande sondage
-                        case "sondage":
-                            SondageCommand.Sondage(cmd.event);
-                            break;
+                            // commande sondage
+                            case "sondage":
+                                SondageCommand.sondage(cmd.event);
+                                break;
 
-                        // commande raid
-                        case "affiche":
-                            RaidCommand.AffichePresent(cmd.event);
-                            break;
-                        case "cancel":
-                            RaidCommand.Cancel(cmd.event);
-                            break;
-                        case "present":
-                            RaidCommand.Present(cmd.event);
-                            break;
+                            // commande raid
+                            case "affiche":
+                                RaidCommand.affichePresent(cmd.event);
+                                break;
+                            case "cancel":
+                                RaidCommand.cancel(cmd.event);
+                                break;
+                            case "present":
+                                RaidCommand.present(cmd.event);
+                                break;
 
-                        // commandes admin / modo
-                        case "addclan":
-                            GestionCommand.AddClan(cmd.event);
-                            break;
-                        case "addurl":
-                            GestionCommand.AddLogoUrl(cmd.event);
-                            break;
-                        case "aubucher":
-                            new ThreadAuBucher(cmd.event).start();
-                            break;
-                        case "ban":
-                            AdminCommand.Ban(cmd.event);
-                            break;
-                        case "createsalonclan":
-                            SalonCommand.CreateSalonClan(cmd.event);
-                            break;
-                        case "deafen":
-                            AdminCommand.Deafen(cmd.event);
-                            break;
-                        case "deletesalonclan":
-                            SalonCommand.DeleteSalonClan(cmd.event);
-                            break;
-                        case "kick":
-                            AdminCommand.Kick(cmd.event);
-                            break;
-                        case "mute":
-                            AdminCommand.Mute(cmd.event);
-                            break;
-                        case "ping":
-                            AdminCommand.Ping(cmd.event);
-                            break;
-                        case "setgame":
-                            AdminCommand.SetGame(cmd.event);
-                            break;
-                        case "removeclan":
-                            GestionCommand.RemoveClan(cmd.event);
-                            break;
-                        case "tenno":
-                            AdminCommand.AddUserToTenno(cmd.event);
-                            break;
-                        case "undeafen":
-                            AdminCommand.UnDeafen(cmd.event);
-                            break;
-                        case "unban":
-                            AdminCommand.UnBan(cmd.event);
-                            break;
-                        case "unmute":
-                            AdminCommand.UnMute(cmd.event);
-                            break;
+                            // commandes admin / modo
+                            case "addclan":
+                                GestionCommand.addClan(cmd.event);
+                                break;
+                            case "addurl":
+                                GestionCommand.addLogoUrl(cmd.event);
+                                break;
+                            case "aubucher":
+                                new ThreadAuBucher(cmd.event).start();
+                                break;
+                            case "ban":
+                                AdminCommand.ban(cmd.event);
+                                break;
+                            case "createsalonclan":
+                                SalonCommand.createSalonClan(cmd.event);
+                                break;
+                            case "deafen":
+                                AdminCommand.deafen(cmd.event);
+                                break;
+                            case "deletesalonclan":
+                                SalonCommand.deleteSalonClan(cmd.event);
+                                break;
+                            case "kick":
+                                AdminCommand.kick(cmd.event);
+                                break;
+                            case "mute":
+                                AdminCommand.mute(cmd.event);
+                                break;
+                            case "ping":
+                                AdminCommand.ping(cmd.event);
+                                break;
+                            case "setgame":
+                                AdminCommand.setGame(cmd.event);
+                                break;
+                            case "removeclan":
+                                GestionCommand.removeClan(cmd.event);
+                                break;
+                            case "tenno":
+                                AdminCommand.addUserToTenno(cmd.event);
+                                break;
+                            case "undeafen":
+                                AdminCommand.unDeafen(cmd.event);
+                                break;
+                            case "unban":
+                                AdminCommand.unBan(cmd.event);
+                                break;
+                            case "unmute":
+                                AdminCommand.unMute(cmd.event);
+                                break;
 
-                        // commande config
-                        case "config":
-                            ConfigCommand.ConfigurationBotServer(cmd.event);
-                            break;
+                            // commande config
+                            case "config":
+                                ConfigCommand.configurationBotServer(cmd.event);
+                                break;
 
-                        // commande erreur
-                        case "erreur":
-                            ErreurCommand.Erreur(cmd.event);
-                            break;
+                            // commande erreur
+                            case "erreur":
+                                ErreurCommand.erreur(cmd.event);
+                                break;
 
-                        // test
-                        case "test":
-                            BasedCommand.Test(cmd.event);
-                            break;
+                            // test
+                            case "test":
+                                BasedCommand.test(cmd.event);
+                                break;
 
-                        // commande  bot
-                        case "about":
-                            BasedCommand.AboutBot(cmd.event);
-                            break;
-                        case "botnews":
-                            BasedCommand.AfficheUpdateBot(cmd.event);
-                            break;
+                            // commande  bot
+                            case "about":
+                                BasedCommand.aboutBot(cmd.event);
+                                break;
+                            case "botnews":
+                                BasedCommand.afficheUpdateBot(cmd.event);
+                                break;
 
-                        // commande arrêt
-                        case "shutdown":
-                            ShutdownCommand.Shutdown(cmd.event);
-                            break;
-                        //---------------------------------------------------------------//
-                        default:
-                            cmd.event.getTextChannel().sendMessage("Fuck").queue();
-                            break;
+                            // commande arrêt
+                            case "shutdown":
+                                ShutdownCommand.shutdown(cmd.event);
+                                break;
+                            //---------------------------------------------------------------//
+                            default:
+                                cmd.event.getTextChannel().sendMessage("Fuck").queue();
+                                break;
+                        }
                     }
-                } else {
-                    if (!commands.isEmpty() && !(configCommandson.length() == 0))
-                        cmd.event.getTextChannel().sendMessage(CompareCommande(cmd.invoke, configCommandson.toList().toArray())).queue();
-
-                    MessageNoThing(cmd.event);
                 }
-            } else {
-                if (!commands.isEmpty() && !(configCommandson.length() == 0))
-                    cmd.event.getTextChannel().sendMessage(CompareCommande(cmd.invoke, configCommandson.toList().toArray())).queue();
+                else {
+                    if (!commands.isEmpty() && !(configCommandson.length() == 0))
+                        cmd.event.getTextChannel().sendMessage(compareCommande(cmd.invoke, configCommandson.toList().toArray())).queue();
 
-                MessageNoThing(cmd.event);
+                    messageNoThing(cmd.event);
+                }
             }
+            else
+                cmd.event.getTextChannel().sendMessage("Le bot n'a pas encore été configuré pour ce serveur !").queue();
         }
         catch (IOException e) {
             e.printStackTrace();

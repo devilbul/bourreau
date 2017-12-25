@@ -9,20 +9,20 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static warframe.bourreau.erreur.erreurGestion.*;
-import static warframe.bourreau.util.Find.FindAdmin;
-import static warframe.bourreau.messsage.MessageOnEvent.MessageDeDeconnection;
+import static warframe.bourreau.messsage.MessageOnEvent.messageDeDeconnection;
+import static warframe.bourreau.util.Find.findAdminSupreme;
 
 public class ShutdownCommand extends SimpleCommand {
 
-    @Command(name="shutdown")
-    public static void Shutdown(MessageReceivedEvent event) {
+    @Command(name="shutdown", subCommand=false)
+    public static void shutdown(MessageReceivedEvent event) {
         try {
-            if (FindAdmin(event, event.getMember())) {
+            if (findAdminSupreme(event.getMessage().getId())) {
                 String configTextChannel = new String(Files.readAllBytes(Paths.get("res" + File.separator + "config" + File.separator + "configTextChannel.json")));
                 JSONObject configTextChannelJson = new JSONObject(configTextChannel);
                 String textChannelID = configTextChannelJson.getJSONObject("textChannels").getJSONObject(event.getGuild().getId()).getJSONObject("textChannels").getJSONObject("accueil").getString("idTextChannel");
 
-                MessageDeDeconnection(event);
+                messageDeDeconnection(event);
 
                 if (!event.getTextChannel().getId().equals(textChannelID))
                     event.getTextChannel().sendMessage("Arrêt en cours !").queue();

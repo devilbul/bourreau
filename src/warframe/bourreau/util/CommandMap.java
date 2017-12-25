@@ -3,8 +3,10 @@ package warframe.bourreau.util;
 import warframe.bourreau.commands.SimpleCommand;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import static warframe.bourreau.Bourreau.commands;
+import static warframe.bourreau.Bourreau.subCommands;
 
 public final class CommandMap {
 
@@ -17,6 +19,11 @@ public final class CommandMap {
             if (method.isAnnotationPresent(Command.class)) {
                 Command command = method.getAnnotation(Command.class);
                 commands.put(command.name(), new SimpleCommand());
+
+                if (command.subCommand()) {
+                    subCommands.put(command.name(), new ArrayList<>());
+                    SubCommandMap.registerCommands(command.name(), object);
+                }
             }
         }
     }

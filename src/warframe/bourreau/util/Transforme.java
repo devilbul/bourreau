@@ -2,7 +2,7 @@ package warframe.bourreau.util;
 
 class Transforme {
 
-    static String TransformeInfluence(String args) {
+    static String transformeInfluence(String args) {
         String res;
         double influence = Double.parseDouble(args);
         java.text.DecimalFormat df = new java.text.DecimalFormat("0.##");

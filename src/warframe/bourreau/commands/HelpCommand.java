@@ -6,27 +6,27 @@ import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import warframe.bourreau.util.Command;
 
 import static warframe.bourreau.erreur.erreurGestion.*;
-import static warframe.bourreau.help.EmbedAdminHelp.MessageHelpAdmin;
-import static warframe.bourreau.help.EmbedAdminList.MessageListeCommandeAdmin;
-import static warframe.bourreau.help.EmbedGeneralHelp.MessageHelpGeneral;
-import static warframe.bourreau.help.EmbedCommandList.MessageListeCommande;
-import static warframe.bourreau.help.EmbedModoHelp.MessageHelpModo;
-import static warframe.bourreau.help.EmbedModoList.MessageListeCommandeModo;
-import static warframe.bourreau.help.EmbedRaidHelp.MessageHelpRaid;
-import static warframe.bourreau.help.EmbedRivenHelp.MessageHelpRiven;
-import static warframe.bourreau.help.EmbedSonHelp.MessageHelpSon;
-import static warframe.bourreau.help.EmbedSondageHelp.MessageHelpSondage;
-import static warframe.bourreau.help.EmbedTrollHelp.MessageHelpTroll;
+import static warframe.bourreau.help.EmbedAdminHelp.messageHelpAdmin;
+import static warframe.bourreau.help.EmbedAdminList.messageListeCommandeAdmin;
+import static warframe.bourreau.help.EmbedGeneralHelp.messageHelpGeneral;
+import static warframe.bourreau.help.EmbedCommandList.messageListeCommande;
+import static warframe.bourreau.help.EmbedModoHelp.messageHelpModo;
+import static warframe.bourreau.help.EmbedModoList.messageListeCommandeModo;
+import static warframe.bourreau.help.EmbedRaidHelp.messageHelpRaid;
+import static warframe.bourreau.help.EmbedRivenHelp.messageHelpRiven;
+import static warframe.bourreau.help.EmbedSonHelp.messageHelpSon;
+import static warframe.bourreau.help.EmbedSondageHelp.messageHelpSondage;
+import static warframe.bourreau.help.EmbedTrollHelp.messageHelpTroll;
 import static warframe.bourreau.util.Find.*;
 import static warframe.bourreau.util.Recup.recupString;
 
 public class HelpCommand extends SimpleCommand {
 
-    @Command(name="help")
-    public static void Help(MessageReceivedEvent event) {
+    @Command(name="help", subCommand=false)
+    public static void help(MessageReceivedEvent event) {
         try {
-            if (event.getMessage().getContent().contains(" ")) {
-                String help = recupString(event.getMessage().getContent().toLowerCase());
+            if (event.getMessage().getContentDisplay().contains(" ")) {
+                String help = recupString(event.getMessage().getContentDisplay().toLowerCase());
 
                 switch (help) {
                     // command son
@@ -38,14 +38,14 @@ public class HelpCommand extends SimpleCommand {
                     case "pigeon":
                     case "souffrir":
                     case "trump":
-                        event.getTextChannel().sendMessage(MessageHelpSon(help)).queue();
+                        event.getTextChannel().sendMessage(messageHelpSon(help)).queue();
                         break;
                     // commande troll
                     case "pute":
                     case "rip":
                     case "segpa":
                     case "tg":
-                        event.getTextChannel().sendMessage(MessageHelpTroll(help)).queue();
+                        event.getTextChannel().sendMessage(messageHelpTroll(help)).queue();
                         break;
                     // commandes que tout le monde peut faire
                     case "alerts":
@@ -72,7 +72,7 @@ public class HelpCommand extends SimpleCommand {
                     case "up":
                     case "updates":
                     case "void":
-                        event.getTextChannel().sendMessage(MessageHelpGeneral(help)).queue();
+                        event.getTextChannel().sendMessage(messageHelpGeneral(help)).queue();
                         break;
                     // commande riven
                     case "riven":
@@ -82,7 +82,7 @@ public class HelpCommand extends SimpleCommand {
                     case "riven info":
                     case "riven nom":
                     case "riven stat":
-                        event.getTextChannel().sendMessage(MessageHelpRiven(help)).queue();
+                        event.getTextChannel().sendMessage(messageHelpRiven(help)).queue();
                         break;
                     // commande sondage
                     case "sondage":
@@ -92,13 +92,13 @@ public class HelpCommand extends SimpleCommand {
                     case "sondage create":
                     case "sondage resultat":
                     case "sondage vote":
-                        event.getTextChannel().sendMessage(MessageHelpSondage(help)).queue();
+                        event.getTextChannel().sendMessage(messageHelpSondage(help)).queue();
                         break;
                     // commande raid
                     case "affiche":
                     case "cancel":
                     case "present":
-                        event.getTextChannel().sendMessage(MessageHelpRaid(help)).queue();
+                        event.getTextChannel().sendMessage(messageHelpRaid(help)).queue();
                         break;
                     default:
                         MessageBuilder message = new MessageBuilder();
@@ -111,13 +111,13 @@ public class HelpCommand extends SimpleCommand {
                         break;
                 }
             } else {
-                if (FindAdmin(event, event.getMember())) {
-                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageListeCommandeAdmin()).queue();
-                } else if (FindModo(event, event.getMember())) {
-                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageListeCommandeModo()).queue();
+                if (findAdmin(event, event.getMember())) {
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(messageListeCommandeAdmin()).queue();
+                } else if (findModo(event, event.getMember())) {
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(messageListeCommandeModo()).queue();
                 }
 
-                event.getTextChannel().sendMessage(MessageListeCommande(false, false)).queue();
+                event.getTextChannel().sendMessage(messageListeCommande(false, false)).queue();
             }
         }
         catch (Exception e) {
@@ -126,9 +126,9 @@ public class HelpCommand extends SimpleCommand {
         }
     }
 
-    public static void HelpPrivate(PrivateMessageReceivedEvent event) {
-        if (event.getMessage().getContent().contains(" ")) {
-            String help = recupString(event.getMessage().getContent().toLowerCase());
+    public static void helpPrivate(PrivateMessageReceivedEvent event) {
+        if (event.getMessage().getContentDisplay().contains(" ")) {
+            String help = recupString(event.getMessage().getContentDisplay().toLowerCase());
 
             switch (help) {
                 // command son
@@ -140,14 +140,14 @@ public class HelpCommand extends SimpleCommand {
                 case "pigeon":
                 case "souffrir":
                 case "trump":
-                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpSon(help)).queue();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(messageHelpSon(help)).queue();
                     break;
                 // commande troll
                 case "pute":
                 case "rip":
                 case "segpa":
                 case "tg":
-                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpTroll(help)).queue();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(messageHelpTroll(help)).queue();
                     break;
                 // commandes que tout le monde peut faire
                 case "alerts":
@@ -174,7 +174,7 @@ public class HelpCommand extends SimpleCommand {
                 case "up":
                 case "updates":
                 case "void":
-                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpGeneral(help)).queue();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(messageHelpGeneral(help)).queue();
                     break;
                 // commande riven
                 case "riven":
@@ -184,7 +184,7 @@ public class HelpCommand extends SimpleCommand {
                 case "riven info":
                 case "riven nom":
                 case "riven stat":
-                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpRiven(help)).queue();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(messageHelpRiven(help)).queue();
                     break;
                 // commande sondage
                 case "sondage":
@@ -194,13 +194,13 @@ public class HelpCommand extends SimpleCommand {
                 case "sondage create":
                 case "sondage resultat":
                 case "sondage vote":
-                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpSondage(help)).queue();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(messageHelpSondage(help)).queue();
                     break;
                 // commande raid
                 case "affiche":
                 case "cancel":
                 case "present":
-                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpRaid(help)).queue();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(messageHelpRaid(help)).queue();
                     break;
                 // commande admin / modo
                 case "aubucher":
@@ -210,14 +210,14 @@ public class HelpCommand extends SimpleCommand {
                 case "tenno":
                 case "undeafen":
                 case "unmute":
-                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpAdmin(help)).queue();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(messageHelpAdmin(help)).queue();
                     break;
                 case "addclan":
                 case "ban":
                 case "removeclan":
                 case "setgame":
                 case "unban":
-                    event.getAuthor().openPrivateChannel().complete().sendMessage(MessageHelpModo(help)).queue();
+                    event.getAuthor().openPrivateChannel().complete().sendMessage(messageHelpModo(help)).queue();
                     break;
                 default:
                     MessageBuilder message = new MessageBuilder();
@@ -231,6 +231,6 @@ public class HelpCommand extends SimpleCommand {
             }
         }
         else
-            event.getAuthor().openPrivateChannel().complete().sendMessage(MessageListeCommande(FindAdminPrive(event, event.getAuthor()), FindModoPrive(event, event.getAuthor()))).queue();
+            event.getAuthor().openPrivateChannel().complete().sendMessage(messageListeCommande(findAdminPrive(event, event.getAuthor()), findModoPrive(event, event.getAuthor()))).queue();
     }
 }

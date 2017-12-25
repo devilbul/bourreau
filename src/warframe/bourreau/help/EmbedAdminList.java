@@ -10,7 +10,7 @@ import java.util.Date;
 
 public class EmbedAdminList {
 
-    public static MessageEmbed MessageListeCommandeAdmin() {
+    public static MessageEmbed messageListeCommandeAdmin() {
         EmbedBuilder help = new EmbedBuilder();
 
         help.addField("**Admin :**",

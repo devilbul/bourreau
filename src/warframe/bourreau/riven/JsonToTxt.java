@@ -16,9 +16,9 @@ public class JsonToTxt {
     private static String adresseSortieSecondary = System.getProperty("user.dir") + File.separator + "res" + File.separator + "input" + File.separator + "riven_secondary.txt";
     private static String adresseSortieShotgun = System.getProperty("user.dir") + File.separator + "res" + File.separator + "input" + File.separator + "riven_shotgun.txt";
 
-    public static boolean Traitement() { return TransformeJsonToTxt(); }
+    public static boolean traitement() { return transformeJsonToTxt(); }
 
-    private static boolean TransformeJsonToTxt() {
+    private static boolean transformeJsonToTxt() {
         try {
             String adresse = new String(Files.readAllBytes(Paths.get("res" + File.separator + "output" + File.separator + "riven.json")));
             FileWriter filePrimary = new FileWriter(adresseSortiePrimary);
@@ -40,7 +40,7 @@ public class JsonToTxt {
                     disposition = rivenCategoryJson.getJSONObject(j).getDouble("disposition");
                     arme = rivenCategoryJson.getJSONObject(j).getString("name");
 
-                    disposition = 100 - (disposition * 100);
+                    disposition = (disposition * 100) - 100;
 
                     switch (key) {
                         case "Rifle":

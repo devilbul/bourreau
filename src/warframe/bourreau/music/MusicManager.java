@@ -28,7 +28,7 @@ public class MusicManager {
         return players.get(guild.getId());
     }
 
-    public void loadTrack(final TextChannel channel, final String source) {
+    void loadTrack(final TextChannel channel, final String source) {
         final MusicPlayer player = getPlayer(channel.getGuild());
 
         channel.getGuild().getAudioManager().setSendingHandler(player.getAudioHandler());
