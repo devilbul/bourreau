@@ -1,0 +1,24 @@
+{
+  "description":"fichier de configuration des salons vocaux utiles pour les commandes",
+  "info":"stockage : \"idServer\":{\n\"nameServer\":\"name\",\n\"voiceChannels\":{\n\"typeVoiceChannel\":{\n\"idVoiceChannel\":\"id\",\n\"nameVoiceChannel\":\"name\"\n}\n}\n}",
+  "voiceChannels":{
+    "298503533777387530":{
+      "nameServer":"serveur test",
+      "voiceChannels":{
+        "bucher":{
+          "idVoiceChannel":"309630698866868224",
+          "nameVoiceChannel":"🔥 Bucher 🔥"
+        }
+      }
+    },
+    "290707408416931840":{
+      "nameServer":"French Connection",
+      "voiceChannels":{
+        "bucher":{
+          "idVoiceChannel":"290713421148717057",
+          "nameVoiceChannel":"🔥 Bucher 🔥"
+        }
+      }
+    }
+  }
+}

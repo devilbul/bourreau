@@ -1,0 +1,24 @@
+{
+  "description":"fichier de configuration des categories utiles pour les commandes",
+  "info":"stockage : \"idServer\":{\n\"nameServer\":\"name\",\n\"categories\":{\n\"typeCategory\":{\n\"idCategory\":\"id\",\n\"nameCategory\":\"name\"\n}\n}\n}",
+  "categories":{
+    "298503533777387530":{
+      "nameServer":"serveur test",
+      "categories":{
+        "clan":{
+          "idCategory":"384459870742511616",
+          "nameCategory":"Clan"
+        }
+      }
+    },
+    "290707408416931840":{
+      "nameServer":"French Connection",
+      "categories":{
+        "clan":{
+          "idCategory":"379335004808937497",
+          "nameCategory":"Clan"
+        }
+      }
+    }
+  }
+}
