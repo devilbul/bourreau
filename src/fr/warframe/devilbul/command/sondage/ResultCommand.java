@@ -26,12 +26,12 @@ public class ResultCommand extends SimpleCommand {
     @Help(field = "**syntaxe** :      !sondage resultat**condition :**   avoir un sondage en cours\n**effet :**            affiche les résultats du sondage en cours", categorie = Categorie.Sondage)
     public static void resultatSondage(MessageReceivedEvent event) {
         try {
-            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+            String sondage = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "sondage" + File.separator + "sondage.json")));
             JSONObject sondageJson = new JSONObject(sondage);
 
             if (sondageJson.names().toString().contains(event.getGuild().getId())) {
                 if (sondageJson.toString().contains("reponses")) {
-                    String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
+                    String vote = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "sondage" + File.separator + "vote.json")));
                     JSONObject voteJson = new JSONObject(vote);
                     JSONObject reponsesJson = sondageJson.getJSONObject(event.getGuild().getId()).getJSONObject("reponses");
                     EmbedBuilder resultat = new EmbedBuilder();

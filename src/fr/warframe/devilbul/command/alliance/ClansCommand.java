@@ -15,7 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import static fr.warframe.devilbul.Init.logoUrlAlliance;
 import static fr.warframe.devilbul.exception.ErreurGestion.afficheErreur;
@@ -28,7 +31,7 @@ import static fr.warframe.devilbul.utils.enumeration.ClanWarframe.Montagne;
 
 public class ClansCommand extends SimpleCommand {
 
-    @Command(name="clans")
+    @Command(name = "clans")
     @Help(field = "**syntaxe** :      !clans\n**effet :**         affiche les clans faisant paarti de l'alliance", categorie = Categorie.Alliance)
     public static void listClan(MessageReceivedEvent event) {
         try {
@@ -38,10 +41,16 @@ public class ClansCommand extends SimpleCommand {
             JSONObject clanJson = allianceJson.getJSONObject("clans");
             EmbedBuilder clan = new EmbedBuilder();
             String nomAlliance = allianceJson.getJSONObject("infos").getString("nomAlliance");
+            List<String> buffer = new ArrayList<>();
             int nbClan = clanJson.length();
 
-            for (int i=0; i<nbClan; i++)
-                clanString.append(clanJson.names().get(i)).append("\n");
+            for (int i = 0; i < nbClan; i++)
+                buffer.add(clanJson.names().getString(i));
+
+            Collections.sort(buffer);
+
+            for (int j = 0; j < nbClan; j++)
+                clanString.append(buffer.get(j)).append("\n");
 
             clan.setTitle("**Alliance :** " + nomAlliance, "http://wfraid.teamfr.net/");
             clan.setThumbnail(logoUrlAlliance);
@@ -56,7 +65,7 @@ public class ClansCommand extends SimpleCommand {
         }
     }
 
-    @Command(name="clan")
+    @Command(name = "clan")
     @Help(field = "**syntaxe 1** :   !clan <nom du clan>\n**effet :**            affiche les leaders du clan <nom du clan>", categorie = Categorie.Alliance)
     public static void leader(MessageReceivedEvent event) {
         try {
@@ -73,11 +82,11 @@ public class ClansCommand extends SimpleCommand {
             if (commande.contains(" ")) {
                 clan = new StringBuilder(recupString(commande));
 
-                for (int i=0; i<nbClan; i++) {
-                    if(clanJson.names().getString(i).toLowerCase().equals(clan.toString().toLowerCase())) {
+                for (int i = 0; i < nbClan; i++) {
+                    if (clanJson.names().getString(i).toLowerCase().equals(clan.toString().toLowerCase())) {
                         JSONArray leaders = clanJson.getJSONObject(clanJson.names().getString(i)).getJSONArray("leaders");
 
-                        for (int j=0; j<leaders.length(); j++)
+                        for (int j = 0; j < leaders.length(); j++)
                             leader.append(leaders.getString(j)).append("\n");
                     }
                 }
@@ -109,8 +118,7 @@ public class ClansCommand extends SimpleCommand {
                     event.getTextChannel().sendMessage(lead.build()).queue();
                 else
                     event.getTextChannel().sendMessage("Ce clan ne fait pas parti de l'alliance ou il est mal écrit.").queue();
-            }
-            else
+            } else
                 event.getTextChannel().sendMessage("Aucun clan saisie.").queue();
         } catch (Exception e) {
             afficheErreur(event.getMessage().getContentDisplay(), e);

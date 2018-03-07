@@ -461,4 +461,68 @@ public class Find {
 
         return false;
     }
+
+    public static boolean isMusicCommand(String command) {
+        try {
+            String musicCommand = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "config" + File.separator + "music.json")));
+            JSONArray musicCommandJson = new JSONObject(musicCommand).getJSONArray("music_command");
+
+            for (int i = 0; i < musicCommandJson.length(); i++)
+               if (musicCommandJson.getJSONObject(i).getString("command").equals(command))
+                   return true;
+
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static String getMusicCommand(String command) {
+        try {
+            String musicCommand = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "config" + File.separator + "music.json")));
+            JSONArray musicCommandJson = new JSONObject(musicCommand).getJSONArray("music_command");
+
+            for (int i = 0; i < musicCommandJson.length(); i++)
+               if (musicCommandJson.getJSONObject(i).getString("command").equals(command))
+                   return musicCommandJson.getJSONObject(i).getString("file");
+
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static boolean isUserCensure(String id) {
+        try {
+            String antiSpam = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "config" + File.separator + "anti_spam.json")));
+            JSONArray antiSpamJson = new JSONArray(antiSpam);
+
+            for (int i = 0; i < antiSpamJson.length(); i++)
+                if (antiSpamJson.getJSONObject(i).getString("id").equals(id))
+                    return true;
+
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static int getUserCensure(String id) {
+        try {
+            String antiSpam = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "config" + File.separator + "anti_spam.json")));
+            JSONArray antiSpamJson = new JSONArray(antiSpam);
+
+            for (int i = 0; i < antiSpamJson.length(); i++)
+                if (antiSpamJson.getJSONObject(i).getString("id").equals(id))
+                    return i;
+
+            return -1;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 }

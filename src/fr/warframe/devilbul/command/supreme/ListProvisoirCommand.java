@@ -18,7 +18,7 @@ import static fr.warframe.devilbul.utils.Find.findAdminSupreme;
 public class ListProvisoirCommand extends SimpleCommand {
 
     @Command(name = "listsupreme")
-    @Help(field = "**syntaxe** :    !supreme\n**effet :**         ajouter à la liste admin provisoir", categorie = Categorie.Supreme)
+    @Help(field = "**syntaxe** :    !listsupreme\n**effet :**         affiche la liste admin provisoir", categorie = Categorie.Supreme)
     public static void listToProvisoir(MessageReceivedEvent event) {
         try {
             if (findAdminSupreme(event.getAuthor().getId())) {

@@ -3,6 +3,7 @@ package fr.warframe.devilbul.listener.bot.event;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.core.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,6 +16,8 @@ import java.nio.file.Paths;
 
 import static fr.warframe.devilbul.message.event.FirstConnection.messagePremierConnection;
 import static fr.warframe.devilbul.utils.Find.findAdminRole;
+import static fr.warframe.devilbul.utils.time.DateHeure.giveDate;
+import static fr.warframe.devilbul.utils.time.DateHeure.giveHeure;
 
 public class GuildJoinListener extends ListenerAdapter {
 
@@ -77,6 +80,34 @@ public class GuildJoinListener extends ListenerAdapter {
                         member.getUser().openPrivateChannel().complete().sendMessage(messagePremierConnection()).queue();
 
             event.getGuild().getOwner().getUser().openPrivateChannel().complete().sendMessage(messagePremierConnection()).queue();
+
+            log(event);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void log(GuildJoinEvent event) {
+        try {
+            String log = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "logs" + File.separator + "guild_join.json")));
+            JSONArray logJson = new JSONArray(log);
+            FileWriter file = new FileWriter(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "logs" + File.separator + "guild_join.json");
+
+            logJson.put(new JSONObject()
+                    .put("serveur", new JSONObject()
+                            .put("name", event.getGuild().getName())
+                            .put("id", event.getGuild().getId()))
+                    .put("date", giveDate() + " | " + giveHeure())
+            );
+
+            System.out.println("---------------------------------------------------------------");
+            System.out.println(giveDate() + " | " + giveHeure() + " || Guild Join Event");
+            System.out.println("serveur : " + event.getGuild().getName() + " (" + event.getGuild().getId() + ")");
+            System.out.println("---------------------------------------------------------------");
+
+            file.write(logJson.toString(3));
+            file.flush();
+            file.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

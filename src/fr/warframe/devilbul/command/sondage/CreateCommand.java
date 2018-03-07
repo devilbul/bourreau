@@ -23,7 +23,7 @@ public class CreateCommand extends SimpleCommand {
             "\n**effet :**            créer le sondage", categorie = Categorie.Sondage)
     public static void createSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
         try {
-            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+            String sondage = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "sondage" + File.separator + "sondage.json")));
             JSONObject sondageJson = new JSONObject(sondage);
 
             if (!sondageJson.names().toString().contains(event.getGuild().getId())) {
@@ -31,7 +31,7 @@ public class CreateCommand extends SimpleCommand {
 
                 if (commande.contains(" ")) {
                     String question = recupString(commande);
-                    String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
+                    String vote = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "sondage" + File.separator + "vote.json")));
                     JSONObject sondageJSON = new JSONObject();
                     JSONObject voteJSON = new JSONObject(vote);
                     FileWriter fileSondage = new FileWriter(adresseSondage);

@@ -10,6 +10,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import static fr.warframe.devilbul.exception.ErreurGestion.afficheErreur;
 import static fr.warframe.devilbul.exception.ErreurGestion.saveErreur;
 import static fr.warframe.devilbul.utils.Find.findAdmin;
+import static fr.warframe.devilbul.utils.Find.findAdminSupreme;
 import static fr.warframe.devilbul.utils.Recup.recupID;
 
 public class BanCommand extends SimpleCommand {
@@ -20,20 +21,24 @@ public class BanCommand extends SimpleCommand {
         try {
             if (findAdmin(event, event.getMember())) {
                 if (event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
-                    if (event.getGuild().getSelfMember().canInteract(event.getMessage().getMentionedMembers().get(0))) {
-                        int dayBan = 7;
-
-                        if (event.getMessage().toString().contains("@")) {
-                            if (event.getMessage().getMentionedUsers().get(0).equals(event.getGuild().getOwner().getUser()))
+                    if (event.getMessage().toString().contains("@")) {
+                        if (event.getGuild().getSelfMember().canInteract(event.getMessage().getMentionedMembers().get(0))) {
+                            if (event.getMessage().getMentionedUsers().get(0).equals(event.getGuild().getOwner().getUser())) {
                                 event.getTextChannel().sendMessage("Impossible, c'est le proprio des lieux.").queue();
-                            else {
-                                event.getGuild().getController().ban(recupID(event.getMessage().getMentionedUsers().toString()), dayBan).submit();
-                                event.getTextChannel().sendMessage("client banni").queue();
+                                return;
                             }
+
+                            if (findAdminSupreme(event.getMessage().getMentionedUsers().get(0).getId())) {
+                                event.getTextChannel().sendMessage("Impossible, c'est le proprio des lieux.").queue();
+                                return;
+                            }
+
+                            event.getGuild().getController().ban(recupID(event.getMessage().getMentionedUsers().toString()), 7).submit();
+                            event.getTextChannel().sendMessage("client banni").queue();
                         } else
-                            event.getTextChannel().sendMessage("pas de personne mentionnée").queue();
+                            event.getTextChannel().sendMessage(event.getMessage().getMentionedUsers().get(0).getAsMention() + " a autant ou plus de droit que le bot.").queue();
                     } else
-                        event.getTextChannel().sendMessage(event.getMessage().getMentionedUsers().get(0).getAsMention() + " a autant ou plus de droit que le bot.").queue();
+                        event.getTextChannel().sendMessage("pas de personne mentionnée").queue();
                 } else
                     event.getTextChannel().sendMessage("Le bot n'a pas ce droit.").queue();
             } else

@@ -14,7 +14,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static fr.warframe.devilbul.Init.commandList;
+import static fr.warframe.devilbul.handle.HandleMusicCommand.handleMusicCommand;
 import static fr.warframe.devilbul.message.event.NoThing.messageNoThing;
+import static fr.warframe.devilbul.utils.Find.isMusicCommand;
 import static fr.warframe.devilbul.utils.recognition.Levenshtein.compareCommande;
 
 public class HandleCommand {
@@ -25,13 +27,17 @@ public class HandleCommand {
             JSONArray configCommandJson = new JSONObject(configCommand).getJSONObject("commandes").getJSONObject(cmd.event.getGuild().getId()).getJSONArray("commandes");
 
             if (SimpleCommand.called(cmd)) {
+                if (isMusicCommand(cmd.invoke))
+                    handleMusicCommand(cmd);
+
                 for (Object object : commandList)
                     for (Method method : object.getClass().getDeclaredMethods())
                         if (method.isAnnotationPresent(Command.class)) {
                             Command command = method.getAnnotation(Command.class);
 
-                            if (!command.isPrivate() && command.name().equals(cmd.invoke))
+                            if (!command.isPrivate() && command.name().equals(cmd.invoke)) {
                                 method.invoke(null, cmd.event);
+                            }
                         }
             } else {
                 if (configCommandJson.toList().isEmpty())

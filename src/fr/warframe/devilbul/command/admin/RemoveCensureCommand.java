@@ -1,4 +1,4 @@
-package fr.warframe.devilbul.command.supreme;
+package fr.warframe.devilbul.command.admin;
 
 import fr.warframe.devilbul.command.SimpleCommand;
 import fr.warframe.devilbul.utils.annotations.command.Command;
@@ -14,19 +14,19 @@ import java.nio.file.Paths;
 
 import static fr.warframe.devilbul.exception.ErreurGestion.afficheErreur;
 import static fr.warframe.devilbul.exception.ErreurGestion.saveErreur;
-import static fr.warframe.devilbul.utils.Find.findAdminSupreme;
+import static fr.warframe.devilbul.utils.Find.findAdmin;
 import static fr.warframe.devilbul.utils.Recup.recupString;
 
-public class DeleteProvisoirCommand extends SimpleCommand {
+public class RemoveCensureCommand extends SimpleCommand {
 
-    @Command(name = "deletesupreme")
-    @Help(field = "**syntaxe** :    !deletesupreme <nb>\n**effet :**         supprime à la liste admin provisoir", categorie = Categorie.Supreme)
-    public static void deleteToProvisoir(MessageReceivedEvent event) {
+    @Command(name = "uncensure")
+    @Help(field = "**syntaxe** :      !uncensure <nb>\n**effet :**         retire l'utilisateur à la liste des censurés", categorie = Categorie.Admin)
+    public static void censure(MessageReceivedEvent event) {
         try {
-            if (findAdminSupreme(event.getAuthor().getId())) {
+            if (findAdmin(event, event.getMember())) {
                 if (event.getMessage().getContentDisplay().contains(" ")) {
-                    String adminProvisoir = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "config" + File.separator + "adminProvisoir.json")));
-                    JSONArray adminProvisoirJson = new JSONArray(adminProvisoir);
+                    String antiSpam = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "config" + File.separator + "anti_spam.json")));
+                    JSONArray antiSpamJson = new JSONArray(antiSpam);
                     int index;
 
                     try {
@@ -37,12 +37,12 @@ public class DeleteProvisoirCommand extends SimpleCommand {
                     }
 
                     if (index > -1) {
-                        if (index < adminProvisoirJson.length()) {
-                            FileWriter file = new FileWriter(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "config" + File.separator + "adminProvisoir.json");
+                        if (index < antiSpamJson.length()) {
+                            FileWriter file = new FileWriter(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "config" + File.separator + "anti_spam.json");
 
-                            adminProvisoirJson.remove(index);
+                            antiSpamJson.remove(index);
 
-                            file.write(adminProvisoirJson.toString(3));
+                            file.write(antiSpamJson.toString(3));
                             file.flush();
                             file.close();
 

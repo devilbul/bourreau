@@ -2,9 +2,11 @@ package fr.warframe.devilbul.listener.bot.event;
 
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,6 +17,8 @@ import static fr.warframe.devilbul.exception.ErreurGestion.afficheErreur;
 import static fr.warframe.devilbul.exception.ErreurGestion.saveErreur;
 import static fr.warframe.devilbul.handle.HandlPrivateCommand.handlePrivateCommand;
 import static fr.warframe.devilbul.utils.Find.findUserToServers;
+import static fr.warframe.devilbul.utils.time.DateHeure.giveDate;
+import static fr.warframe.devilbul.utils.time.DateHeure.giveHeure;
 
 public class PrivateMessageReceivedListener extends ListenerAdapter {
 
@@ -27,6 +31,7 @@ public class PrivateMessageReceivedListener extends ListenerAdapter {
                 if (findUserToServers(event))
                     if (event.getMessage().getContentDisplay().startsWith(prefixTag)) {
                         addReactionPrivate(event);
+                        log(event);
                         handlePrivateCommand(parserPrivate.parsePrivate(event.getMessage().getContentDisplay().toLowerCase(), event));
                     }
             }
@@ -62,6 +67,34 @@ public class PrivateMessageReceivedListener extends ListenerAdapter {
         } catch (Exception e) {
             afficheErreur(event.getMessage().getContentDisplay(), e);
             saveErreur(event.getMessage().getTextChannel().getName(), event.getAuthor().getName(), event.getAuthor().getId(), event.getMessage().getContentDisplay(), e);
+        }
+    }
+
+    private void log(PrivateMessageReceivedEvent event) {
+        try {
+            String log = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "logs" + File.separator + "message_received.json")));
+            JSONArray logJson = new JSONArray(log);
+            FileWriter file = new FileWriter(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "logs" + File.separator + "message_received.json");
+
+            logJson.put(new JSONObject()
+                    .put("auteur", new JSONObject()
+                            .put("username", event.getAuthor().getName())
+                            .put("id", event.getAuthor().getId()))
+                    .put("message", event.getMessage().getContentDisplay())
+                    .put("date", giveDate() + " | " + giveHeure())
+            );
+
+            System.out.println("---------------------------------------------------------------");
+            System.out.println(giveDate() + " | " + giveHeure() + " || Private Message Received Event");
+            System.out.println("auteur : " + event.getAuthor().getName() + " (" + event.getAuthor().getId() + ")");
+            System.out.println("message : " + event.getMessage().getContentDisplay());
+            System.out.println("---------------------------------------------------------------");
+
+            file.write(logJson.toString(3));
+            file.flush();
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

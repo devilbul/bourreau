@@ -26,7 +26,7 @@ public class VoteCommand extends SimpleCommand {
     @Help(field = "**syntaxe** :      !sondage vote <reponse>\n**condition :**   avoir un sondage en cours\n**effet :**            permet de voter", categorie = Categorie.Sondage)
     public static void voteSondage(MessageReceivedEvent event, String adresseVote) {
         try {
-            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+            String sondage = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "sondage" + File.separator + "sondage.json")));
             JSONObject sondageJson = new JSONObject(sondage);
 
             if (sondageJson.names().toString().contains(event.getGuild().getId())) {
@@ -34,7 +34,7 @@ public class VoteCommand extends SimpleCommand {
                     String commande = recupString(event.getMessage().getContentDisplay().toLowerCase());
 
                     if (commande.contains(" ")) {
-                        String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
+                        String vote = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "sondage" + File.separator + "vote.json")));
                         JSONObject reponsesJson = sondageJson.getJSONObject(event.getGuild().getId()).getJSONObject("reponses");
                         JSONObject voteJson = new JSONObject(vote);
                         JSONObject voteFaitJson = new JSONObject();

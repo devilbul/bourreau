@@ -27,7 +27,7 @@ public class DisplayCommand extends SimpleCommand {
             "\n**effet :**            affiche le sondage en cours, question + réponses possibles", categorie = Categorie.Sondage)
     public static void afficheSondage(MessageReceivedEvent event) {
         try {
-            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+            String sondage = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "sondage" + File.separator + "sondage.json")));
             JSONObject sondageJson = new JSONObject(sondage);
 
             if (sondageJson.names().toString().contains(event.getGuild().getId())) {

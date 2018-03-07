@@ -21,8 +21,8 @@ public class ClearCommand extends SimpleCommand {
     @Help(field = "**syntaxe** :      !sondage clear\n**condition :**   avoir un sondage en cours\n**effet :**            supprime le sondage en cours", categorie = Categorie.Sondage)
     public static void clearSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
         try {
-            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
-            String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
+            String sondage = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "sondage" + File.separator + "sondage.json")));
+            String vote = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "sondage" + File.separator + "vote.json")));
             JSONObject sondageJson = new JSONObject(sondage);
             JSONObject voteJson = new JSONObject(vote);
             FileWriter fileSondage = new FileWriter(adresseSondage);

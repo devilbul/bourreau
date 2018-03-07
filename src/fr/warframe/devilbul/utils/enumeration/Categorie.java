@@ -13,6 +13,7 @@ public enum Categorie {
     Warframe("Warframe"),
     Alliance("Alliance"),
     Raid("Raid"),
+    Troll("Troll"),
     Privee("Privee");
 
     private String categorie;

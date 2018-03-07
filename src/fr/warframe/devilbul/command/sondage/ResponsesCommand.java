@@ -26,7 +26,7 @@ public class ResponsesCommand extends SimpleCommand {
             "<réponseN>, commme réponses possibles", categorie = Categorie.Sondage)
     public static boolean reponsesSondage(MessageReceivedEvent event, String adresseSondage, String adresseVote) {
         try {
-            String sondage = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "sondage.json")));
+            String sondage = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "sondage" + File.separator + "sondage.json")));
             JSONObject sondageJson = new JSONObject(sondage);
 
             if (sondageJson.names().toString().contains(event.getGuild().getId())) {
@@ -37,7 +37,7 @@ public class ResponsesCommand extends SimpleCommand {
                     String[] reponses = rawReponses.split(" / ");
 
                     if (reponses.length > 1) {
-                        String vote = new String(Files.readAllBytes(Paths.get("res" + File.separator + "sondage" + File.separator + "vote.json")));
+                        String vote = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "sondage" + File.separator + "vote.json")));
                         JSONObject voteJson = new JSONObject(vote);
 
                         if (!sondageJson.getJSONObject(event.getGuild().getId()).toString().contains("reponses")) {

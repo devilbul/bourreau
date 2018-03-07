@@ -15,18 +15,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import static fr.warframe.devilbul.Init.logoUrlAlliance;
 import static fr.warframe.devilbul.exception.ErreurGestion.afficheErreur;
 import static fr.warframe.devilbul.exception.ErreurGestion.saveErreur;
-import static fr.warframe.devilbul.utils.Find.findClanKey;
-import static fr.warframe.devilbul.utils.Recup.recupString;
-import static fr.warframe.devilbul.utils.enumeration.ClanWarframe.*;
 
 public class LeadCommand extends SimpleCommand {
 
-    @Command(name="leads")
+    @Command(name = "leads")
     @Help(field = "**syntaxe 2** :   !leads\n**effet :**            affiche tous les clans, avec leurs leaders", categorie = Categorie.Alliance)
     public static void listLeader(MessageReceivedEvent event) {
         try {
@@ -35,28 +35,35 @@ public class LeadCommand extends SimpleCommand {
             String alliance = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "info" + File.separator + "Alliance.json")));
             JSONObject allianceJson = new JSONObject(alliance);
             JSONObject clanJson = allianceJson.getJSONObject("clans");
+            JSONArray leaders;
             EmbedBuilder lead = new EmbedBuilder();
             String nomAlliance = allianceJson.getJSONObject("infos").getString("nomAlliance");
+            List<String> buffer = new ArrayList<>();
             int nbClan = clanJson.length();
 
-            for (int i=0; i<nbClan; i++) {
-                JSONArray leaders = clanJson.getJSONObject(clanJson.names().getString(i)).getJSONArray("leaders");
+            for (int i = 0; i < nbClan; i++)
+                buffer.add(clanJson.names().getString(i));
 
-                for (int j=0; j<leaders.length(); j++) {
-                    if (j !=leaders.length()-1)
-                        leader.append(leaders.getString(j)).append(" / ");
-                    else if (j == leaders.length()-1)
-                        leader.append(leaders.getString(j)).append("\n");
+            Collections.sort(buffer);
+
+            for (int j = 0; j < nbClan; j++) {
+                leaders = clanJson.getJSONObject(buffer.get(j)).getJSONArray("leaders");
+
+                for (int k = 0; k < leaders.length(); k++) {
+                    if (k != leaders.length() - 1)
+                        leader.append(leaders.getString(k)).append(" / ");
+                    else if (k == leaders.length() - 1)
+                        leader.append(leaders.getString(k)).append("\n");
                 }
 
-                clan.append(clanJson.names().get(i)).append(" :\n");
+                clan.append(buffer.get(j)).append(" :\n");
             }
 
             lead.setTitle("**Alliance :** " + nomAlliance, "http://wfraid.teamfr.net/");
             lead.setThumbnail(logoUrlAlliance);
             lead.setDescription(nbClan + " clans");
-            lead.addField("Clans : ", clan.toString(), true);
-            lead.addField("Warlords : ", leader.toString(), true);
+            lead.addField("Nom des clans : ", clan.toString(), true);
+            lead.addField("Représentants : ", leader.toString(), true);
             lead.setColor(new Color(0, 0, 0));
             lead.setFooter(new SimpleDateFormat("dd/MM/yyyy   HH:mm:ss").format(new Date(Instant.now().toEpochMilli())), logoUrlAlliance);
 

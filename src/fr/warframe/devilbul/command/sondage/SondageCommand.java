@@ -36,8 +36,8 @@ public class SondageCommand extends SimpleCommand {
         try {
             if (findAdmin(event, event.getMember()) || findModo(event, event.getMember())) {
                 if (event.getMessage().getContentDisplay().contains(" ")) {
-                    String adresseSondage = System.getProperty("user.dir") + File.separator + "res" + File.separator + "sondage" + File.separator + "sondage.json";
-                    String adresseVote = System.getProperty("user.dir") + File.separator + "res" + File.separator + "sondage" + File.separator + "vote.json";
+                    String adresseSondage = System.getProperty("user.dir") + File.separator + "resources" + File.separator + "sondage" + File.separator + "sondage.json";
+                    String adresseVote = System.getProperty("user.dir") + File.separator + "resources" + File.separator + "sondage" + File.separator + "vote.json";
                     String rawCommande = recupString(event.getMessage().getContentDisplay().toLowerCase());
                     String commande = rawCommande.replaceFirst(" ", "@").split("@")[0];
 
