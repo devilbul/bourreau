@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static fr.warframe.devilbul.Bourreau.commands;
+import static fr.warframe.devilbul.Bourreau.helpDetail;
 import static fr.warframe.devilbul.Bourreau.helpList;
 import static fr.warframe.devilbul.utils.annotations.command.CommandMap.registerListCommands;
 import static fr.warframe.devilbul.utils.annotations.functionality.FunctionalityMap.registerFunctionalities;
@@ -102,6 +103,9 @@ public class Init {
 
             for (int i = 0; i < musicCommandJson.length(); i++) {
                 commands.put(musicCommandJson.getJSONObject(i).getString("command"), null);
+                helpList.get("Son").add(musicCommandJson.getJSONObject(i).getString("command"));
+                helpDetail.put(musicCommandJson.getJSONObject(i).getString("command"), "**syntaxe** :      !" +
+                        musicCommandJson.getJSONObject(i).getString("command") + "\n**effet :**         le bot se connecte au salon vocal, et jouer le son");
             }
 
         } catch (IOException e) {
@@ -145,14 +149,14 @@ public class Init {
 
     void InitMain() {
         initListCommand();
+        initFunctionality();
+        initHelpList();
+        initCommand();
         initServeur();
         initAudioManager();
         initMusicManager();
         initMusicCommand();
         initMusic();
-        initFunctionality();
-        initHelpList();
-        initCommand();
         initCetusTimer();
         initLogoUrl();
     }
