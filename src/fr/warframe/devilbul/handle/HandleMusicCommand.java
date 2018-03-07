@@ -5,8 +5,7 @@ import fr.warframe.devilbul.utils.music.WaitingSound;
 
 import static fr.warframe.devilbul.Init.queueSon;
 import static fr.warframe.devilbul.functionality.AntiSpam.isCensured;
-import static fr.warframe.devilbul.utils.Find.getMusicCommand;
-import static fr.warframe.devilbul.utils.Find.isMusicCommand;
+import static fr.warframe.devilbul.utils.Find.*;
 
 public class HandleMusicCommand {
 
@@ -16,6 +15,10 @@ public class HandleMusicCommand {
                 cmd.event.getTextChannel().sendMessage("Censuré").queue();
                 return;
             }
+
+            if (isAdminMusicCommand(cmd.invoke))
+                if (!findAdmin(cmd.event, cmd.event.getMember()))
+                    return;
 
             String musicFile = getMusicCommand(cmd.invoke);
 

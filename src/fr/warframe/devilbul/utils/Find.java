@@ -525,4 +525,20 @@ public class Find {
             return -1;
         }
     }
+
+    public static boolean isAdminMusicCommand(String command){
+        try {
+            String musicCommand = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "config" + File.separator + "music.json")));
+            JSONArray musicCommandJson = new JSONObject(musicCommand).getJSONArray("music_command");
+
+            for (int i = 0; i < musicCommandJson.length(); i++)
+                if (musicCommandJson.getJSONObject(i).getString("command").equals(command))
+                    return musicCommandJson.getJSONObject(i).getBoolean("admin");
+
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
