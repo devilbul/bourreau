@@ -404,9 +404,9 @@ public class Find {
         return null;
     }
 
-    public static Role findRole(Guild guild, String role) {
+    public static Role findRole(Guild guild, String idRole) {
         for (Role role1 : guild.getRoles())
-            if (role1.getName().equals(role))
+            if (role1.getId().equals(idRole))
                 return role1;
 
         return null;

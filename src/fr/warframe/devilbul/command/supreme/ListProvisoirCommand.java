@@ -24,7 +24,7 @@ public class ListProvisoirCommand extends SimpleCommand {
             if (findAdminSupreme(event.getAuthor().getId())) {
                 String adminProvisoir = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "config" + File.separator + "adminProvisoir.json")));
                 JSONArray adminProvisoirJson = new JSONArray(adminProvisoir);
-                StringBuilder message = new StringBuilder();
+                StringBuilder message = new StringBuilder().append("Liste user supreme :");
 
                 for (int i = 0; i < adminProvisoirJson.length(); i++)
                     message.append("**").append(i).append("** : ").append(adminProvisoirJson.getJSONObject(i).getString("name")).append(" (").append(adminProvisoirJson.getJSONObject(i).getString("id")).append(")\n");

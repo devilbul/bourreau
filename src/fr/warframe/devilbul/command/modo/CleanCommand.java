@@ -46,12 +46,13 @@ public class CleanCommand extends SimpleCommand {
                                     return;
                                 }
 
-                                if (nbMessage != 0 && nbMessage < 100) {
+                                if (nbMessage != 0 && nbMessage < 100 && nbMessage > 0) {
                                     event.getTextChannel().sendMessage("Clean du salon en cours").complete().delete().completeAfter(1, TimeUnit.SECONDS);
                                     event.getTextChannel().deleteMessages(event.getTextChannel().getHistory().retrievePast(nbMessage).complete()
                                             .stream().filter(message -> message.getAuthor().equals(event.getMessage().getMentionedUsers().get(0))).collect(Collectors.toList())
                                             .stream().filter(message -> message.getCreationTime().isAfter(OffsetDateTime.now().minusWeeks(2))).collect(Collectors.toList())).queue();
-                                    event.getMessage().delete().queue(); } else
+                                    event.getMessage().delete().queue();
+                                } else
                                     event.getTextChannel().sendMessage("Valeur invalide, nombre < 100.").queue();
                             }
                         } else
@@ -63,6 +64,7 @@ public class CleanCommand extends SimpleCommand {
                                 event.getTextChannel().sendMessage("Clean du salon en cours").complete().delete().completeAfter(1, TimeUnit.SECONDS);
                                 event.getTextChannel().deleteMessages(event.getTextChannel().getHistory().retrievePast(100).complete()
                                         .stream().filter(message -> message.getCreationTime().isAfter(OffsetDateTime.now().minusWeeks(2))).collect(Collectors.toList())).queue();
+                                event.getMessage().delete().queue();
                             } else {
                                 int nbMessage = 0;
 
@@ -73,9 +75,11 @@ public class CleanCommand extends SimpleCommand {
                                     return;
                                 }
 
-                                if (nbMessage != 0 && nbMessage < 100) {
+                                if (nbMessage != 0 && nbMessage < 100 && nbMessage > 0) {
                                     event.getTextChannel().sendMessage("Clean du salon en cours").complete().delete().completeAfter(1, TimeUnit.SECONDS);
-                                    event.getTextChannel().deleteMessages(event.getTextChannel().getHistory().retrievePast(nbMessage).complete().stream().filter(message -> message.getCreationTime().isAfter(OffsetDateTime.now().minusWeeks(2))).collect(Collectors.toList())).queue();
+                                    event.getTextChannel().deleteMessages(event.getTextChannel().getHistory().retrievePast(nbMessage).complete()
+                                            .stream().filter(message -> message.getCreationTime().isAfter(OffsetDateTime.now().minusWeeks(2))).collect(Collectors.toList())).queue();
+                                    event.getMessage().delete().queue();
                                 } else
                                     event.getTextChannel().sendMessage("Valeur invalide, nombre < 100.").queue();
                             }
