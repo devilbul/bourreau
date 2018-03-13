@@ -40,9 +40,9 @@ public class DeafenCommand extends SimpleCommand {
                     event.getTextChannel().sendMessage("Le bot n'a pas ce droit.").queue();
             } else
                 event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();
-            } catch (Exception e) {
-                afficheErreur(event.getMessage().getContentDisplay(), e);
-                saveErreur(event.getMessage().getTextChannel().getName(), event.getAuthor().getName(), event.getAuthor().getId(), event.getMessage().getContentDisplay(), e);
-            }
+        } catch (Exception e) {
+            afficheErreur(event.getMessage().getContentDisplay(), e);
+            saveErreur(event.getMessage().getTextChannel().getName(), event.getAuthor().getName(), event.getAuthor().getId(), event.getMessage().getContentDisplay(), e);
+        }
     }
 }

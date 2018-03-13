@@ -22,6 +22,11 @@ public class BanCommand extends SimpleCommand {
             if (findAdmin(event, event.getMember())) {
                 if (event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
                     if (event.getMessage().toString().contains("@")) {
+                        /*ajouter les syntaxes :
+                        * ban(user, delete_message_day)
+                        * ban(user, reason)
+                        * ban(user, delete_message_day, reason)
+                        * */
                         if (event.getGuild().getSelfMember().canInteract(event.getMessage().getMentionedMembers().get(0))) {
                             if (event.getMessage().getMentionedUsers().get(0).equals(event.getGuild().getOwner().getUser())) {
                                 event.getTextChannel().sendMessage("Impossible, c'est le proprio des lieux.").queue();
@@ -29,7 +34,7 @@ public class BanCommand extends SimpleCommand {
                             }
 
                             if (findAdminSupreme(event.getMessage().getMentionedUsers().get(0).getId())) {
-                                event.getTextChannel().sendMessage("Impossible, c'est le proprio des lieux.").queue();
+                                event.getTextChannel().sendMessage("Impossible !").queue();
                                 return;
                             }
 
@@ -37,6 +42,7 @@ public class BanCommand extends SimpleCommand {
                             event.getTextChannel().sendMessage("client banni").queue();
                         } else
                             event.getTextChannel().sendMessage(event.getMessage().getMentionedUsers().get(0).getAsMention() + " a autant ou plus de droit que le bot.").queue();
+                        /**/
                     } else
                         event.getTextChannel().sendMessage("pas de personne mentionnée").queue();
                 } else

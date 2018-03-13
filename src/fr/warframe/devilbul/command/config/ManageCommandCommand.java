@@ -41,18 +41,29 @@ public class ManageCommandCommand extends SimpleCommand {
                 switch (commande.split(" ")[0]) {
                     case "add":
                         if (commande.split(" ").length > 1) {
-                            commandes = recupString(commande).split(" ");
-
-                            for (String s : commandes)
-                                if (commands.containsKey(s)) {
+                            if (commande.split(" ")[1].equals("all")) {
+                                for (String s : commands.keySet()) {
                                     if (findCommandStringList(commandesWithMoreConfig, s))
                                         checkCommandConfiguration(event, configCommandJson, s);
                                     else {
                                         configCommandJson.getJSONObject("commandes").getJSONObject(event.getGuild().getId()).getJSONArray("commandes").put(s);
                                         event.getTextChannel().sendMessage("Commande **" + s + "** ajoutée.").queue();
                                     }
-                                } else
-                                    event.getTextChannel().sendMessage("La commande **" + s + "** n'existe pas.").queue();
+                                }
+                            } else {
+                                commandes = recupString(commande).split(" ");
+
+                                for (String s : commandes)
+                                    if (commands.containsKey(s)) {
+                                        if (findCommandStringList(commandesWithMoreConfig, s))
+                                            checkCommandConfiguration(event, configCommandJson, s);
+                                        else {
+                                            configCommandJson.getJSONObject("commandes").getJSONObject(event.getGuild().getId()).getJSONArray("commandes").put(s);
+                                            event.getTextChannel().sendMessage("Commande **" + s + "** ajoutée.").queue();
+                                        }
+                                    } else
+                                        event.getTextChannel().sendMessage("La commande **" + s + "** n'existe pas.").queue();
+                            }
                         } else
                             event.getTextChannel().sendMessage("Aucune commande saisie.").queue();
 

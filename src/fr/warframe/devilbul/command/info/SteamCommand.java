@@ -15,7 +15,7 @@ public class SteamCommand extends SimpleCommand {
     @Help(field = "**syntaxe** :      !steam\n**effet :**         donne le lien du groupe steam de l'alliance", categorie = Categorie.Information)
     public static void steam(MessageReceivedEvent event) {
         try {
-            event.getTextChannel().sendMessage("http://steamcommunity.com/groups/wfraid").queue();
+            event.getTextChannel().sendMessage("http://steamcommunity.com/groups/cursedIegion").queue();
         } catch (Exception e) {
             afficheErreur(event.getMessage().getContentDisplay(), e);
             saveErreur(event.getMessage().getTextChannel().getName(), event.getAuthor().getName(), event.getAuthor().getId(), event.getMessage().getContentDisplay(), e);

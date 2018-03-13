@@ -75,7 +75,8 @@ public class Init {
                 new ClearCommand(), new CreateCommand(), new DisplayCommand(), new ResponsesCommand(), new ResultCommand(), new VoteCommand(), new HypeCommand(),
                 new ConfigInformation(), new ManageVoiceChannelCommand(), new ManageTextChannelCommand(), new ManageRoleCommand(), new ManageFunctionalityCommand(),
                 new ManageEmoteCommand(), new ManageCategoryCommand(), new ManageCommandCommand(), new PuteCommand(), new LeaveCommand(), new SonCommand(),
-                new ListCommand(), new SkipCommand(), new StopCommand(), new ChangeCommand(), new AddCensureCommand(), new ListCensureCommand(), new RemoveCensureCommand()
+                new ListCommand(), new SkipCommand(), new StopCommand(), new ChangeCommand(), new AddCensureCommand(), new ListCensureCommand(), new RemoveCensureCommand(),
+                new ClearCommand(), new UpdateBotCommand(), new CleanCommand()
         );
     }
 

@@ -49,7 +49,7 @@ public class GuildJoinListener extends ListenerAdapter {
             fileCategory.flush();
             fileCategory.close();
 
-            configCommandJson.getJSONObject("commandes").put(event.getGuild().getId(), new JSONObject().put("nameServer", event.getGuild().getName()).put("commandes", new JSONArray()));
+            configCommandJson.getJSONObject("commandes").put(event.getGuild().getId(), new JSONObject().put("nameServer", event.getGuild().getName()).put("commandes", new JSONArray().put("help")));
             fileCommand.write(configCommandJson.toString(3));
             fileCommand.flush();
             fileCommand.close();

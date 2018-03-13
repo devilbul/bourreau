@@ -1,6 +1,5 @@
 package fr.warframe.devilbul.command;
 
-import fr.warframe.devilbul.Bourreau;
 import fr.warframe.devilbul.parser.CommandParser;
 import fr.warframe.devilbul.utils.annotations.command.Command;
 import fr.warframe.devilbul.utils.annotations.help.Help;
@@ -41,16 +40,9 @@ public class SimpleCommand {
     @Help(field = "ceci est un test", categorie = Categorie.Autre)
     public static void test(MessageReceivedEvent event) {
         try {
+            System.out.println(event.getTextChannel().getHistory().getMessageById("417790919203618867").getContentDisplay());
+            System.out.println(event.getTextChannel().getHistory().getMessageById("417790919203618867").getCreationTime().toEpochSecond());
 
-            /*for (Role role : event.getGuild().getRoles()) {
-                event.getTextChannel().sendMessage(role.getName() + " : " + role.getId()).queue();
-            }*/
-
-            /*System.out.println("===================================================");
-            for (String s : Bourreau.commands.keySet()) {
-                System.out.println(s);
-            }
-            System.out.println("===================================================");*/
 
         } catch (Exception e) {
             afficheErreur(event.getMessage().getContentDisplay(), e);

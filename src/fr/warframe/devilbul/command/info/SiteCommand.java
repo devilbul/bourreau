@@ -15,7 +15,7 @@ public class SiteCommand extends SimpleCommand {
     @Help(field = "**syntaxe** :      !site\n**effet :**         donne le lien du site de l'alliance", categorie = Categorie.Information)
     public static void site(MessageReceivedEvent event) {
         try {
-            event.getTextChannel().sendMessage("http://wfraid.teamfr.net/").queue();
+            event.getTextChannel().sendMessage("https://wfraid.teamfr.net/").queue();
         } catch (Exception e) {
             afficheErreur(event.getMessage().getContentDisplay(), e);
             saveErreur(event.getMessage().getTextChannel().getName(), event.getAuthor().getName(), event.getAuthor().getId(), event.getMessage().getContentDisplay(), e);

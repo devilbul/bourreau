@@ -5,6 +5,7 @@ import fr.warframe.devilbul.utils.annotations.help.Help;
 import fr.warframe.devilbul.utils.annotations.sub.command.SubCommand;
 import fr.warframe.devilbul.utils.enumeration.Categorie;
 import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Emote;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
@@ -103,6 +104,11 @@ public class ManageRoleCommand extends SimpleCommand {
                             event.getTextChannel().sendMessage("Aucun role saisie.").queue();
                         else
                             event.getTextChannel().sendMessage("Aucun type de role saisie.").queue();
+
+                        break;
+                    case "getall":
+                        for (Role roles : event.getGuild().getRoles())
+                            event.getTextChannel().sendMessage(roles.getName() + " : " + roles.getId()).queue();
 
                         break;
                     case "info":

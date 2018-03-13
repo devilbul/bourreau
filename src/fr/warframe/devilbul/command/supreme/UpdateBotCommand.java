@@ -10,17 +10,16 @@ import static fr.warframe.devilbul.exception.ErreurGestion.afficheErreur;
 import static fr.warframe.devilbul.exception.ErreurGestion.saveErreur;
 import static fr.warframe.devilbul.utils.Find.findAdminSupreme;
 
-public class RebootCommand extends SimpleCommand {
+public class UpdateBotCommand extends SimpleCommand {
 
-    @Command(name = "reboot")
-    @Help(field = "**syntaxe** :   !reboot\n**effet :**           redémarre le bot", categorie = Categorie.Supreme)
+    @Command(name = "updatebot")
+    @Help(field = "**syntaxe** :   !updatebot\n**effet :**           met à jour le bot", categorie = Categorie.Supreme)
     public static void reboot(MessageReceivedEvent event) {
         try {
             if (findAdminSupreme(event.getAuthor().getId())) {
                 if (System.getProperty("os.name").equals("Linux")) {
-                    event.getTextChannel().sendMessage("redémarrage en cours.").queue();
-                    Runtime.getRuntime().exec("/bin/bash /home/discordbot/bourreau-stop.sh");
-                    Runtime.getRuntime().exec("/bin/bash /home/discordbot/bourreau-start.sh");
+                    event.getTextChannel().sendMessage("mise à jour en cours.").queue();
+                    Runtime.getRuntime().exec("/bin/bash /home/discordbot/bourreau-update.sh");
                 }
             } else
                 event.getTextChannel().sendMessage("Tu n'as pas les droits pour cela. ^^").queue();

@@ -27,7 +27,7 @@ import static fr.warframe.devilbul.exception.ErreurGestion.saveErreur;
 public class LeadCommand extends SimpleCommand {
 
     @Command(name = "leads")
-    @Help(field = "**syntaxe 2** :   !leads\n**effet :**            affiche tous les clans, avec leurs leaders", categorie = Categorie.Alliance)
+    @Help(field = "**syntaxe** :   !leads\n**effet :**            affiche tous les clans, avec leurs leaders", categorie = Categorie.Alliance)
     public static void listLeader(MessageReceivedEvent event) {
         try {
             StringBuilder leader = new StringBuilder();

@@ -38,18 +38,20 @@ public class ThreadSon implements Runnable {
                     canDisconnect = true;
                 }
 
-                if (queueSon.size() > 0)
+                if (queueSon.size() > 0) {
+                    Tempo.temporisation(5000);
                     canDisconnect = false;
+                }
 
                 if (canDisconnect) {
                     isPlayed = false;
                     audioManagers.get(event.getGuild().getId()).closeAudioConnection();
                 }
 
-                Tempo.temporisation(10000);
+                Tempo.temporisation(1000);
             } else {
                 Tempo.temporisation(1000);
-                System.out.println("");
+                System.out.print("");
             }
         }
     }

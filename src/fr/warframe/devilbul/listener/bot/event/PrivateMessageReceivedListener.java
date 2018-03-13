@@ -27,11 +27,11 @@ public class PrivateMessageReceivedListener extends ListenerAdapter {
         try {
             if (event.getAuthor() != event.getJDA().getSelfUser() && !event.getMessage().getContentDisplay().equals("!")) {
                 prefixTag = new JSONObject(new String(Files.readAllBytes(Paths.get("resources" + File.separator + "config" + File.separator + "bot.json")))).getString("prefixTag");
+                log(event);
 
                 if (findUserToServers(event))
                     if (event.getMessage().getContentDisplay().startsWith(prefixTag)) {
                         addReactionPrivate(event);
-                        log(event);
                         handlePrivateCommand(parserPrivate.parsePrivate(event.getMessage().getContentDisplay().toLowerCase(), event));
                     }
             }
@@ -72,9 +72,9 @@ public class PrivateMessageReceivedListener extends ListenerAdapter {
 
     private void log(PrivateMessageReceivedEvent event) {
         try {
-            String log = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "logs" + File.separator + "message_received.json")));
+            String log = new String(Files.readAllBytes(Paths.get("resources" + File.separator + "logs" + File.separator + "private_message_received.json")));
             JSONArray logJson = new JSONArray(log);
-            FileWriter file = new FileWriter(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "logs" + File.separator + "message_received.json");
+            FileWriter file = new FileWriter(System.getProperty("user.dir") + File.separator + "resources" + File.separator + "logs" + File.separator + "private_message_received.json");
 
             logJson.put(new JSONObject()
                     .put("auteur", new JSONObject()
